@@ -1,0 +1,14 @@
+services:
+  frontend:
+    build: .
+    ports:
+      - "80:80"
+    networks:
+      - app_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  app_network:
+    driver: bridge
