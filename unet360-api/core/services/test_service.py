@@ -11,16 +11,8 @@ class TestService:
     _repository_instance: Optional[TestRepository] = None
 
     def __init__(self, repository: TestRepository):
-        if TestRepository._instance is not None and repository is None:
-            raise RuntimeError("Use TestService.instance() to get the singleton instance.")
-        elif repository:
-            self.repository = repository
-        elif TestService._repository_instance:
-            self.repository = TestRepository._repository_instance
-        else:
-            self.repository = TestRepository()
+        self.repository = repository
 
-    
     async def create_test(self, new_test: TestDTO) -> TestDTO | None:
         test_db_obj = Test(**{**new_test.dict(exclude_none=True)})
         new_test_db_obj = await self.repository.create_test(new_test=test_db_obj)

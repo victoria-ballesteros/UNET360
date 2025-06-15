@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from supabase import create_client
-
 from core.entities.test_model import Test
+from .test_routes import router as test_router
 
 
 load_dotenv()
@@ -45,6 +45,7 @@ async def lifespan(app: FastAPI):
             client.close()
 
 app = FastAPI(title="UNET360 API", lifespan=lifespan)
+app.include_router(test_router)
 
 # Enable CORS
 app.add_middleware(
