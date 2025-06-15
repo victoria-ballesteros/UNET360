@@ -1,0 +1,1 @@
+CREATE_ERROR_MESSAGE = 'Error interno. No se pudo crear el objeto en la base de datos.'

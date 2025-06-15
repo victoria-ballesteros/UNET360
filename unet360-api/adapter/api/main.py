@@ -6,8 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
+from supabase import create_client
 
-from core.entities.node import Node
+from core.entities.test_model import Test
 
 
 load_dotenv()
@@ -20,25 +21,30 @@ async def lifespan(app: FastAPI):
 
     try: 
         # Initialize MongoDB connection
-        mongo_db = os.getenv("MONGODB_DB", "catalogs_db")
-        mongo_uri = os.getenv("MONGODB_URL", "mongodb://mongodb:27017")
-        logger.debug('MONGODB_URL' + mongo_uri)
-        logger.debug('MONGODB_DB' + mongo_db)
-        client = AsyncIOMotorClient(mongo_uri, authSource=mongo_db)
+        mongo_db = os.getenv("MONGODB_DB")
+        mongo_uri = os.getenv("MONGODB_URL")
+        supabase_uri = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_KEY") 
+        client = AsyncIOMotorClient(mongo_uri, authSource="admin")
 
         await init_beanie(
-            database=client[os.getenv("MONGODB_DB", "catalogs_db")],
+            database=client[mongo_db],
             document_models=[
-                Node
+                Test
             ]
         )
+
+        # Supabase client
+        supabase = create_client(supabase_uri, supabase_key)
+        app.state.supabase = supabase
+
         yield
     finally:
         # Cleanup (if needed)
         if client is not None:
             client.close()
 
-app = FastAPI(title="TC4 Catalogs API", lifespan=lifespan)
+app = FastAPI(title="UNET360 API", lifespan=lifespan)
 
 # Enable CORS
 app.add_middleware(
@@ -51,7 +57,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "TC4 Catalogs API is running. Visit /graphql for the GraphQL playground"}
+    return {"message": "UNET360 API is running."}
 
 if __name__ == "__main__":
     import uvicorn
