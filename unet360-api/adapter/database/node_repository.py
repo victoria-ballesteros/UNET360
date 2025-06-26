@@ -1,6 +1,7 @@
 from core.entities.node_model import Node
 
 class NodeRepository:
+    # Inserta un nuevo nodo en la base de datos
     async def create(self, new_node: Node) -> Node | None:
         return await new_node.insert()
     

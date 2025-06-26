@@ -1,6 +1,7 @@
 from core.entities.tag_model import Tag
 
 class TagRepository:
+    # Inserta un nuevo tag en la base de datos
     async def create(self, new_tag: Tag) -> Tag | None:
         return await new_tag.insert()
     

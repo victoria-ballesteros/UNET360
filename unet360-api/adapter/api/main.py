@@ -11,11 +11,13 @@ from core.entities.test_model import Test
 from core.entities.location_model import Location
 from core.entities.tag_model import Tag
 from core.entities.node_model import Node
+from core.entities.tenant_model import Tenant
 
 from .test_routes import router as test_router
 from .location_routes import router as location_router
 from .tag_routes import router as tag_router
-from .node_routes import router as node_router                  
+from .node_routes import router as node_router    
+from .tenant_routes import router as tenant_router              
 
 
 load_dotenv()
@@ -40,7 +42,8 @@ async def lifespan(app: FastAPI):
                 Test,
                 Location,
                 Tag,
-                Node
+                Node,
+                Tenant
             ]
         )
 
@@ -54,11 +57,17 @@ async def lifespan(app: FastAPI):
         if client is not None:
             client.close()
 
+routers = [
+    test_router,
+    location_router,
+    tag_router,
+    node_router,
+    tenant_router
+]
+
 app = FastAPI(title="UNET360 API", lifespan=lifespan)
-app.include_router(test_router)
-app.include_router(location_router)
-app.include_router(tag_router)
-app.include_router(node_router)
+for router in routers:
+    app.include_router(router)
 
 # Enable CORS
 app.add_middleware(

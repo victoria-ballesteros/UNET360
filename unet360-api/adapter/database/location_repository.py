@@ -1,6 +1,7 @@
 from core.entities.location_model import Location
 
 class LocationRepository:
+    # Inserta una nueva ubicación en la base de datos
     async def create(self, new_location: Location) -> Location | None:
         return await new_location.insert()
     

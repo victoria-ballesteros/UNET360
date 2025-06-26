@@ -6,6 +6,7 @@ from core.dtos.test_dto import TestDTO
 from core.entities.test_model import Test
 from core.messages.error_messages import CREATE_ERROR_MESSAGE
 
+
 class TestService:
     _instance: Optional["TestService"] = None
     _repository_instance: Optional[TestRepository] = None

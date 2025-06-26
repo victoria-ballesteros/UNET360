@@ -16,13 +16,16 @@ class NodeService:
 
     def __init__(self, repository: NodeRepository,
                  location_repo: LocationRepository,
-                 tag_repo: TagRepository,
-                 ):
+                 tag_repo: TagRepository):
         self.repository = repository
         self.location_repo = location_repo
         self.tag_repo = tag_repo
 
-    
+    # El repositorio de nodos debe estar disponible para adyacentes
+    @property
+    def node_repo(self):
+        return self.repository
+
     async def create_node(self, new_node: NodeCreateDTO) -> NodeCreateDTO:
         location = None
 
@@ -70,7 +73,7 @@ class NodeService:
         ]
 
 
-        return NodeOutDTO(
+        return NodeCreateDTO(
         name=new_node_db_obj.name,
         location=location_name,
         url_image=new_node_db_obj.url_image,
