@@ -7,13 +7,12 @@ from dotenv import load_dotenv
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from supabase import create_client
-from core.entities.test_model import Test
 from core.entities.location_model import Location
 from core.entities.tag_model import Tag
 from core.entities.node_model import Node
 from core.entities.tenant_model import Tenant
 
-from .test_routes import router as test_router
+
 from .location_routes import router as location_router
 from .tag_routes import router as tag_router
 from .node_routes import router as node_router    
@@ -39,7 +38,6 @@ async def lifespan(app: FastAPI):
         await init_beanie(
             database=client[mongo_db],
             document_models=[
-                Test,
                 Location,
                 Tag,
                 Node,
@@ -58,7 +56,6 @@ async def lifespan(app: FastAPI):
             client.close()
 
 routers = [
-    test_router,
     location_router,
     tag_router,
     node_router,
