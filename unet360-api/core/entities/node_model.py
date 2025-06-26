@@ -18,9 +18,9 @@ class Node(Document):
     location: Optional[Link["Location"]]
     url_image: str
     adyacent_nodes: list[Optional[Link["Node"]]] = Field(
-        default = (None, None, None, None),
+        default = [None, None, None, None],
         description="List of links to adjacent nodes, up to 4 nodes can be linked",
-        example=("forward", "backward", "left", "right")
+        example=["forward", "backward", "left", "right"]
     )
 
     tags: Optional[List[Link["Tag"]]]
