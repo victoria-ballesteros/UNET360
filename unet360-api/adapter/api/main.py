@@ -7,8 +7,16 @@ from dotenv import load_dotenv
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from supabase import create_client
-from core.entities.test_model import Test
-from .test_routes import router as test_router
+from core.entities.location_model import Location
+from core.entities.tag_model import Tag
+from core.entities.node_model import Node
+from core.entities.tenant_model import Tenant
+
+
+from .location_routes import router as location_router
+from .tag_routes import router as tag_router
+from .node_routes import router as node_router    
+from .tenant_routes import router as tenant_router              
 
 
 load_dotenv()
@@ -30,7 +38,10 @@ async def lifespan(app: FastAPI):
         await init_beanie(
             database=client[mongo_db],
             document_models=[
-                Test
+                Location,
+                Tag,
+                Node,
+                Tenant
             ]
         )
 
@@ -44,8 +55,16 @@ async def lifespan(app: FastAPI):
         if client is not None:
             client.close()
 
+routers = [
+    location_router,
+    tag_router,
+    node_router,
+    tenant_router
+]
+
 app = FastAPI(title="UNET360 API", lifespan=lifespan)
-app.include_router(test_router)
+for router in routers:
+    app.include_router(router)
 
 # Enable CORS
 app.add_middleware(
