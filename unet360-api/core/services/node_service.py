@@ -22,10 +22,10 @@ class NodeService:
         self.location_repo = location_repo
         self.tag_repo = tag_repo
 
-    # El repositorio de nodos debe estar disponible para adyacentes
     @property
     def node_repo(self):
         return self.repository
+
 
     async def create_node(self, new_node: NodeCreateDTO) -> NodeCreateDTO:
         location = None
@@ -82,17 +82,19 @@ class NodeService:
         tags=tags_names,
         )
 
+
     async def get_node_by_name(self, name: str) -> NodeOutDTO | None:
         node_db_obj = await self.repository.get_by_name(name=name)
 
         if not node_db_obj:
             raise HTTPException(status_code=404, detail="node not found")
+        
         return await transform_node_to_node_out_dto(node_db_obj)
     
 
     async def get_all_nodes(self) -> list[NodeOutDTO]:
         nodes = await self.repository.get_all()
-        return [NodeOutDTO(**node.dict()) for node in nodes]
+        return [await transform_node_to_node_out_dto(node) for node in nodes]
     
 
     async def update_node(self, name: str, dto: NodeUpdateDTO) -> NodeOutDTO:
