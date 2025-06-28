@@ -7,6 +7,9 @@ class LocationRepository:
     
     async def get_by_name(self, name: str) -> Location | None:
         return await Location.find_one(Location.name == name)
+
+    async def get_by_link(self, location: Location) -> Location | None:
+        return await location.fetch()
     
     async def get_all(self) -> list[Location]:
         return await Location.find_all().to_list()

@@ -4,10 +4,13 @@ from fastapi import HTTPException
 from adapter.database.node_repository import NodeRepository
 from adapter.database.tag_repository import TagRepository
 from adapter.database.location_repository import LocationRepository
+
 from core.dtos.node_dto import NodeCreateDTO, NodeUpdateDTO, NodeOutDTO
 from core.entities.node_model import Node
+
+from core.mappers.node_mappers import (transform_node_to_node_out_dto, update_db_obj)
+
 from core.messages.error_messages import CREATE_ERROR_MESSAGE
-from core.mappers.node_mappers import transform_node_to_node_out_dto
 
 class NodeService:
     _instance: Optional["NodeService"] = None
@@ -99,16 +102,17 @@ class NodeService:
 
     async def update_node(self, name: str, dto: NodeUpdateDTO) -> NodeOutDTO:
         node = await self.repository.get_by_name(name)
+
         if not node:
             raise HTTPException(status_code=404, detail="Node not found")
      
         update_data = dto.dict(exclude_unset=True)
-        for key, value in update_data.items():
-            setattr(node, key, value)
-        print(node)
+
+        node = await update_db_obj(node_db_obj=node, new_data=update_data)
+        
         updated = await self.repository.update(node)
         
-        return [await transform_node_to_node_out_dto(updated)] if updated else None
+        return await transform_node_to_node_out_dto(updated) if updated else None
     
 
     async def delete_node(self, name: str):
