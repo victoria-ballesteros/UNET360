@@ -26,9 +26,8 @@ async def transform_node_to_node_out_dto(node_db_obj: Node) -> NodeOutDTO:
 
     adyacent_names = []
 
-    if node_db_obj.adyacent_nodes and not all(adyacent is None for adyacent in node_db_obj.adyacent_nodes):
-        resolved_adyacents = [await adyacent_node.fetch() for adyacent_node in node_db_obj.adyacent_nodes]
-        for adyacent_obj in resolved_adyacents:
+    if node_db_obj.adyacent_nodes:
+        for adyacent_obj in node_db_obj.adyacent_nodes:
             if adyacent_obj:
                 adyacent_names.append(adyacent_obj.name)
             else:

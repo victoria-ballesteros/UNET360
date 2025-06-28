@@ -101,13 +101,14 @@ class NodeService:
         node = await self.repository.get_by_name(name)
         if not node:
             raise HTTPException(status_code=404, detail="Node not found")
-
+     
         update_data = dto.dict(exclude_unset=True)
         for key, value in update_data.items():
             setattr(node, key, value)
-
+        print(node)
         updated = await self.repository.update(node)
-        return NodeOutDTO(**updated.dict())
+        
+        return [await transform_node_to_node_out_dto(updated)] if updated else None
     
 
     async def delete_node(self, name: str):

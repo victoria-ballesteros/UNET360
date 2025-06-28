@@ -59,12 +59,10 @@ async def get_node(name: str): # Ya no hay 'service: NodeService = Depends(...)'
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
 
-# Listar todos los nodos
 @router.get("/", response_model=GeneralResponse)
 async def get_all_nodes(): # Ya no hay 'service: NodeService = Depends(...)'
     try:
         nodes_out_dtos = await service.get_all_nodes()
-        
         nodes_data_list = [node_dto.model_dump() for node_dto in nodes_out_dtos]
         return GeneralResponse(
             http_code=status.HTTP_200_OK,
@@ -84,9 +82,8 @@ async def get_all_nodes(): # Ya no hay 'service: NodeService = Depends(...)'
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
 
-# Actualizar nodo
 @router.patch("/{name}", response_model=GeneralResponse)
-async def update_node(name: str, dto: NodeUpdateDTO): # Ya no hay 'service: NodeService = Depends(...)'
+async def update_node(name: str, dto: NodeUpdateDTO):
     try:
         updated_node_dto = await service.update_node(name, dto)
         
