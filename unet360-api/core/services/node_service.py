@@ -7,6 +7,7 @@ from adapter.database.location_repository import LocationRepository
 from core.dtos.node_dto import NodeCreateDTO, NodeUpdateDTO, NodeOutDTO
 from core.entities.node_model import Node
 from core.messages.error_messages import CREATE_ERROR_MESSAGE
+from core.mappers.node_mappers import transform_node_to_node_out_dto
 
 class NodeService:
     _instance: Optional["NodeService"] = None
@@ -86,8 +87,7 @@ class NodeService:
 
         if not node_db_obj:
             raise HTTPException(status_code=404, detail="node not found")
-        
-        return NodeOutDTO(**node_db_obj.dict())
+        return await transform_node_to_node_out_dto(node_db_obj)
     
 
     async def get_all_nodes(self) -> list[NodeOutDTO]:
