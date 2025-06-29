@@ -11,9 +11,8 @@ from typing import List
 router = APIRouter(prefix="/nodes", tags=["Nodes"])
 service = NodeService(NodeRepository(), LocationRepository(), TagRepository())
 
-# Crear un nuevo nodo
 @router.post("/", response_model=GeneralResponse)
-async def create_node(dto: NodeCreateDTO): # Ya no hay 'service: NodeService = Depends(...)'
+async def create_node(dto: NodeCreateDTO):
     try:
         created_node_dto = await service.create_node(dto) 
         
@@ -105,7 +104,6 @@ async def update_node(name: str, dto: NodeUpdateDTO):
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
 
-# Eliminar nodo
 @router.delete("/{name}", response_model=GeneralResponse)
 async def delete_node(name: str): # Ya no hay 'service: NodeService = Depends(...)'
     try:

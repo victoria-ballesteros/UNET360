@@ -35,8 +35,6 @@ async def force_to_link(obj, repository, model_class):
 async def transform_node_to_node_out_dto(node_db_obj: Node) -> NodeOutDTO:
     location_name = None
 
-    print(node_db_obj)
-
     if node_db_obj.location:
         try:
             if not hasattr(node_db_obj.location, "id"):
