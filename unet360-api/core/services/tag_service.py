@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from adapter.database.tag_repository import TagRepository
 from core.dtos.tag_dto import TagCreateDTO, TagUpdateDTO, TagOutDTO
 from core.entities.tag_model import Tag
-from core.messages.error_messages import CREATE_ERROR_MESSAGE
+from core.messages.error_messages import CREATE_ERROR_MESSAGE, OBJECT_NOT_FOUND_ERROR_MESSAGE
 
 
 class TagService:
@@ -27,7 +27,7 @@ class TagService:
         tag_db_obj = await self.repository.get_by_name(name=name)
 
         if not tag_db_obj:
-            raise HTTPException(status_code=404, detail="tag not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
 
         return TagOutDTO(**tag_db_obj.model_dump())
 
@@ -38,7 +38,7 @@ class TagService:
     async def update_tag(self, name: str, dto: TagUpdateDTO) -> TagOutDTO:
         tag = await self.repository.get_by_name(name)
         if not tag:
-            raise HTTPException(status_code=404, detail="Tag not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
 
         update_data = dto.model_dump(exclude_unset=True)
         for key, value in update_data.items():
@@ -50,6 +50,6 @@ class TagService:
     async def delete_tag(self, name: str):
         tag = await self.repository.get_by_name(name)
         if not tag:
-            raise HTTPException(status_code=404, detail="Tag not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
         await self.repository.delete(tag)
         return {"message": "Tag deleted"}

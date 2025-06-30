@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from adapter.database.location_repository import LocationRepository
 from core.dtos.location_dto import LocationCreateDTO, LocationUpdateDTO, LocationOutDTO
 from core.entities.location_model import Location
-from core.messages.error_messages import CREATE_ERROR_MESSAGE
+from core.messages.error_messages import CREATE_ERROR_MESSAGE, OBJECT_NOT_FOUND_ERROR_MESSAGE
 
 
 class LocationService:
@@ -29,7 +29,7 @@ class LocationService:
         location_db_obj = await self.repository.get_by_name(name=name)
 
         if not location_db_obj:
-            raise HTTPException(status_code=404, detail="Location not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
 
         return LocationOutDTO(**location_db_obj.model_dump())
 
@@ -40,7 +40,7 @@ class LocationService:
     async def update_location(self, name: str, dto: LocationUpdateDTO) -> LocationOutDTO:
         location = await self.repository.get_by_name(name)
         if not location:
-            raise HTTPException(status_code=404, detail="Location not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
 
         update_data = dto.model_dump(exclude_unset=True)
         for key, value in update_data.items():
@@ -52,6 +52,6 @@ class LocationService:
     async def delete_location(self, name: str):
         location = await self.repository.get_by_name(name)
         if not location:
-            raise HTTPException(status_code=404, detail="Location not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
         await self.repository.delete(location)
         return {"message": "Location deleted"}

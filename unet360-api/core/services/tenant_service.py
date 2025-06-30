@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from adapter.database.tenant_repository import TenantRepository
 from core.dtos.tenant_dto import TenantCreateDTO, TenantUpdateDTO, TenantOutDTO
 from core.entities.tenant_model import Tenant
-from core.messages.error_messages import CREATE_ERROR_MESSAGE
+from core.messages.error_messages import CREATE_ERROR_MESSAGE, OBJECT_NOT_FOUND_ERROR_MESSAGE
 
 
 class TenantService:
@@ -28,7 +28,7 @@ class TenantService:
         tenant_db_obj = await self.repository.get_by_supabase_user_id(supabase_user_id=supabase_user_id)
 
         if not tenant_db_obj:
-            raise HTTPException(status_code=404, detail="tenant not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
 
         return TenantOutDTO(**tenant_db_obj.model_dump())
 
@@ -39,7 +39,7 @@ class TenantService:
     async def update_tenant(self, supabase_user_id: str, dto: TenantUpdateDTO) -> TenantOutDTO:
         tenant = await self.repository.get_by_supabase_user_id(supabase_user_id)
         if not tenant:
-            raise HTTPException(status_code=404, detail="Tenant not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
 
         update_data = dto.model_dump(exclude_unset=True)
         for key, value in update_data.items():
@@ -51,6 +51,6 @@ class TenantService:
     async def delete_tenant(self, supabase_user_id: str):
         tenant = await self.repository.get_by_supabase_user_id(supabase_user_id)
         if not tenant:
-            raise HTTPException(status_code=404, detail="Tenant not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
         await self.repository.delete(tenant)
         return {"message": "Tenant deleted"}
