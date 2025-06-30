@@ -28,9 +28,9 @@
             <p class="showcase-subcontainer-header"> UI imagotypes</p>
             <div class="showcase-group">
                 <UIcon name="arrow-up" size="32" color="var(--strong-gray)" />
-                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" rotation="90" />
-                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" rotation="180" />
-                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" rotation="-90" />
+                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" :rotation="90" />
+                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" :rotation="180" />
+                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" :rotation="-90" />
             </div>
             <div class="showcase-group">
                 <UIcon name="cloud-upload" size="32" color="var(--strong-gray)" />
