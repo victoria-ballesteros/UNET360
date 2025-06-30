@@ -1,0 +1,6 @@
+@use './colors';
+@use './typography';
+
+body {
+  @include paragraph-small;
+}
