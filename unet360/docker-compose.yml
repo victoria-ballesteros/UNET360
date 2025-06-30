@@ -1,13 +1,17 @@
 services:
   frontend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
     networks:
       - app_network
-
-volumes:
-  mongodb_data:
+    environment:
+      - HOST=0.0.0.0
 
 networks:
   app_network:

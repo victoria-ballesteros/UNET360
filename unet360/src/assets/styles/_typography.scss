@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+$font-primary: 'Inter', sans-serif;
+
+@mixin paragraph-small {
+  font-family: $font-primary;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.138rem;
+}
+
+@mixin paragraph-medium {
+  font-family: $font-primary;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.3rem;
+}
+
+@mixin section-title {
+  font-family: $font-primary;
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1.95rem;
+}
