@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-$font-primary: 'Montserrat', sans-serif;
+$font-primary: 'Inter', sans-serif;
 
 @mixin paragraph-small {
   font-family: $font-primary;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 0.875rem;
   line-height: 1.138rem;
 }

@@ -5,6 +5,9 @@
     :width="size"
     :height="size"
     :fill="color"
+    :style="{
+      transform: `rotate(${props.rotation}deg)`,
+    }"
   />
 </template>
 
@@ -23,6 +26,10 @@ const props = defineProps({
   color: {
     type: String,
     default: 'currentColor'
+  },
+  rotation: {
+    type: Number,
+    default: 0
   }
 })
 

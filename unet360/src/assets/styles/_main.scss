@@ -2,5 +2,5 @@
 @use './typography';
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  @include paragraph-small;
 }

@@ -40,14 +40,14 @@ const handleClick = () => {
 
 <style scoped lang="scss">
 .button {
-  padding: 0.9375rem 5rem;
+  padding: 0.625rem 1.875rem;
   border: none;
   cursor: pointer;
   border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
   @include paragraph-small;
 
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -63,23 +63,26 @@ const handleClick = () => {
   }
 }
 
-.button-default {
-  font-weight: 500 !important;
-  background: var(--gray70);
-  color: var(--white);
+.button-primary {
+  background: var(--strong-gray);
+  color: var(--fill-white);
 }
 
 .button-secondary {
-  font-weight: 500 !important;
-  background: var(--gray30);
-  color: var(--gray70);
+  background: var(--fill-gray);
+  color: var(--strong-gray);
+}
+
+.button-tertiary {
+  background: var(--fill-white);
+  color: var(--strong-gray);
 }
 
 .button-deactivated {
-  font-weight: 500 !important;
-  background: var(--gray50);
-  color: var(--gray30);
+  background: var(--border-gray);
+  color: var(--fill-white);
   pointer-events: none;
+  box-shadow: none;
 }
 
 </style>
