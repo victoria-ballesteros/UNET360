@@ -1,33 +1,129 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
+from typing import List, Optional, Any
+
+from core.dtos.responses_dto import GeneralResponse 
+
 from core.services.tenant_service import TenantService
 from adapter.database.tenant_repository import TenantRepository
 from core.dtos.tenant_dto import TenantCreateDTO, TenantOutDTO, TenantUpdateDTO
-from typing import List
+
 
 router = APIRouter(prefix="/tenants", tags=["Tenants"])
-service = TenantService(TenantRepository())
 
-# Crear un nuevo tenant
-@router.post("/", response_model=TenantOutDTO)
+service = TenantService(TenantRepository()) 
+
+@router.post("/", response_model=GeneralResponse)
 async def create_tenant(dto: TenantCreateDTO):
-    return await service.create_tenant(dto)
+    try:
+        created_tenant_dto = await service.create_tenant(dto) 
+        
+        return GeneralResponse(
+            http_code=status.HTTP_201_CREATED,
+            status=True,
+            response_obj=created_tenant_dto.model_dump()
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )
 
-# Obtener tenant por supabase_user_id
-@router.get("/{supabase_user_id}", response_model=TenantOutDTO)
+@router.get("/{supabase_user_id}", response_model=GeneralResponse)
 async def get_tenant(supabase_user_id: str):
-    return await service.get_tenant_by_supabase_user_id(supabase_user_id)
+    try:
+        tenant_out_dto = await service.get_tenant_by_supabase_user_id(supabase_user_id)
+        
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj=tenant_out_dto.model_dump() if tenant_out_dto else None
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )
 
-# Listar todos los tenants
-@router.get("/", response_model=List[TenantOutDTO])
+@router.get("/", response_model=GeneralResponse)
 async def get_all_tenants():
-    return await service.get_all_tenants()
+    try:
+        tenants_out_dtos = await service.get_all_tenants()
+        
+        tenants_data_list = [tenant_dto.model_dump() for tenant_dto in tenants_out_dtos]
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj=tenants_data_list
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )
 
-# Actualizar tenant
-@router.patch("/{supabase_user_id}", response_model=TenantOutDTO)
+@router.patch("/{supabase_user_id}", response_model=GeneralResponse)
 async def update_tenant(supabase_user_id: str, dto: TenantUpdateDTO):
-    return await service.update_tenant(supabase_user_id, dto)
+    try:
+        updated_tenant_dto = await service.update_tenant(supabase_user_id, dto)
+        
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj=updated_tenant_dto.model_dump()
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )
 
-# Eliminar tenant
-@router.delete("/{supabase_user_id}")
+@router.delete("/{supabase_user_id}", response_model=GeneralResponse)
 async def delete_tenant(supabase_user_id: str):
-    return await service.delete_tenant(supabase_user_id)
+    try:
+        delete_result = await service.delete_tenant(supabase_user_id)
+        
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK, 
+            status=True,
+            response_obj=delete_result
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )

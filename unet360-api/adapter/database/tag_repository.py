@@ -1,12 +1,16 @@
+from beanie import Link
+
 from core.entities.tag_model import Tag
 
 class TagRepository:
-    # Inserta un nuevo tag en la base de datos
     async def create(self, new_tag: Tag) -> Tag | None:
         return await new_tag.insert()
     
     async def get_by_name(self, name: str) -> Tag | None:
         return await Tag.find_one(Tag.name == name)
+
+    async def get_by_link(self, link: Link) -> Tag | None:
+        return await link.fetch()
     
     async def get_all(self) -> list[Tag]:
         return await Tag.find_all().to_list()

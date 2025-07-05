@@ -3,7 +3,7 @@
     :class="`button button-${type}`"
     @click="handleClick"
   >
-    <UIcon v-if="props.icon" :name="props.icon" size="16" :color="props.iconColor" />
+    <UIcon v-if="props.icon" :name="props.icon" size="24" :color="props.iconColor" />
     <span v-if="props.text">{{ props.text }}</span>
   </button> 
 </template>

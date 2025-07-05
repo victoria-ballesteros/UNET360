@@ -4,9 +4,13 @@ from fastapi import HTTPException
 from adapter.database.node_repository import NodeRepository
 from adapter.database.tag_repository import TagRepository
 from adapter.database.location_repository import LocationRepository
+
 from core.dtos.node_dto import NodeCreateDTO, NodeUpdateDTO, NodeOutDTO
 from core.entities.node_model import Node
-from core.messages.error_messages import CREATE_ERROR_MESSAGE
+
+from core.mappers.node_mappers import (transform_node_to_node_out_dto, update_db_obj)
+
+from core.messages.error_messages import CREATE_ERROR_MESSAGE, OBJECT_NOT_FOUND_ERROR_MESSAGE
 
 class NodeService:
     _instance: Optional["NodeService"] = None
@@ -21,10 +25,10 @@ class NodeService:
         self.location_repo = location_repo
         self.tag_repo = tag_repo
 
-    # El repositorio de nodos debe estar disponible para adyacentes
     @property
     def node_repo(self):
         return self.repository
+
 
     async def create_node(self, new_node: NodeCreateDTO) -> NodeCreateDTO:
         location = None
@@ -32,14 +36,14 @@ class NodeService:
         if new_node.location:
             location = await self.location_repo.get_by_name(new_node.location)
             if not location:
-                raise HTTPException(status_code=404, detail=f"Location '{new_node.location}' not found")
+                raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
             
         tags = []
         if new_node.tags:
             for tag_name in new_node.tags:
                 tag = await self.tag_repo.get_by_name(tag_name)
                 if not tag:
-                    raise HTTPException(status_code=404, detail=f"Tag '{tag_name}' not found")
+                    raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
                 tags.append(tag)
 
         adyacents = []
@@ -48,7 +52,7 @@ class NodeService:
                 if name:
                     node = await self.node_repo.get_by_name(name)
                     if not node:
-                        raise HTTPException(status_code=404, detail=f"Adyacent node '{name}' not found")
+                        raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
                     adyacents.append(node)
                 else:
                     adyacents.append(None)
@@ -81,36 +85,39 @@ class NodeService:
         tags=tags_names,
         )
 
+
     async def get_node_by_name(self, name: str) -> NodeOutDTO | None:
         node_db_obj = await self.repository.get_by_name(name=name)
 
         if not node_db_obj:
-            raise HTTPException(status_code=404, detail="node not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
         
-        return NodeOutDTO(**node_db_obj.dict())
+        return await transform_node_to_node_out_dto(node_db_obj)
     
 
     async def get_all_nodes(self) -> list[NodeOutDTO]:
         nodes = await self.repository.get_all()
-        return [NodeOutDTO(**node.dict()) for node in nodes]
+        return [await transform_node_to_node_out_dto(node) for node in nodes]
     
 
     async def update_node(self, name: str, dto: NodeUpdateDTO) -> NodeOutDTO:
         node = await self.repository.get_by_name(name)
+
         if not node:
-            raise HTTPException(status_code=404, detail="Node not found")
-
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
+     
         update_data = dto.dict(exclude_unset=True)
-        for key, value in update_data.items():
-            setattr(node, key, value)
 
+        node = await update_db_obj(node_db_obj=node, new_data=update_data)
+        
         updated = await self.repository.update(node)
-        return NodeOutDTO(**updated.dict())
+        
+        return await transform_node_to_node_out_dto(updated) if updated else None
     
 
     async def delete_node(self, name: str):
         node = await self.repository.get_by_name(name)
         if not node:
-            raise HTTPException(status_code=404, detail="Node not found")
+            raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
         await self.repository.delete(node)
         return {"message": "Node deleted"}
