@@ -2,7 +2,6 @@
   <component
     :is="IconComponent"
     v-if="IconComponent"
-    :width="size"
     :height="size"
     :fill="color"
     :style="{

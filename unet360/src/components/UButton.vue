@@ -2,6 +2,7 @@
   <button 
     :class="`button button-${type}`"
     @click="handleClick"
+    type="button"
   >
     <UIcon v-if="props.icon" :name="props.icon" size="24" :color="props.iconColor" />
     <span v-if="props.text">{{ props.text }}</span>
@@ -32,8 +33,8 @@ const props = defineProps({
 
 const emit = defineEmits(['click'])
 
-const handleClick = () => {
-  emit('click', props.type)
+const handleClick = (event) => {
+  emit('click', event)
 }
 
 </script>

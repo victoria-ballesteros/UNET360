@@ -2,6 +2,13 @@
 
 $font-primary: 'Inter', sans-serif;
 
+@mixin paragraph-extra-small {
+  font-family: $font-primary;
+  font-weight: 500;
+  font-size: 0.625rem;
+  line-height: 0.813rem;
+}
+
 @mixin paragraph-small {
   font-family: $font-primary;
   font-weight: 500;
