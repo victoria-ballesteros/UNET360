@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      `input-wrapper input-wrapper-${type}`,
+      `input-wrapper input-wrapper-${styleType}`,
       { 'has-value': modelValue.length > 0 },
       { 'is-disabled': props.disabled }
     ]"
@@ -10,9 +10,12 @@
       :placeholder="placeholder"
       :value="modelValue"
       @input="handleInput"
-      :class="`input input-${type}`"
-      type="text"
-      :disabled="props.disabled"
+      :class="`input input-${styleType}`"
+      :type="type"
+      :step="step"
+      :disabled="disabled"
+      :inputMode="inputMode"
+      :pattern="pattern"
     />
     <UIcon
       v-if="icon"
@@ -32,7 +35,7 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  type: {
+  styleType: {
     type: String,
     default: 'default',
   },
@@ -56,12 +59,35 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  type: {
+    type: String,
+    default: 'text'
+  },
+  step: {
+    type: Number,
+    default: 1
+  },
+  inputMode: {
+    type: String,
+    default: 'text'
+  },
+  pattern: {
+    type: String,
+    default: '\\d+'
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 const handleInput = (event) => {
+  let value = event.target.value
+
+  if (props.pattern === '[0-9]*') {
+    value = value.replace(/\D/g, '')
+    event.target.value = value
+  }
+
   emit('update:modelValue', event.target.value)
 }
 </script>

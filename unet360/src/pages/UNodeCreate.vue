@@ -23,16 +23,21 @@
                     <div class="input-container" :class="{ 'has-error': inputErrors[input] }"
                         v-for="(input, index) in inputLabels" :key="index">
                         <p class="input-label" :class="{ 'label-disabled': inputDisabled[input] }">{{ input }}</p>
-                        <UInput v-model="inputModels[input]" type="default" :placeholder="inputPlaceholders[input]"
+                        <div class="node-input-container">
+                            <UInput v-model="inputModels[input]" styleType="default" :placeholder="inputPlaceholders[input]"
                             :icon="inputIcon[input]" :iconRotation="index * 90" :disabled="inputDisabled[input]" />
+                            <UInput v-model="inputWeightModels[input]" styleType="default" :disabled="inputDisabled[input]"
+                                type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Peso"
+                            />
+                        </div>
                         <p v-if="inputErrors[input]" class="input-error-label"> {{ inputErrors[input] }}</p>
                     </div>
                     <div class="input-container" v-show="expandForm">
                         <p class="input-label">Datos opcionales</p>
                         <div class="tag-container">
                             <UIcon v-for="(tag, index) in tags" :key="index" :name="tag.icon_name" size="34"
-                            :color="tagSelection[tag.name] ? 'var(--main-blue)' : 'var(--border-gray)'"
-                            @click="() => tagSelection[tag.name] = !tagSelection[tag.name]" />
+                                :color="tagSelection[tag.name] ? 'var(--main-blue)' : 'var(--border-gray)'"
+                                @click="handleTagClick(tag.name)" />
                         </div>
                     </div>
                 </div>
@@ -43,59 +48,81 @@
             </div>
         </transition>
     </div>
+
+    <UDialog v-model="showDialog" headerTitle="Identificación del tag">
+        <div class="tag-dialog-content">
+            <UInput v-model="tagCustomName[actualTagSelected]" styleType="default" placeholder="Baño oeste" type="number" step="1" />
+            <UButton style="align-self: flex-end;" text='Aceptar' @click="handleTagCustomization"
+                :type="dialogButtonType" />
+        </div>
+    </UDialog>
 </template>
 
 <script setup>
+import { ref, computed, reactive, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import UButton from '@/components/UButton.vue'
 import UInput from '@/components/UInput.vue'
 import UIcon from '@/components/UIcon.vue';
+import UDialog from '@/components/UDialog.vue';
 
-import { ref, computed, reactive, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { useNodeStore } from '../service/stores/nodes'
+import { useTagStore } from '@/service/stores/tags';
+
 import { Viewer } from '@photo-sphere-viewer/core'
 import '@photo-sphere-viewer/core/index.css'
 
-// COMPONENTS VARIABLES
-const formTitle = ref('Ingrese los datos de la nueva ubicación')
+// ═══════════════  Components variables  ═══════════════
+
+const formTitle = ref('Ingrese los datos de la nueva ubicación');
 const lowerContainer = ref(null);
-const showLower = ref(true)
-const actionButton = ref('Continuar')
-const expandForm = ref(false)
+const showLower = ref(true);
+const actionButton = ref('Continuar');
+const buttonType = ref('deactivated');
+const expandForm = ref(false);
+const showDialog = ref(false);
+const scrollContainer = ref(null);
+const actualTagSelected = ref('');
+const dialogButtonType = ref('deactivated');
+
+// ═══════════════  Form related functions  ═══════════════
 
 function setAutoHeight(el) {
-  el.style.height = el.scrollHeight + 'px';
+    el.style.height = el.scrollHeight + 'px';
 }
 
 function clearHeight(el) {
-  el.style.height = '';
+    el.style.height = '';
 }
 
-// 360 SHOWCASE POC
+// ═══════════════  360 viewer  ═══════════════
+
 const viewerContainer = ref(null)
 const isImageLoaded = ref(false)
 const imageFile = ref(null)
 let viewer = null
 
-// SAVED INFORMATION
-import { useNodeStore } from '../service/stores/nodes'
-import { useTagStore } from '@/service/stores/tags';
+// ═══════════════  360 stores  ═══════════════
+
 const nodeStore = useNodeStore()
-const nodes = computed(() => nodeStore.nodes)
 const tagStore = useTagStore()
+const nodes = computed(() => nodeStore.nodes)
 const tags = computed(() => tagStore.tags)
 
-// NODES CONNECTIONS INPUTS FUNCTIONS
-const buttonType = ref('deactivated')
+// ═══════════════  Nodes validations  ═══════════════
+
 
 const inputLabels = reactive(['Nodo siguiente', 'Nodo derecho', 'Nodo anterior', 'Nodo izquierdo']);
 const inputPlaceholders = {};
 const inputModels = reactive({});
+const inputWeightModels = reactive({});
 const inputErrors = reactive({});
 const inputDisabled = reactive({});
 const inputIcon = reactive({});
 
 inputLabels.forEach(label => {
-    inputPlaceholders[label] = `Identificación del ${label.toLowerCase()}`;
+    inputPlaceholders[label] = `Id. del ${label.toLowerCase()}`;
     inputModels[label] = '';
+    inputWeightModels[label] = 0;
     inputErrors[label] = '';
     inputDisabled[label] = false;
     inputIcon[label] = 'arrow-up';
@@ -108,17 +135,28 @@ function checkIfReadyToSubmit() {
 }
 
 inputLabels.forEach(label => {
-    watch(
-        () => inputModels[label],
-        (newVal) => {
-            const exists = nodes?.value.some(node => node.name === newVal?.trim())
-            inputErrors[label] = exists ? '' : 'El nodo no existe'
-            checkIfReadyToSubmit()
-        }
-    );
-}, { immediate: true, deep: true });
+  watch(
+    [() => inputModels[label], () => inputWeightModels[label]],
+    ([newVal, newWeight]) => {
+      const trimmed = newVal?.trim()
+      const exists = nodes.value?.some(node => node.name === trimmed)
+      if (!exists) {
+        inputErrors[label] = 'El nodo no existe'
+      } else if (!newWeight?.toString().trim()) {
+        inputErrors[label] = 'El peso no puede estar vacío'
+      } else if (!/^\d+$/.test(newWeight)) {
+        inputErrors[label] = 'El peso debe ser un número entero positivo'
+      } else {
+        inputErrors[label] = ''
+      }
 
-// FILE UPLOAD FUNCTIONS
+      checkIfReadyToSubmit()
+    },
+    { immediate: true }
+  )
+})
+
+// ═══════════════  Image upload validation  ═══════════════
 
 const fileInput = ref(null)
 
@@ -132,9 +170,9 @@ function handleFileChange(event) {
         imageFile.value = file
         const url = URL.createObjectURL(file)
         showLower.value = false
-            nextTick(() => {
-                showLower.value = true
-            })
+        nextTick(() => {
+            showLower.value = true
+        })
         viewer.setPanorama(url).then(() => {
             viewer.animate({
                 yaw: Math.PI / 2,
@@ -159,13 +197,11 @@ function handleCloseViewer() {
     }, 800)
 }
 
-// FORM BUTTONS FUNCTIONS
+// ═══════════════  Form buttons  ═══════════════
 
 function handleCancelEvent() {
 
 }
-
-const scrollContainer = ref(null)
 
 async function handleFormExpansion() {
     handleCloseViewer()
@@ -203,20 +239,58 @@ async function handleFormExpansion() {
     )
 }
 
-// TAG-CONTAINER FUNCTIONS
+// ═══════════════  Tag handling  ═══════════════
 
 const tagSelection = reactive({})
+const tagCustomName = reactive({})
+
 watch(
-  tags,
-  (newTags) => {
-    if (Array.isArray(newTags)) {
-      newTags.forEach(tag => {
-        tagSelection[tag.name] = false;
-      });
-    }
-  },
-  { immediate: true }
+    tags,
+    (newTags) => {
+        if (Array.isArray(newTags)) {
+            newTags.forEach(tag => {
+                tagSelection[tag.name] = false;
+                tagCustomName[tag.name] = '';
+            });
+        }
+    },
+    { immediate: true }
 )
+
+let stopWatching = null
+
+function handleTagClick(tagName) {
+  actualTagSelected.value = tagName
+  showDialog.value = true
+  tagSelection[tagName] = true;
+
+  if (!stopWatching) {
+    stopWatching = watch(
+      () => tagCustomName[actualTagSelected.value],
+      (newInput) => {
+        dialogButtonType.value = newInput?.trim()
+          ? 'primary'
+          : 'deactivated';
+      }
+    )
+  }
+}
+
+function handleTagCustomization() {
+    showDialog.value = false;
+
+    if (!tagCustomName[actualTagSelected.value]) {
+        tagSelection[actualTagSelected.value] = false
+    }
+}
+
+watch(showDialog, (newVal, oldVal) => {
+  if (!newVal) {
+    handleTagCustomization()
+  }
+})
+
+// ═══════════════  Page state related functions  ═══════════════
 
 onMounted(() => {
     viewer = new Viewer({
@@ -235,157 +309,5 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-.background-viewer {
-    position: fixed;
-    width: 100vw;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.fade-panorama-enter-active,
-.fade-panorama-leave-active {
-    transition: opacity 1.2s ease;
-}
-
-.fade-panorama-enter-from,
-.fade-panorama-leave-to {
-    opacity: 0;
-}
-
-.fade-panorama-enter-to,
-.fade-panorama-leave-from {
-    opacity: 1;
-}
-
-.expand-height-enter-active,
-.expand-height-leave-active {
-  transition: max-height 0.4s ease, opacity 0.4s ease;
-  overflow: hidden;
-}
-.expand-height-enter-from,
-.expand-height-leave-to {
-  max-height: 0;
-  opacity: 0;
-}
-.expand-height-enter-to,
-.expand-height-leave-from {
-  max-height: 999px;
-  opacity: 1;
-}
-
-.outer-container {
-    height: 100%;
-    max-height: 100%;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 12px;
-
-    overflow-y: hidden;
-
-    position: relative;
-    z-index: 1;
-
-    .upper-container {
-        padding: 24px 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-
-        flex: 1;
-
-        .icons-container {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-
-            .pair-container {
-                display: flex;
-                gap: 0.25rem;
-            }
-        }
-    }
-
-    .lower-container {
-        background: var(--fill-white);
-        padding: 9px 36px 18px 36px;
-        border-radius: 56px 56px 0px 0px;
-        min-height: 0;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        transition: opacity 0.4s ease, max-height 0.4s ease, background 0.4s ease;
-
-        &.transparent-bg {
-            background: rgba(255, 255, 255, 0.82);
-        }
-
-        .form-title {
-            @include section-title;
-            color: var(--strong-gray);
-            width: 100%;
-        }
-
-        .form-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.25rem;
-            width: 100%;
-            margin: 0rem 0rem 0.625rem 0rem;
-
-            overflow-y: scroll;
-            flex-grow: 1;
-            min-height: 0;
-
-            .input-container {
-                width: 100%;
-
-                display: flex;
-                flex-direction: column;
-                padding: 0rem 0rem 2.063rem 0rem;
-
-                .input-label {
-                    @include paragraph-medium;
-                    color: var(--strong-gray);
-                    width: 100%;
-                }
-
-                .label-disabled {
-                    color: var(--border-gray);
-                }
-
-                .input-error-label {
-                    @include paragraph-extra-small;
-                    color: var(--main-red);
-                    width: 100%;
-                }
-
-                .tag-container {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                &.has-error {
-                    padding-bottom: 0rem;
-                }
-            }
-        }
-
-        .button-container {
-            display: flex;
-            gap: 0.75rem;
-        }
-    }
-}
+@import '@/assets/styles/pages/_node_create.scss'
 </style>
