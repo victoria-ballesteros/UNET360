@@ -1,5 +1,6 @@
-from typing import Optional
+from typing import Dict, Optional
 from fastapi import HTTPException
+from bson import ObjectId
 
 from adapter.database.node_repository import NodeRepository
 from adapter.database.tag_repository import TagRepository
@@ -38,51 +39,54 @@ class NodeService:
             if not location:
                 raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
             
-        tags = []
+        tags_dict = {}
         if new_node.tags:
-            for tag_name in new_node.tags:
+            for tag_name, tag_values in new_node.tags.items():
                 tag = await self.tag_repo.get_by_name(tag_name)
                 if not tag:
                     raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
-                tags.append(tag)
+                tags_dict[tag.name] = tag_values
 
-        adyacents = []
-        if new_node.adyacent_nodes:
-            for name in new_node.adyacent_nodes:
-                if name:
-                    node = await self.node_repo.get_by_name(name)
+        adjacent_nodes = []
+        if new_node.adjacent_nodes:
+            for adjacent in new_node.adjacent_nodes:
+                if adjacent is not None:
+                    node_name = next(iter(adjacent.keys()))
+                    weight = adjacent[node_name]
+
+                    node = await self.node_repo.get_by_name(node_name)
+                    
                     if not node:
                         raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
-                    adyacents.append(node)
+                    
+                    adjacent_nodes.append({node_name: weight})
                 else:
-                    adyacents.append(None)
+                    adjacent_nodes.append(None)
         else:
-            adyacents = [None, None, None, None]
+            adjacent_nodes = [None, None, None, None]
 
-        node_db_obj = Node(name=new_node.name,
-                           location=location,
-                           url_image=new_node.url_image,
-                           adyacent_nodes=adyacents,
-                           tags=tags)
+        node_db_obj = Node(
+            name=new_node.name,
+            location=location,
+            url_image=new_node.url_image,
+            adjacent_nodes=adjacent_nodes,
+            tags=tags_dict
+
+        )
+
         new_node_db_obj = await self.repository.create(new_node=node_db_obj)
 
         if not new_node_db_obj.id:
             raise HTTPException(status_code=500, detail=CREATE_ERROR_MESSAGE)
         
-        location_name = new_node_db_obj.location.name if new_node_db_obj.location else None
-        tags_names = [tag.name for tag in new_node_db_obj.tags] if new_node_db_obj.tags else []
-        adyacent_names = [
-            adj.name if adj is not None else None
-            for adj in (new_node_db_obj.adyacent_nodes or [None, None, None, None])
-        ]
-
+        
 
         return NodeCreateDTO(
-        name=new_node_db_obj.name,
-        location=location_name,
-        url_image=new_node_db_obj.url_image,
-        adyacent_nodes=adyacent_names,
-        tags=tags_names,
+            name=new_node_db_obj.name,
+            location=new_node_db_obj.location.name if new_node_db_obj.location else None,
+            url_image=new_node_db_obj.url_image,
+            adjacent_nodes=new_node_db_obj.adjacent_nodes,
+            tags=new_node_db_obj.tags
         )
 
 
@@ -105,8 +109,38 @@ class NodeService:
 
         if not node:
             raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
-     
+        
         update_data = dto.dict(exclude_unset=True)
+
+        # Procesamiento especial para tags si vienen en el update
+        if 'tags' in update_data:
+            tags_dict = {}
+            for tag_name, tag_values in update_data['tags'].items():
+                # Verificar que el tag exista en la base de datos
+                tag = await self.tag_repo.get_by_name(tag_name)
+                if not tag:
+                    raise HTTPException(status_code=404, detail=f"Tag '{tag_name}' no encontrado")
+                tags_dict[tag_name] = tag_values
+            update_data['tags'] = tags_dict
+
+        # Procesamiento especial para adjacent_nodes si vienen en el update
+        if 'adjacent_nodes' in update_data:
+            adjacent_nodes = []
+            for adjacent in update_data['adjacent_nodes']:
+                if adjacent is not None:
+                    node_name = next(iter(adjacent.keys())) if adjacent else None
+                    weight = adjacent[node_name] if node_name else None
+                    
+                    adj_node = await self.node_repo.get_by_name(node_name)
+ 
+                    if not adj_node:
+                        raise HTTPException(status_code=404, detail=f"Nodo adyacente '{node_name}' no encontrado")
+                    
+                    adjacent_nodes.append({node_name: weight})
+
+                else:
+                    adjacent_nodes.append(None)
+            update_data['adjacent_nodes'] = adjacent_nodes
 
         node = await update_db_obj(node_db_obj=node, new_data=update_data)
         
