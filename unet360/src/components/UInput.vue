@@ -83,9 +83,14 @@ const emit = defineEmits(['update:modelValue'])
 const handleInput = (event) => {
   let value = event.target.value
 
-  if (props.pattern === '[0-9]*') {
-    value = value.replace(/\D/g, '')
-    event.target.value = value
+  if (props.pattern === '[0-9]*' || props.pattern === '[0-9.]*') {
+    let cleaned = value.replace(/[^0-9.]/g, '')
+    const parts = cleaned.split('.')
+    if (parts.length > 2) {
+      cleaned = parts[0] + '.' + parts.slice(1).join('')
+    }
+    event.target.value = cleaned
+    value = cleaned
   }
 
   emit('update:modelValue', event.target.value)

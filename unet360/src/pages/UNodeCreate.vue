@@ -14,44 +14,42 @@
                 <UIcon name="star" size="22" color="var(--strong-gray)" />
             </div>
         </div>
-        <transition name="expand-height" @enter="setAutoHeight" @after-enter="clearHeight" @leave="setAutoHeight"
-            @after-leave="clearHeight">
-            <div class="lower-container" :class="['lower-container', { 'transparent-bg': isImageLoaded }]"
-                ref="lowerContainer" v-show="showLower">
-                <p class="form-title"> {{ formTitle }} </p>
-                <div class="form-container" ref="scrollContainer">
-                    <div class="input-container" :class="{ 'has-error': inputErrors[input] }"
-                        v-for="(input, index) in inputLabels" :key="index">
-                        <p class="input-label" :class="{ 'label-disabled': inputDisabled[input] }">{{ input }}</p>
-                        <div class="node-input-container">
-                            <UInput v-model="inputModels[input]" styleType="default" :placeholder="inputPlaceholders[input]"
-                            :icon="inputIcon[input]" :iconRotation="index * 90" :disabled="inputDisabled[input]" />
-                            <UInput v-model="inputWeightModels[input]" styleType="default" :disabled="inputDisabled[input]"
-                                type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Peso"
-                            />
-                        </div>
-                        <p v-if="inputErrors[input]" class="input-error-label"> {{ inputErrors[input] }}</p>
+        <div class="lower-container" :class="['lower-container', { 'transparent-bg': isImageLoaded }]"
+            ref="lowerContainer">
+            <p class="form-title"> {{ formTitle }} </p>
+            <div class="form-container" ref="scrollContainer">
+                <div class="input-container" :class="{ 'has-error': inputErrors[input] }"
+                    v-for="(input, index) in inputLabels" :key="index">
+                    <p class="input-label" :class="{ 'label-disabled': inputDisabled[input] }">{{ input }}</p>
+                    <div class="node-input-container">
+                        <UInput v-model="inputModels[input]" styleType="default" :placeholder="inputPlaceholders[input]"
+                            :icon="inputIcon[input]" :iconRotation="index * 90" :disabled="inputDisabled[input]"
+                            @input="() => inputTouched[input] = true" />
+                        <UInput v-if="inputWeightModels[input] != null" v-model="inputWeightModels[input]" styleType="default" :disabled="inputDisabled[input]"
+                            type="text" inputmode="numeric" pattern="[0-9.]*" placeholder="Peso"
+                            @input="() => inputTouched[input] = true" />
                     </div>
-                    <div class="input-container" v-show="expandForm">
-                        <p class="input-label">Datos opcionales</p>
-                        <div class="tag-container">
-                            <UIcon v-for="(tag, index) in tags" :key="index" :name="tag.icon_name" size="34"
-                                :color="tagSelection[tag.name] ? 'var(--main-blue)' : 'var(--border-gray)'"
-                                @click="handleTagClick(tag.name)" />
-                        </div>
-                    </div>
+                    <p v-if="inputErrors[input]" class="input-error-label"> {{ inputErrors[input] }}</p>
                 </div>
-                <div class="button-container">
-                    <UButton text='Cancelar' @click="handleCancelEvent" type="tertiary" />
-                    <UButton :text='actionButton' @click.stop="handleFormExpansion" :type="buttonType" />
+                <div class="input-container" v-show="expandForm">
+                    <p class="input-label">Datos opcionales</p>
+                    <div class="tag-container">
+                        <UIcon v-for="(tag, index) in tags" :key="index" :name="tag.icon_name" size="34"
+                            :color="tagSelection[tag.name] ? 'var(--main-blue)' : 'var(--border-gray)'"
+                            @click="handleTagClick(tag.name)" />
+                    </div>
                 </div>
             </div>
-        </transition>
+            <div class="button-container">
+                <UButton text='Cancelar' @click="handleCancelEvent" type="tertiary" />
+                <UButton :text='actionButton' @click.stop="handleFormExpansion" :type="buttonType" />
+            </div>
+        </div>
     </div>
 
     <UDialog v-model="showDialog" headerTitle="Identificación del tag">
         <div class="tag-dialog-content">
-            <UInput v-model="tagCustomName[actualTagSelected]" styleType="default" placeholder="Baño oeste" type="number" step="1" />
+            <UInput v-model="tagCustomName[actualTagSelected]" styleType="default" placeholder="Baño oeste" />
             <UButton style="align-self: flex-end;" text='Aceptar' @click="handleTagCustomization"
                 :type="dialogButtonType" />
         </div>
@@ -84,21 +82,12 @@ const scrollContainer = ref(null);
 const actualTagSelected = ref('');
 const dialogButtonType = ref('deactivated');
 
-// ═══════════════  Form related functions  ═══════════════
-
-function setAutoHeight(el) {
-    el.style.height = el.scrollHeight + 'px';
-}
-
-function clearHeight(el) {
-    el.style.height = '';
-}
 
 // ═══════════════  360 viewer  ═══════════════
 
 const viewerContainer = ref(null)
 const isImageLoaded = ref(false)
-const imageFile = ref(null)
+const imageFile = ref(false)
 let viewer = null
 
 // ═══════════════  360 stores  ═══════════════
@@ -122,7 +111,7 @@ const inputIcon = reactive({});
 inputLabels.forEach(label => {
     inputPlaceholders[label] = `Id. del ${label.toLowerCase()}`;
     inputModels[label] = '';
-    inputWeightModels[label] = 0;
+    inputWeightModels[label] = '';
     inputErrors[label] = '';
     inputDisabled[label] = false;
     inputIcon[label] = 'arrow-up';
@@ -131,29 +120,35 @@ inputLabels.forEach(label => {
 function checkIfReadyToSubmit() {
     const allFilled = Object.values(inputModels).every(value => value?.trim() !== '')
     const noErrors = Object.values(inputErrors).every(error => error === '')
-    buttonType.value = (allFilled && noErrors && imageFile) ? 'primary' : 'deactivated'
+    buttonType.value = (allFilled && noErrors && imageFile.value) ? 'primary' : 'deactivated'
 }
 
+const inputTouched = reactive({})
 inputLabels.forEach(label => {
-  watch(
-    [() => inputModels[label], () => inputWeightModels[label]],
-    ([newVal, newWeight]) => {
-      const trimmed = newVal?.trim()
-      const exists = nodes.value?.some(node => node.name === trimmed)
-      if (!exists) {
-        inputErrors[label] = 'El nodo no existe'
-      } else if (!newWeight?.toString().trim()) {
-        inputErrors[label] = 'El peso no puede estar vacío'
-      } else if (!/^\d+$/.test(newWeight)) {
-        inputErrors[label] = 'El peso debe ser un número entero positivo'
-      } else {
-        inputErrors[label] = ''
-      }
+    inputTouched[label] = false
+})
 
-      checkIfReadyToSubmit()
-    },
-    { immediate: true }
-  )
+inputLabels.forEach(label => {
+    watch(
+        [() => inputModels[label], () => inputWeightModels[label]],
+        ([newVal, newWeight]) => {
+            if (!inputTouched[label]) {
+                return
+            }
+            const trimmed = newVal?.trim()
+            const exists = nodes.value?.some(node => node.name === trimmed)
+            if (!exists && trimmed) {
+                inputErrors[label] = 'El nodo no existe'
+            } else if (!newWeight?.toString().trim() && trimmed) {
+                inputErrors[label] = 'El peso no puede estar vacío'
+            } else {
+                inputErrors[label] = ''
+            }
+
+            checkIfReadyToSubmit()
+        },
+        { immediate: true }
+    )
 })
 
 // ═══════════════  Image upload validation  ═══════════════
@@ -164,15 +159,11 @@ function openUploadFileDialog() {
     fileInput.value?.click()
 }
 
-function handleFileChange(event) {
+async function handleFileChange(event) {
     const file = event.target.files[0]
     if (file && file.type.startsWith('image/')) {
         imageFile.value = file
         const url = URL.createObjectURL(file)
-        showLower.value = false
-        nextTick(() => {
-            showLower.value = true
-        })
         viewer.setPanorama(url).then(() => {
             viewer.animate({
                 yaw: Math.PI / 2,
@@ -260,34 +251,41 @@ watch(
 let stopWatching = null
 
 function handleTagClick(tagName) {
-  actualTagSelected.value = tagName
-  showDialog.value = true
-  tagSelection[tagName] = true;
+    actualTagSelected.value = tagName
+    showDialog.value = true
+    tagSelection[tagName] = true;
 
-  if (!stopWatching) {
-    stopWatching = watch(
-      () => tagCustomName[actualTagSelected.value],
-      (newInput) => {
-        dialogButtonType.value = newInput?.trim()
-          ? 'primary'
-          : 'deactivated';
-      }
-    )
-  }
+    if (!stopWatching) {
+        stopWatching = watch(
+            () => tagCustomName[actualTagSelected.value],
+            (newInput) => {
+                dialogButtonType.value = newInput?.trim()
+                    ? 'primary'
+                    : 'deactivated';
+            }
+        )
+    }
 }
 
-function handleTagCustomization() {
+const tagSubmited = ref(false)
+
+async function handleTagCustomization() {
+    tagSubmited.value = true
     showDialog.value = false;
 
     if (!tagCustomName[actualTagSelected.value]) {
         tagSelection[actualTagSelected.value] = false
     }
+    await nextTick()
+    tagSubmited.value = false
 }
 
 watch(showDialog, (newVal, oldVal) => {
-  if (!newVal) {
-    handleTagCustomization()
-  }
+    if (!newVal && !tagSubmited.value) {
+        tagSelection[actualTagSelected.value] = false
+        tagCustomName[actualTagSelected.value] = ''
+        tagSubmited.value = false
+    }
 })
 
 // ═══════════════  Page state related functions  ═══════════════
