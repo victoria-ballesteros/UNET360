@@ -8,9 +8,6 @@ class TagRepository:
     
     async def get_by_name(self, name: str) -> Tag | None:
         return await Tag.find_one(Tag.name == name)
-
-    async def get_by_link(self, link: Link) -> Tag | None:
-        return await link.fetch()
     
     async def get_all(self) -> list[Tag]:
         return await Tag.find_all().to_list()
