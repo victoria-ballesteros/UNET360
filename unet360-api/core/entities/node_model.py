@@ -1,6 +1,6 @@
 from beanie import Document, Link, Indexed
 from pydantic import Field
-from typing import Optional
+from typing import Optional, Dict, List
 
 from .location_model import Location
 from .tag_model import Tag
@@ -16,12 +16,16 @@ class Node(Document):
     )
     location: Optional[Link[Location]]
     url_image: str
-    adyacent_nodes: list[Optional[Link["Node"]]] = Field(
-        default = [None, None, None, None],
-        description="List of links to adjacent nodes, up to 4 nodes can be linked",
-        example=["forward", "backward", "left", "right"]
+
+    adjacent_nodes: List[Optional[Dict[str, float]]] = Field(
+        default=[None, None, None, None],
+        description="Lista de 4 posiciones [frente, atrás, izquierda, derecha] con {node_id: peso}",
+        example=[{"003": 1.5}, None, {"001": 0.5}, None]
     )
-    tags: Optional[list[Link[Tag]]] = None
+    
+    tags: Optional[Dict[str, List[str]]] = Field(
+        description="Clave = nombre del tag, Valores = lista"
+    )
 
     class Settings:
         name = "node"
