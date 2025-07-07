@@ -4,11 +4,12 @@ from core.ports.graph_service_port import GraphServicePort
 from adapter.external.graph_adapter import NetworkXGraphService
 from adapter.database.node_repository import NodeRepository
 from core.dtos.responses_dto import GeneralResponse
-from core.exceptions.graph_exceptions import NodeNotFoundError, NoPathError  # Adjust the import path as needed
+from core.exceptions.graph_exceptions import NodeNotFoundError, NoPathError
 
 router = APIRouter(prefix="/graph", tags=["Graph"])
 
 def get_node_repository() -> NodeRepository:
+    """Devuelve el repositorio de nodos"""
     return NodeRepository()
 
 def get_graph_adapter(node_repo: NodeRepository = Depends(get_node_repository)) -> GraphServicePort:
@@ -21,12 +22,14 @@ def get_graph_service(adapter: GraphServicePort = Depends(get_graph_adapter)) ->
 
 @router.on_event("startup")
 async def startup_event():
+    """Evento de inicio para inicializar el servicio de grafo"""
     node_repo = NodeRepository()
     graph_service = NetworkXGraphService(node_repo)
     await graph_service.refresh_graph()
 
 @router.get("/shortest-path/{source}/{target}", response_model=GeneralResponse)
 async def get_shortest_path(source: str, target: str, graph_service: GraphService = Depends(get_graph_service)):
+    """Obtiene el camino más corto entre dos nodos."""
     try:
         path = await graph_service.calculate_shortest_path(source, target)
         return GeneralResponse(
@@ -52,6 +55,7 @@ async def get_shortest_path(source: str, target: str, graph_service: GraphServic
 
 @router.post("/refresh", response_model=GeneralResponse)
 async def refresh_graph(graph_service: GraphService = Depends(get_graph_service)):
+    """Refresca el grafo cargando los nodos y aristas desde la base de datos."""
     await graph_service.refresh_graph()
     return GeneralResponse(
         http_code=200,
@@ -61,6 +65,7 @@ async def refresh_graph(graph_service: GraphService = Depends(get_graph_service)
 
 @router.get("/nodes", response_model=GeneralResponse)
 async def get_all_nodes(graph_service: GraphService = Depends(get_graph_service)):
+    """Obtiene todos los nodos del grafo."""
     nodes = await graph_service.get_all_nodes()
     return GeneralResponse(
         http_code=200,
@@ -70,6 +75,7 @@ async def get_all_nodes(graph_service: GraphService = Depends(get_graph_service)
 
 @router.get("/nodes/{node_name}/adjacent", response_model=GeneralResponse)
 async def get_adjacent_nodes(node_name: str, graph_service: GraphService = Depends(get_graph_service)):
+    """Obtiene los nodos adyacentes a un nodo específico."""
     try:
         adjacent = await graph_service.get_adjacent_nodes(node_name)
         return GeneralResponse(

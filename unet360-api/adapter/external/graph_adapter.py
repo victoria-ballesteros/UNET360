@@ -5,9 +5,11 @@ from core.entities.graph_model import GraphNode, GraphPath
 from adapter.database.node_repository import NodeRepository
 
 class NetworkXGraphService(GraphServicePort):
+    """Adaptador de servicio de grafo utilizando NetworkX para manejar nodos y caminos."""
     _instance = None
     
     def __new__(cls, node_repository: NodeRepository):
+        """Implementación del patrón para asegurar una única instancia."""
         if cls._instance is None:
             cls._instance = super(NetworkXGraphService, cls).__new__(cls)
             cls._instance.graph = nx.Graph()
@@ -15,6 +17,7 @@ class NetworkXGraphService(GraphServicePort):
         return cls._instance
     
     async def _convert_to_graph_node(self, node) -> GraphNode:
+        """Convierte un nodo de la base de datos a un GraphNode."""
         adjacent_nodes = {}
         for adj in node.adjacent_nodes:
             if adj is not None:
@@ -24,6 +27,7 @@ class NetworkXGraphService(GraphServicePort):
         return GraphNode(name=node.name, adjacent_nodes=adjacent_nodes)
     
     async def refresh_graph(self) -> None:
+        """Refresca el grafo cargando los nodos y aristas desde la base de datos."""
         db_nodes = await self.node_repository.get_all()
         self.graph.clear()
         
@@ -35,6 +39,7 @@ class NetworkXGraphService(GraphServicePort):
                 self.graph.add_edge(graph_node.name, adj_name, weight=weight)
     
     async def get_shortest_path(self, source: str, target: str) -> Optional[GraphPath]:
+        """Calcula el camino más corto entre dos nodos."""
         try:
             path = nx.shortest_path(self.graph, source=source, target=target, weight='weight')
             total_weight = nx.shortest_path_length(self.graph, source=source, target=target, weight='weight')
@@ -43,6 +48,7 @@ class NetworkXGraphService(GraphServicePort):
             return None
     
     async def get_all_nodes(self) -> List[GraphNode]:
+        """Obtiene todos los nodos del grafo."""
         nodes = []
         for node_name in self.graph.nodes():
             adjacent_nodes = await self.get_adjacent_nodes(node_name)  # Añadimos await aquí
@@ -53,6 +59,7 @@ class NetworkXGraphService(GraphServicePort):
         return nodes
     
     async def get_adjacent_nodes(self, node_name: str) -> Dict[str, float]:
+        """Obtiene los nodos adyacentes a un nodo específico."""
         if node_name not in self.graph:
             return {}
         return {n: self.graph.edges[node_name, n]['weight'] for n in self.graph.neighbors(node_name)}

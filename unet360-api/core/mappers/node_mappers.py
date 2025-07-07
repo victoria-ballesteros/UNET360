@@ -54,7 +54,7 @@ async def transform_node_to_node_out_dto(node_db_obj: Node) -> NodeOutDTO:
 
     # Process adyacent nodes
     adjacent_nodes_with_weights = []
-    if node_db_obj.adjacent_nodes:  # Cambiado de adyacent_nodes a adjacent_nodes
+    if node_db_obj.adjacent_nodes:
         for adjacent in node_db_obj.adjacent_nodes:
             if adjacent is None:
                 adjacent_nodes_with_weights.append(None)
@@ -94,12 +94,11 @@ async def update_db_obj(node_db_obj: Node, new_data: dict) -> Node:
     if 'name' in new_data and node_db_obj.name != new_data['name']:
         node_db_obj.name = new_data['name']
 
-    # Manejo seguro de location
+
     if 'location' in new_data:
         if new_data['location'] is None:
             node_db_obj.location = None
         else:
-            # Para location existente, verificar si ha cambiado
             if node_db_obj.location:
                 current_location = await location_repository.get_by_link(node_db_obj.location)
                 if not current_location or current_location.name != new_data['location']:
@@ -130,14 +129,13 @@ async def update_db_obj(node_db_obj: Node, new_data: dict) -> Node:
                             status_code=404, 
                             detail=f"NODE_NOT_FOUND: {node_name}"
                         )
-                    adjacent_nodes.append({node_name: weight})  # Usar name en lugar de id
+                    adjacent_nodes.append({node_name: weight})
                 else:
                     adjacent_nodes.append(None)
             else:
                 adjacent_nodes.append(None)
         node_db_obj.adjacent_nodes = adjacent_nodes
 
-    # Manejo de tags
     if 'tags' in new_data:
         tags_dict = {}
         for tag_name, tag_values in new_data['tags'].items():

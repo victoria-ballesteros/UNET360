@@ -113,17 +113,19 @@ class NodeService:
 
         # Procesamiento especial para location si viene en el update
         if 'location' in update_data and update_data['location'] is not None:
+            # Verificar que la ubicación exista en la base de datos
             location = await self.location_repo.get_by_name(update_data['location'])
             if not location:
                 raise HTTPException(status_code=404, detail="Location not found")
             update_data['location'] = location
-        elif 'location' in update_data:  # Para permitir setear location a null
+        elif 'location' in update_data:
             update_data['location'] = None
             
         # Procesamiento especial para tags si vienen en el update
         if 'tags' in update_data:
             tags_dict = {}
             for tag_name, tag_values in update_data['tags'].items():
+                
                 # Verificar que el tag exista en la base de datos
                 tag = await self.tag_repo.get_by_name(tag_name)
                 if not tag:
@@ -138,9 +140,9 @@ class NodeService:
                 if adjacent is not None:
                     node_name = next(iter(adjacent.keys())) if adjacent else None
                     weight = adjacent[node_name] if node_name else None
-                    
+
+                    # Verificar que el nodo adyacente exista en la base de datos
                     adj_node = await self.node_repo.get_by_name(node_name)
- 
                     if not adj_node:
                         raise HTTPException(status_code=404, detail=f"Nodo adyacente '{node_name}' no encontrado")
                     
@@ -151,9 +153,8 @@ class NodeService:
             update_data['adjacent_nodes'] = adjacent_nodes
 
         node = await update_db_obj(node_db_obj=node, new_data=update_data)
-        
         updated = await self.repository.update(node)
-        
+
         return await transform_node_to_node_out_dto(updated) if updated else None
     
 
