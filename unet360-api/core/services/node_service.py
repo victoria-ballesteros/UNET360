@@ -106,12 +106,20 @@ class NodeService:
 
     async def update_node(self, name: str, dto: NodeUpdateDTO) -> NodeOutDTO:
         node = await self.repository.get_by_name(name)
-
         if not node:
             raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
         
         update_data = dto.dict(exclude_unset=True)
 
+        # Procesamiento especial para location si viene en el update
+        if 'location' in update_data and update_data['location'] is not None:
+            location = await self.location_repo.get_by_name(update_data['location'])
+            if not location:
+                raise HTTPException(status_code=404, detail="Location not found")
+            update_data['location'] = location
+        elif 'location' in update_data:  # Para permitir setear location a null
+            update_data['location'] = None
+            
         # Procesamiento especial para tags si vienen en el update
         if 'tags' in update_data:
             tags_dict = {}

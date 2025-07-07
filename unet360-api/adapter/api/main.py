@@ -16,7 +16,8 @@ from core.entities.tenant_model import Tenant
 from .location_routes import router as location_router
 from .tag_routes import router as tag_router
 from .node_routes import router as node_router    
-from .tenant_routes import router as tenant_router              
+from .tenant_routes import router as tenant_router     
+from .graph_routes import router as graph_router         
 
 
 load_dotenv()
@@ -59,7 +60,8 @@ routers = [
     location_router,
     tag_router,
     node_router,
-    tenant_router
+    tenant_router,
+    graph_router
 ]
 
 app = FastAPI(title="UNET360 API", lifespan=lifespan)
