@@ -54,7 +54,7 @@ async def transform_node_to_node_out_dto(node_db_obj: Node) -> NodeOutDTO:
 
     # Process adyacent nodes
     adjacent_nodes_with_weights = []
-    if node_db_obj.adjacent_nodes:  # Cambiado de adyacent_nodes a adjacent_nodes
+    if node_db_obj.adjacent_nodes:
         for adjacent in node_db_obj.adjacent_nodes:
             if adjacent is None:
                 adjacent_nodes_with_weights.append(None)
@@ -90,25 +90,32 @@ async def transform_node_to_node_out_dto(node_db_obj: Node) -> NodeOutDTO:
         adjacent_nodes=adjacent_nodes_with_weights,
         tags=tags_dict
     )
-
-async def update_db_obj(node_db_obj: Node, new_data: dict) -> None:
-    if node_db_obj.name != new_data['name']:
+async def update_db_obj(node_db_obj: Node, new_data: dict) -> Node:
+    if 'name' in new_data and node_db_obj.name != new_data['name']:
         node_db_obj.name = new_data['name']
 
-    new_location = await location_repository.get_by_link(node_db_obj.location)
 
-    if not new_location:
-        raise HTTPException(status_code=404, detail="LOCATION_NOT_FOUND")
-        
-    if node_db_obj.location != new_location.id:
-        node_db_obj.location = new_location
+    if 'location' in new_data:
+        if new_data['location'] is None:
+            node_db_obj.location = None
+        else:
+            if node_db_obj.location:
+                current_location = await location_repository.get_by_link(node_db_obj.location)
+                if not current_location or current_location.name != new_data['location']:
+                    new_location = await location_repository.get_by_name(new_data['location'])
+                    if not new_location:
+                        raise HTTPException(status_code=404, detail="LOCATION_NOT_FOUND")
+                    node_db_obj.location = new_location
+            else:
+                new_location = await location_repository.get_by_name(new_data['location'])
+                if not new_location:
+                    raise HTTPException(status_code=404, detail="LOCATION_NOT_FOUND")
+                node_db_obj.location = new_location
 
-    if node_db_obj.url_image != new_data['url_image']:
+    if 'url_image' in new_data and node_db_obj.url_image != new_data['url_image']:
         node_db_obj.url_image = new_data['url_image']
 
-    updated_adyacent_nodes = []
-
-    if 'adjacent_nodes' in new_data:  # Cambiado de adyacent_nodes a adjacent_nodes
+    if 'adjacent_nodes' in new_data:
         adjacent_nodes = []
         for adjacent in new_data['adjacent_nodes']:
             if adjacent is not None:
@@ -122,7 +129,7 @@ async def update_db_obj(node_db_obj: Node, new_data: dict) -> None:
                             status_code=404, 
                             detail=f"NODE_NOT_FOUND: {node_name}"
                         )
-                    adjacent_nodes.append({str(adj_node.id): weight})
+                    adjacent_nodes.append({node_name: weight})
                 else:
                     adjacent_nodes.append(None)
             else:
@@ -130,7 +137,6 @@ async def update_db_obj(node_db_obj: Node, new_data: dict) -> None:
         node_db_obj.adjacent_nodes = adjacent_nodes
 
     if 'tags' in new_data:
-        # Validar que todos los tags existan
         tags_dict = {}
         for tag_name, tag_values in new_data['tags'].items():
             tag = await tag_repository.get_by_name(tag_name)
@@ -141,4 +147,5 @@ async def update_db_obj(node_db_obj: Node, new_data: dict) -> None:
                 )
             tags_dict[tag_name] = tag_values
         node_db_obj.tags = tags_dict
+
     return node_db_obj
