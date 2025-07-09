@@ -3,7 +3,6 @@ from typing import Optional, Any
 import logging
 
 from core.dtos.responses_dto import GeneralResponse
-
 from supabase import Client as SupabaseClient
 
 from core.dependencies.auth_dependencies import get_current_admin_user
@@ -22,6 +21,7 @@ async def upload_image(
     file: UploadFile = File(...),
     current_user_id: str = Depends(get_current_admin_user)
 ):
+
     try:
         supabase_client: SupabaseClient = request.app.state.supabase
         
@@ -34,7 +34,6 @@ async def upload_image(
 
         contents = await file.read()
         
-        file_extension = file.filename.split(".")[-1] if "." in file.filename else "png"
         file_path_in_bucket = f"{current_user_id}/{file.filename}" 
         
         response_storage = supabase_client.storage.from_(SUPABASE_BUCKET_NAME).upload(
@@ -43,14 +42,16 @@ async def upload_image(
             {"content-type": file.content_type}
         )
 
-        if response_storage.status_code == 200:
+        # Si no hay error, la subida fue exitosa
+        if getattr(response_storage, "error", None) is None:
             signed_url_response = supabase_client.storage.from_(SUPABASE_BUCKET_NAME).create_signed_url(
                 file_path_in_bucket,
                 60
             )
-            
-            signed_url = signed_url_response.data.signedUrl if signed_url_response.data else None
-
+            # Extrae la URL firmada de forma robusta
+            signed_url = None
+            if isinstance(signed_url_response, dict):
+                signed_url = signed_url_response.get('signedURL')
             return GeneralResponse(
                 http_code=status.HTTP_201_CREATED,
                 status=True,
@@ -61,7 +62,7 @@ async def upload_image(
                 }
             )
         else:
-            error_message = f"Supabase Storage upload failed: {response_storage.json()}"
+            error_message = f"Supabase Storage upload failed: {getattr(response_storage, 'error', 'Unknown error')}"
             return GeneralResponse(
                 http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 status=False,
