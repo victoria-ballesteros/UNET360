@@ -21,7 +21,7 @@ from adapter.api.tag_routes import router as tag_router
 from adapter.api.node_routes import router as node_router    
 from adapter.api.tenant_routes import router as tenant_router              
 from adapter.api.auth_routes import router as auth_router
-
+from adapter.api.upload_routes import router as upload_router
 
 load_dotenv()
 logger = logging.getLogger('uvicorn.error')
@@ -61,7 +61,8 @@ routers = [
     tag_router,
     node_router,
     tenant_router,
-    auth_router
+    auth_router,
+    upload_router
 ]
 
 app = FastAPI(title="UNET360 API", lifespan=lifespan)

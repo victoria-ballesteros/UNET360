@@ -22,6 +22,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/",
             "/auth/signup",
             "/auth/login",
+            "/docs",
+            "/redoc",       
+            "/openapi.json",
         ]
 
     async def dispatch(self, request: Request, call_next):
