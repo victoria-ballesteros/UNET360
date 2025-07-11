@@ -3,7 +3,9 @@ from typing import Optional, Any
 import logging
 
 from core.dtos.responses_dto import GeneralResponse
+
 from supabase import Client as SupabaseClient
+from storage3.exceptions import StorageApiError 
 
 from core.dependencies.auth_dependencies import get_current_admin_user
 
@@ -21,8 +23,7 @@ async def upload_image(
     file: UploadFile = File(...),
     current_user_id: str = Depends(get_current_admin_user)
 ):
-
-    try:
+    try: 
         supabase_client: SupabaseClient = request.app.state.supabase
         
         if not file.content_type.startswith("image/"):
@@ -34,41 +35,37 @@ async def upload_image(
 
         contents = await file.read()
         
-        file_path_in_bucket = f"{current_user_id}/{file.filename}" 
-        
+        file_path_in_bucket = f"{file.filename}" 
         response_storage = supabase_client.storage.from_(SUPABASE_BUCKET_NAME).upload(
             file_path_in_bucket,
             contents,
             {"content-type": file.content_type}
         )
+        uploaded_file_path_from_supabase = response_storage.path 
+        signed_url_response = supabase_client.storage.from_(SUPABASE_BUCKET_NAME).create_signed_url(
+            file.filename,
+            60 
+        )
+        signed_url = signed_url_response.data.signedUrl if signed_url_response.data else None
 
-        # Si no hay error, la subida fue exitosa
-        if getattr(response_storage, "error", None) is None:
-            signed_url_response = supabase_client.storage.from_(SUPABASE_BUCKET_NAME).create_signed_url(
-                file_path_in_bucket,
-                60
-            )
-            # Extrae la URL firmada de forma robusta
-            signed_url = None
-            if isinstance(signed_url_response, dict):
-                signed_url = signed_url_response.get('signedURL')
-            return GeneralResponse(
-                http_code=status.HTTP_201_CREATED,
-                status=True,
-                response_obj={
-                    "message": "Image uploaded successfully to private bucket.",
-                    "file_path": file_path_in_bucket,
-                    "signed_url": signed_url
-                }
-            )
-        else:
-            error_message = f"Supabase Storage upload failed: {getattr(response_storage, 'error', 'Unknown error')}"
-            return GeneralResponse(
-                http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                status=False,
-                response_obj={"message": error_message}
-            )
-
+        return GeneralResponse(
+            http_code=status.HTTP_201_CREATED,
+            status=True,
+            response_obj={
+                "message": "Image uploaded successfully to private bucket.",
+                "file_path": uploaded_file_path_from_supabase, 
+                "signed_url": signed_url
+            }
+        )
+    except StorageApiError as e:
+        logger.error(f"Supabase Storage API error during image upload: {e}", exc_info=True)
+        error_detail = e.message if hasattr(e, 'message') else str(e)
+        status_code_from_api = e.status_code if hasattr(e, 'status_code') else status.HTTP_500_INTERNAL_SERVER_ERROR
+        return GeneralResponse(
+            http_code=status_code_from_api,
+            status=False,
+            response_obj={"message": f"Supabase Storage upload failed: {error_detail}"}
+        )
     except HTTPException as e:
         return GeneralResponse(
             http_code=e.status_code,
