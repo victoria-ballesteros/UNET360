@@ -1,19 +1,20 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional, Any
 
-from core.dtos.responses_dto import GeneralResponse 
-
-from core.services.tag_service import TagService
 from adapter.database.tag_repository import TagRepository
-from core.dtos.tag_dto import TagCreateDTO, TagOutDTO, TagUpdateDTO
 
+from core.dtos.tag_dto import TagCreateDTO, TagOutDTO, TagUpdateDTO
+from core.dtos.responses_dto import GeneralResponse 
+from core.services.tag_service import TagService
+from core.dependencies.auth_dependencies import get_current_admin_user
 
 router = APIRouter(prefix="/tags", tags=["Tags"])
 
 service = TagService(TagRepository()) 
 
 @router.post("/", response_model=GeneralResponse)
-async def create_tags(dto: TagCreateDTO):
+async def create_tags(dto: TagCreateDTO, 
+                      current_user_id: str = Depends(get_current_admin_user)):
     try:
         created_tag_dto = await service.create_tag(dto) 
         
@@ -83,7 +84,8 @@ async def get_all_tags():
         )
 
 @router.patch("/{name}", response_model=GeneralResponse)
-async def update_tag(name: str, dto: TagUpdateDTO):
+async def update_tag(name: str, dto: TagUpdateDTO, 
+                     current_user_id: str = Depends(get_current_admin_user)):
     try:
         updated_tag_dto = await service.update_tag(name, dto)
         
@@ -106,7 +108,8 @@ async def update_tag(name: str, dto: TagUpdateDTO):
         )
 
 @router.delete("/{name}", response_model=GeneralResponse)
-async def delete_tag(name: str):
+async def delete_tag(name: str, 
+                     current_user_id: str = Depends(get_current_admin_user)):
     try:
         delete_result = await service.delete_tag(name)
         
@@ -127,3 +130,4 @@ async def delete_tag(name: str):
             status=False,
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
+

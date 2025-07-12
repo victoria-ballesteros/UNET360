@@ -1,18 +1,23 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional, Any
-from core.dtos.responses_dto import GeneralResponse 
-from core.services.node_service import NodeService
+
 from adapter.database.node_repository import NodeRepository
 from adapter.database.location_repository import LocationRepository
 from adapter.database.tag_repository import TagRepository
+
+from core.dtos.responses_dto import GeneralResponse 
+from core.services.node_service import NodeService
 from core.dtos.node_dto import NodeCreateDTO, NodeOutDTO, NodeUpdateDTO
-from typing import List
+
+from core.dependencies.auth_dependencies import get_current_admin_user
 
 router = APIRouter(prefix="/nodes", tags=["Nodes"])
-service = NodeService(NodeRepository(), LocationRepository(), TagRepository())
+
+service = NodeService(NodeRepository(), LocationRepository(), TagRepository()) 
 
 @router.post("/", response_model=GeneralResponse)
-async def create_node(dto: NodeCreateDTO):
+async def create_node(dto: NodeCreateDTO, 
+                      current_user_id: str = Depends(get_current_admin_user)): 
     try:
         created_node_dto = await service.create_node(dto) 
         
@@ -34,9 +39,8 @@ async def create_node(dto: NodeCreateDTO):
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
 
-# Obtener nodo por nombre
 @router.get("/{name}", response_model=GeneralResponse)
-async def get_node(name: str): # Ya no hay 'service: NodeService = Depends(...)'
+async def get_node(name: str):
     try:
         node_out_dto = await service.get_node_by_name(name)
         
@@ -59,9 +63,10 @@ async def get_node(name: str): # Ya no hay 'service: NodeService = Depends(...)'
         )
 
 @router.get("/", response_model=GeneralResponse)
-async def get_all_nodes(): # Ya no hay 'service: NodeService = Depends(...)'
+async def get_all_nodes():
     try:
         nodes_out_dtos = await service.get_all_nodes()
+        
         nodes_data_list = [node_dto.model_dump() for node_dto in nodes_out_dtos]
         return GeneralResponse(
             http_code=status.HTTP_200_OK,
@@ -82,7 +87,8 @@ async def get_all_nodes(): # Ya no hay 'service: NodeService = Depends(...)'
         )
 
 @router.patch("/{name}", response_model=GeneralResponse)
-async def update_node(name: str, dto: NodeUpdateDTO):
+async def update_node(name: str, dto: NodeUpdateDTO, 
+                      current_user_id: str = Depends(get_current_admin_user)):
     try:
         updated_node_dto = await service.update_node(name, dto)
         
@@ -105,12 +111,13 @@ async def update_node(name: str, dto: NodeUpdateDTO):
         )
 
 @router.delete("/{name}", response_model=GeneralResponse)
-async def delete_node(name: str): # Ya no hay 'service: NodeService = Depends(...)'
+async def delete_node(name: str, 
+                      current_user_id: str = Depends(get_current_admin_user)):
     try:
         delete_result = await service.delete_node(name)
         
         return GeneralResponse(
-            http_code=status.HTTP_200_OK,
+            http_code=status.HTTP_200_OK, 
             status=True,
             response_obj=delete_result
         )
@@ -126,3 +133,4 @@ async def delete_node(name: str): # Ya no hay 'service: NodeService = Depends(..
             status=False,
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
+
