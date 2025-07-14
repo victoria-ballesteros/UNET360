@@ -50,18 +50,7 @@ class NodeService:
         adjacent_nodes = []
         if new_node.adjacent_nodes:
             for adjacent in new_node.adjacent_nodes:
-                if adjacent is not None:
-                    node_name = next(iter(adjacent.keys()))
-                    weight = adjacent[node_name]
-
-                    node = await self.node_repo.get_by_name(node_name)
-                    
-                    if not node:
-                        raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
-                    
-                    adjacent_nodes.append({node_name: weight})
-                else:
-                    adjacent_nodes.append(None)
+                adjacent_nodes.append(adjacent)
         else:
             adjacent_nodes = [None, None, None, None]
 
@@ -127,19 +116,7 @@ class NodeService:
         if 'adjacent_nodes' in update_data:
             adjacent_nodes = []
             for adjacent in update_data['adjacent_nodes']:
-                if adjacent is not None:
-                    node_name = next(iter(adjacent.keys())) if adjacent else None
-                    weight = adjacent[node_name] if node_name else None
-                    
-                    adj_node = await self.node_repo.get_by_name(node_name)
- 
-                    if not adj_node:
-                        raise HTTPException(status_code=404, detail=f"Nodo adyacente '{node_name}' no encontrado")
-                    
-                    adjacent_nodes.append({node_name: weight})
-
-                else:
-                    adjacent_nodes.append(None)
+                adjacent_nodes.append(adjacent)
             update_data['adjacent_nodes'] = adjacent_nodes
 
         node = await update_db_obj(node_db_obj=node, new_data=update_data)
