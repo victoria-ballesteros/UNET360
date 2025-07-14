@@ -52,34 +52,11 @@ async def transform_node_to_node_out_dto(node_db_obj: Node) -> NodeOutDTO:
     if node_db_obj.tags:
         tags_dict = node_db_obj.tags
 
-    # Process adyacent nodes
+    # Process adjacent nodes (sin verificación, solo copia el valor)
     adjacent_nodes_with_weights = []
-    if node_db_obj.adjacent_nodes:  # Cambiado de adyacent_nodes a adjacent_nodes
+    if node_db_obj.adjacent_nodes:
         for adjacent in node_db_obj.adjacent_nodes:
-            if adjacent is None:
-                adjacent_nodes_with_weights.append(None)
-                continue
-            
-            try:
-                # Cada adjacent es un dict {node_id: weight}
-                node_name = next(iter(adjacent.keys())) if adjacent else None
-                weight = adjacent[node_name] if node_name else None
-                
-                if node_name:
-                    node_obj = await node_repository.get_by_name(node_name)
-                    if node_obj:
-                        adjacent_nodes_with_weights.append({node_obj.name: weight})
-                    else:
-                        adjacent_nodes_with_weights.append(None)
-                else:
-                    adjacent_nodes_with_weights.append(None)
-            except Exception as e:
-                raise HTTPException(
-                    status_code=404, 
-                    detail=f"FAILED_TO_FETCH_ADJACENT_NODES: {e!s}"
-                )
-
-    
+            adjacent_nodes_with_weights.append(adjacent)
     if len(adjacent_nodes_with_weights) < 4:
         adjacent_nodes_with_weights.extend([None] * (4 - len(adjacent_nodes_with_weights)))
 
@@ -109,25 +86,7 @@ async def update_db_obj(node_db_obj: Node, new_data: dict) -> None:
     updated_adyacent_nodes = []
 
     if 'adjacent_nodes' in new_data:  # Cambiado de adyacent_nodes a adjacent_nodes
-        adjacent_nodes = []
-        for adjacent in new_data['adjacent_nodes']:
-            if adjacent is not None:
-                node_name = next(iter(adjacent.keys())) if adjacent else None
-                weight = adjacent[node_name] if node_name else None
-                
-                if node_name:
-                    adj_node = await node_repository.get_by_name(node_name)
-                    if not adj_node:
-                        raise HTTPException(
-                            status_code=404, 
-                            detail=f"NODE_NOT_FOUND: {node_name}"
-                        )
-                    adjacent_nodes.append({str(adj_node.id): weight})
-                else:
-                    adjacent_nodes.append(None)
-            else:
-                adjacent_nodes.append(None)
-        node_db_obj.adjacent_nodes = adjacent_nodes
+        node_db_obj.adjacent_nodes = list(new_data['adjacent_nodes'])
 
     if 'tags' in new_data:
         # Validar que todos los tags existan
