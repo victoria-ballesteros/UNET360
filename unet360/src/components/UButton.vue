@@ -1,21 +1,22 @@
 <template>
-  <button 
-    :class="`button button-${type}`"
-    @click="handleClick"
-    type="button"
-  >
-    <UIcon v-if="props.icon" :name="props.icon" size="24" :color="props.iconColor" />
+  <button :class="`button button-${type}`" @click="handleClick" type="button">
+    <UIcon
+      v-if="props.icon"
+      :name="props.icon"
+      size="24"
+      :color="props.iconColor"
+    />
     <span v-if="props.text">{{ props.text }}</span>
-  </button> 
+  </button>
 </template>
 
 <script setup>
-import UIcon from './UIcon.vue';
+import UIcon from "./UIcon.vue";
 
 const props = defineProps({
   type: {
     type: String,
-    default: 'default',
+    default: "default",
   },
   text: {
     type: String,
@@ -25,18 +26,17 @@ const props = defineProps({
     type: String,
     required: false,
   },
-  iconColor : {
+  iconColor: {
     type: String,
     required: false,
-  }
-})
+  },
+});
 
-const emit = defineEmits(['click'])
+const emit = defineEmits(["click"]);
 
 const handleClick = (event) => {
-  emit('click', event)
-}
-
+  emit("click", event);
+};
 </script>
 
 <style scoped lang="scss">
@@ -79,11 +79,22 @@ const handleClick = (event) => {
   color: var(--strong-gray);
 }
 
+.button-contrast {
+  background-color: var(--main-yellow);
+  color: var(--strong-gray);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1.875rem;
+  span {
+    @include paragraph-contrast;
+  }
+}
+
 .button-deactivated {
   background: var(--border-gray);
   color: var(--fill-white);
   pointer-events: none;
   box-shadow: none;
 }
-
 </style>

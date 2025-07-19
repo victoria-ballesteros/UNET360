@@ -1,4 +1,4 @@
-@import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 $font-primary: 'Inter', sans-serif;
 
@@ -16,6 +16,13 @@ $font-primary: 'Inter', sans-serif;
   font-family: $font-primary;
 }
 
+@mixin paragraph-medium-light {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  font-family: $font-primary;
+}
+
 @mixin paragraph-medium {
   font-size: 1rem;
   font-weight: 600;
@@ -27,5 +34,20 @@ $font-primary: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 1.95rem;
+  font-family: $font-primary;
+}
+
+@mixin paragraph-h1 {
+  font-size: 2.15rem;
+  font-weight: 600;
+  line-height: 2.795rem;
+  font-family: $font-primary;
+  letter-spacing: -0.1125rem;
+}
+
+@mixin paragraph-contrast {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.1375rem;
   font-family: $font-primary;
 }

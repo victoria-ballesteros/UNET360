@@ -1,6 +1,10 @@
 @use './colors';
 @use './typography';
 
+:root {
+  --header-height: 0px;
+}
+
 html, body {
   height: 100%;
   margin: 0;
