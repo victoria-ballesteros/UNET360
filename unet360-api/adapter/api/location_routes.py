@@ -1,19 +1,19 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional, Any
 
-from core.dtos.responses_dto import GeneralResponse 
-
-from core.services.location_service import LocationService
 from adapter.database.location_repository import LocationRepository
+from core.services.location_service import LocationService
 from core.dtos.location_dto import LocationCreateDTO, LocationOutDTO, LocationUpdateDTO
-
+from core.dtos.responses_dto import GeneralResponse 
+from core.dependencies.auth_dependencies import get_current_admin_user
 
 router = APIRouter(prefix="/locations", tags=["Locations"])
 
 service = LocationService(LocationRepository()) 
 
 @router.post("/", response_model=GeneralResponse)
-async def create_locations(dto: LocationCreateDTO):
+async def create_locations(dto: LocationCreateDTO, 
+                           current_user_id: str = Depends(get_current_admin_user)):
     try:
         created_location_dto = await service.create_location(dto) 
         
@@ -83,7 +83,8 @@ async def get_all_locations():
         )
 
 @router.patch("/{name}", response_model=GeneralResponse)
-async def update_location(name: str, dto: LocationUpdateDTO):
+async def update_location(name: str, dto: LocationUpdateDTO, 
+                          current_user_id: str = Depends(get_current_admin_user)):
     try:
         updated_location_dto = await service.update_location(name, dto)
         
@@ -106,7 +107,8 @@ async def update_location(name: str, dto: LocationUpdateDTO):
         )
 
 @router.delete("/{name}", response_model=GeneralResponse)
-async def delete_location(name: str):
+async def delete_location(name: str, 
+                           current_user_id: str = Depends(get_current_admin_user)):
     try:
         delete_result = await service.delete_location(name)
         
