@@ -17,7 +17,6 @@ export const useUserStore = defineStore(
         const response = await isAuthenticated();
         authState.value = !!response?.status;
       } catch (err) {
-        console.error("Error: ", err);
         error.value = err;
       } finally {
         isLoading.value = false;

@@ -1,7 +1,12 @@
 <template>
   <header class="header-container">
     <RouterLink :to="{ name: 'Home' }">
-      <UIcon name="icons/logo" size="43" class="cursor-pointer" />
+      <UIcon
+        name="icons/logo"
+        size="43"
+        class="cursor-pointer"
+        @click="emit('isPanelOpen', event)"
+      />
     </RouterLink>
     <UIcon
       name="icons/list"

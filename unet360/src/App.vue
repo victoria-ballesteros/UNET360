@@ -44,7 +44,7 @@ const isPanelOpen = ref(false);
 const sidebarOptions = ref(null);
 
 onBeforeMount(async () => {
-  if (userStore.authState == null) {
+  if (userStore.authState == null || !userStore.authState) {
     await userStore.fetchUserState();
   }
 
