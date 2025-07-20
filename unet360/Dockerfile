@@ -4,7 +4,7 @@ WORKDIR /app
 
 ENV NODE_ENV=development
 
-COPY package.json ./
+COPY package*.json ./
 
 RUN npm install --legacy-peer-deps
 

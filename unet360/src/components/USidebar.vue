@@ -26,7 +26,7 @@ function closePanel() {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .overlay {
   position: fixed;
   inset: 0;
@@ -39,28 +39,38 @@ function closePanel() {
   background: var(--strong-gray);
   width: 100vw;
   height: 100vh;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
   overflow-y: auto;
   position: relative;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}
-
-.menu {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 3rem;
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1.738rem;
+    justify-content: center;
+    flex: 1 1 auto;
+
+    .nav-item {
+      @include section-title;
+      color: var(--fill-white);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+  }
 }
 
 /* Slide transition */

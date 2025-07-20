@@ -24,7 +24,7 @@ const props = defineProps({
 .card-container {
   max-width: 100%;
   height: 100%;
-  background: var(--strong-gray);
+  background: var(--main-blue);
   border-radius: 20px;
   padding: 1.875rem 1.25rem;
   display: flex;

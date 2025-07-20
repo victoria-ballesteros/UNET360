@@ -1,10 +1,10 @@
 <template>
   <div class="upper-container">
-    <div class="hero-section">
+    <div class="hero-section" ref="heroRef">
       <p class="upper-paragrah">
         Tu guía inteligente para explorar la <b>UNET</b> con solo un clic.
       </p>
-      <UIcon name="images/home-image" />
+      <UIcon name="images/home-image" size="280" />
       <p class="lower-paragraph">{{ generalInfo }}</p>
       <UButton
         text="Empieza ahora"
@@ -24,6 +24,7 @@
 import UIcon from "@/components/UIcon.vue";
 import UButton from "@/components/UButton.vue";
 import UCard from "@/components/UCard.vue";
+import { ref, onMounted } from "vue";
 
 const cardsInfo = [
   {
@@ -42,6 +43,22 @@ const cardsInfo = [
 
 const generalInfo =
   "Navega el campus con mapas 360°, rutas personalizadas y búsqueda inteligente. Olvídate de perderte y disfruta de una experiencia universitaria fluida.";
+
+// Para mantener constante el tamaño de la sección hero
+
+const heroRef = ref(null);
+
+onMounted(() => {
+  const headerHeightVar = getComputedStyle(
+    document.documentElement
+  ).getPropertyValue("--header-height");
+  const headerHeight = parseFloat(headerHeightVar) || 0;
+  const fixedHeight = window.innerHeight - headerHeight;
+
+  if (heroRef.value) {
+    heroRef.value.style.height = `${fixedHeight}px`;
+  }
+});
 </script>
 
 <style scoped lang="scss">
@@ -57,21 +74,21 @@ const generalInfo =
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: calc(100vh - var(--header-height));
+  height: calc(100dvh - var(--header-height));
   box-sizing: border-box;
-  padding: 0rem 0rem 2rem 0rem;
+  padding: 0rem 0rem 3.5rem 0rem;
 
   .upper-paragrah {
     @include paragraph-h1;
     color: var(--full-white);
     margin: 0rem 0rem 1rem 0rem !important;
     b {
-      color: var(--strong-gray);
+      color: var(--main-blue);
     }
   }
 
   .lower-paragraph {
-    @include paragraph-medium;
+    @include paragraph-medium-light;
     color: var(--full-white);
     text-align: center;
   }
