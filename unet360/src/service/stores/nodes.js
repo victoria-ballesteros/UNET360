@@ -13,15 +13,15 @@ export const useNodeStore = defineStore("node", () => {
     try {
       const response = await getNodes();
       if (!response?.status) {
-        throw new Error(
+        error.value = new Error(
           "Respuesta inválida del servidor: status code ",
           response?.http_code
         );
+        return;
       }
       nodes.value = response?.response_obj;
       error.value = null;
     } catch (err) {
-      console.error("Error: ", err);
       error.value = err;
     } finally {
       isLoading.value = false;

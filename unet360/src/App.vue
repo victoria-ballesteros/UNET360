@@ -16,6 +16,7 @@
       :key="index"
       :to="option.to"
       class="nav-item"
+      @click="isPanelOpen = false"
     >
       {{ option.label }}
     </RouterLink>
@@ -43,16 +44,18 @@ const isPanelOpen = ref(false);
 const sidebarOptions = ref(null);
 
 onBeforeMount(async () => {
-  if (!nodeStore.nodes) {
-    await nodeStore.fetchNodes();
-  }
-
-  if (!tagStore.tags) {
-    await tagStore.fetchTags();
-  }
-
   if (userStore.authState == null) {
     await userStore.fetchUserState();
+  }
+
+  if (userStore.authState) {
+    if (!nodeStore.nodes) {
+      await nodeStore.fetchNodes();
+    }
+
+    if (!tagStore.tags) {
+      await tagStore.fetchTags();
+    }
   }
 
   sidebarOptions.value = getSidebarOptions(userStore.authState);

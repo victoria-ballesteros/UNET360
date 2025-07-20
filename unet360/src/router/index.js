@@ -11,14 +11,20 @@ import Auth from "@/pages/UAuth.vue";
 
 const routes = [
   {
-    path: "/",
+    path: "/Home",
     name: "Home",
     component: Home,
+    alias: "/",
   },
   {
     path: "/showcase",
     name: "Showcase",
     component: Showcase,
+  },
+  {
+    path: "/about",
+    name: "About",
+    component: Home,
   },
   {
     path: "/nodes",

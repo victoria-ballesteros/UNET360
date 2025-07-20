@@ -1,6 +1,8 @@
 <template>
   <header class="header-container">
-    <UIcon name="icons/logo" size="43" />
+    <RouterLink :to="{ name: 'Home' }">
+      <UIcon name="icons/logo" size="43" class="cursor-pointer" />
+    </RouterLink>
     <UIcon
       name="icons/list"
       size="30"
@@ -12,6 +14,8 @@
 
 <script setup>
 import UIcon from "@/components/UIcon.vue";
+import { RouterLink } from "vue-router";
+
 const emit = defineEmits(["isPanelOpen"]);
 </script>
 
