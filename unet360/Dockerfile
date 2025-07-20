@@ -14,11 +14,9 @@ FROM nginx:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Elimina configuración default de nginx si quieres una custom
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Puedes copiar tu propia config si lo necesitas
-# COPY nginx.conf /etc/nginx/conf.d
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
