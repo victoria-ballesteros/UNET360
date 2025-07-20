@@ -1,0 +1,50 @@
+.upper-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0.6rem 1.125rem !important;
+}
+
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  height: calc(100dvh - var(--header-height));
+  padding: 0 0 3.5rem;
+
+  .upper-paragrah {
+    margin: 0 0 1rem !important;
+    color: var(--full-white);
+
+    @include paragraph-h1;
+
+    b {
+      color: var(--main-blue);
+    }
+  }
+
+  .lower-paragraph {
+    text-align: center;
+    color: var(--full-white);
+
+    @include paragraph-medium-light;
+  }
+}
+
+.card-wrapper {
+  display: grid;
+  gap: 1rem;
+  max-width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+}
+
+.box:nth-child(3) {
+  grid-column: span 2;
+}

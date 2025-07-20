@@ -1,24 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
 
 $font-primary: 'Inter', sans-serif;
 
-@mixin paragraph-small {
-  font-family: $font-primary;
+@mixin paragraph-extra-small {
+  font-size: 0.625rem;
   font-weight: 500;
+  line-height: 0.2rem;
+  font-family: $font-primary;
+}
+
+@mixin paragraph-small {
   font-size: 0.875rem;
+  font-weight: 500;
   line-height: 1.138rem;
+  font-family: $font-primary;
+}
+
+@mixin paragraph-medium-light {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  font-family: $font-primary;
 }
 
 @mixin paragraph-medium {
-  font-family: $font-primary;
-  font-weight: 600;
   font-size: 1rem;
+  font-weight: 600;
   line-height: 1.3rem;
+  font-family: $font-primary;
 }
 
 @mixin section-title {
-  font-family: $font-primary;
-  font-weight: 600;
   font-size: 1.5rem;
+  font-weight: 600;
   line-height: 1.95rem;
+  font-family: $font-primary;
+}
+
+@mixin paragraph-h1 {
+  font-size: 2.15rem;
+  font-weight: 600;
+  line-height: 2.795rem;
+  letter-spacing: -0.1125rem;
+  font-family: $font-primary;
+}
+
+@mixin paragraph-contrast {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.1375rem;
+  font-family: $font-primary;
 }

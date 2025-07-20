@@ -20,8 +20,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
         
         self.excluded_paths = [
             "/",
-            "/auth/signup",
-            "/auth/login",
+            "/auth/signup/",
+            "/auth/login/",
+            "/auth/status/",
             "/docs",
             "/redoc",       
             "/openapi.json",
@@ -29,9 +30,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         # Si la ruta está excluida, simplemente la pasa
-        if request.url.path in self.excluded_paths:
-            return await call_next(request)
-
         if request.url.path == "/auth/status":
             try:
                 auth_header = request.headers.get("Authorization")
@@ -45,10 +43,12 @@ class AuthMiddleware(BaseHTTPMiddleware):
                         tenant_profile = await self.tenant_service.get_tenant_by_supabase_user_id(request.state.user_id)
                         request.state.user_role = tenant_profile.role if tenant_profile else None
                         logger.info(f"Auth status check: User {request.state.user_id} authenticated.")
-                return await call_next(request)
             except Exception as e:
-                logger.warning(f"Auth status check failed to validate token: {e}")
-                return await call_next(request)
+                logger.warning(f"Auth status check failed: {e}")
+            return await call_next(request)
+
+        if request.url.path in self.excluded_paths:
+            return await call_next(request)
 
         auth_header = request.headers.get("Authorization")
         if not auth_header:

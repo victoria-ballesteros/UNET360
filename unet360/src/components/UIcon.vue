@@ -2,7 +2,6 @@
   <component
     :is="IconComponent"
     v-if="IconComponent"
-    :width="size"
     :height="size"
     :fill="color"
     :style="{
@@ -12,31 +11,33 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed } from "vue";
 
 const props = defineProps({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   size: {
     type: [Number, String],
-    default: 24
   },
   color: {
     type: String,
-    default: 'currentColor'
+    default: "currentColor",
   },
   rotation: {
     type: Number,
-    default: 0
-  }
-})
+    default: 0,
+  },
+});
 
-const icons = import.meta.glob('@/assets/icons/*.svg', { eager: true, import: 'default' })
+const icons = import.meta.glob("@/assets/*/*.svg", {
+  eager: true,
+  import: "default",
+});
 
 const IconComponent = computed(() => {
-  const path = `/src/assets/icons/${props.name}.svg`
-  return icons[path] || null
-})
+  const path = `/src/assets/${props.name}.svg`;
+  return icons[path] || null;
+});
 </script>
