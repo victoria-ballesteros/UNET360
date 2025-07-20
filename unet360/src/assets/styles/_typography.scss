@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
 
 $font-primary: 'Inter', sans-serif;
 
@@ -41,8 +41,8 @@ $font-primary: 'Inter', sans-serif;
   font-size: 2.15rem;
   font-weight: 600;
   line-height: 2.795rem;
-  font-family: $font-primary;
   letter-spacing: -0.1125rem;
+  font-family: $font-primary;
 }
 
 @mixin paragraph-contrast {

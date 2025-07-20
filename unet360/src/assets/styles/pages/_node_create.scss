@@ -2,10 +2,10 @@
 
 .background-viewer {
     position: fixed;
-    inset: 0;
     z-index: 0;
     width: 100vw;
     overflow: hidden;
+    inset: 0;
     pointer-events: none;
 }
 
@@ -81,10 +81,10 @@
         flex-direction: column;
         align-items: center;
         min-height: 0;
+        margin: 1rem 0 0;
         padding: 9px 36px 18px;
         background: var(--fill-white);
         border-radius: 56px 56px 0 0;
-        margin: 1rem 0rem 0rem 0rem;
         transition: opacity 0.4s ease, background 0.4s ease, height 0.4s ease, max-height 0.4s ease;
 
         .lower-container.expanded {
@@ -123,7 +123,7 @@
                 display: flex;
                 flex-direction: column;
                 width: 100%;
-                padding: 0 0 1.45rem 0;
+                padding: 0 0 1.45rem;
 
                 .input-label {
                     width: 100%;
@@ -150,10 +150,10 @@
                 }
 
                 .node-input-container {
-                    max-width: 100%;
                     display: flex;
                     align-items: center;
                     gap: 0.1rem;
+                    max-width: 100%;
 
                     > :first-child {
                         flex: 1 1 75%;
