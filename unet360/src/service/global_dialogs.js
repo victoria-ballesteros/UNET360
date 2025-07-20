@@ -1,22 +1,22 @@
 export function getSidebarOptions(authState, isAdmin = false) {
   if (!authState) {
     return [
-      { label: "Inicia sesión", to: "/auth" },
-      { label: "Regístrate", to: "/auth" },
-      { label: "Acerca de", to: "/about" },
+      { label: "Inicia sesión", to: { name: "Auth" } },
+      { label: "Regístrate", to: { name: "Auth" } },
+      { label: "Acerca de", to: { name: "About" } },
     ];
   }
 
   if (isAdmin) {
     return [
-      { label: "Administrar nodos", to: "/nodes/create" },
-      { label: "Acerca de", to: "/about" },
-      { label: "Cerrar sesión", to: "/logout" },
+      { label: "Administrar nodos", to: { name: "NodeCreate" } },
+      { label: "Acerca de", to: { name: "About" } },
+      { label: "Cerrar sesión", to: { name: "Logout" } },
     ];
   }
 
   return [
-    { label: "Acerca de", to: "/about" },
-    { label: "Cerrar sesión", to: "/logout" },
+    { label: "Acerca de", to: { name: "About" } },
+    { label: "Cerrar sesión", to: { name: "Logout" } },
   ];
 }
