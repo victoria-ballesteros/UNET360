@@ -41,8 +41,18 @@ const routes = [
     path: "/user",
     children: [
       {
-        path: "auth",
-        name: "Auth",
+        path: "login",
+        name: "Login",
+        component: Auth,
+      },
+      {
+        path: "signup",
+        name: "Signup",
+        component: Auth,
+      },
+      {
+        path: "recovery",
+        name: "Recovery",
         component: Auth,
       },
     ],

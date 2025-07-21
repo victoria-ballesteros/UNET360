@@ -1,0 +1,85 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  //min-height: 100vh;
+  padding: 2.25rem !important;
+  gap: 2rem;
+}
+
+.text-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .upper-paragrah {
+    margin: 0;
+    color: var(--full-white);
+
+    @include paragraph-h1;
+    } 
+
+    .lower-paragraph {
+    margin: 0;
+    color: var(--full-white);
+
+    @include paragraph-small;
+  }
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+
+    .input-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0 0 1.25rem 0;
+        .input-label {
+            margin:0;
+            color: var(--full-white);
+            @include paragraph-medium;
+        }
+
+        .forgot-password-link{
+            cursor: pointer; 
+            color: var(--border-gray); 
+            margin: 0;
+            @include paragraph-small;
+            text-decoration: underline;
+        }
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        
+        margin: 0;
+        color: var(--border-gray);
+        @include paragraph-small;
+
+        b {
+            cursor: pointer; 
+            color:var(--main-blue);
+            text-decoration: underline;
+            gap: 0rem;
+        }
+    }
+
+    
+
+}
+
+
+

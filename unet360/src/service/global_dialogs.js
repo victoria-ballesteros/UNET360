@@ -3,8 +3,8 @@
 export const getSidebarOptions = (authState, isAdmin = false) => {
   if (!authState) {
     return [
-      { label: "Inicia sesión", to: { name: "Auth" } },
-      { label: "Regístrate", to: { name: "Auth" } },
+      { label: "Inicia sesión", to: { name: "Login" } },
+      { label: "Regístrate", to: { name: "Signup" } },
       { label: "Acerca de", to: { name: "About" } },
     ];
   }
