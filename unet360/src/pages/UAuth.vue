@@ -1,90 +1,91 @@
 
+
 <template>
-<div class="form-container">
-  
-  <div class="text-section">
-    <p class="upper-paragrah">{{ currentTexts.upper }}</p>
-    <p class="lower-paragraph">{{ currentTexts.lower }}</p>
-  </div>
+  <div class="form-container">
+    <!-- ═══════════════  Títulos y subtítulos  ═══════════════ -->
+    <div class="text-section">
+      <p class="upper-paragrah">{{ currentTexts.upper }}</p>
+      <p class="lower-paragraph">{{ currentTexts.lower }}</p>
+    </div>
 
-  <div class="form-section">
-    <div
-      v-for="field in currentFields"
-      :key="field"
-      class="input-container"
-    >
-      <p class="input-label">{{ fieldLabels[field] }}</p>
+    <!-- ═══════════════  Formulario dinámico  ═══════════════ -->
+    <div class="form-section">
+      <div
+        v-for="field in currentFields"
+        :key="field"
+        class="input-container"
+        :class="{ 'has-error': inputErrors[field] }"
+      >
+        <!-- Etiqueta del campo -->
+        <p class="input-label">{{ fieldLabels[field] }}</p>
 
-      <UInput
-        v-model="inputModels[field]"
-        :type="field.includes('password') && !showPassword[field] ? 'password' : 'text'"
-        :placeholder="fieldLabels[field]"
-        :error="inputErrors[field]"
-        :icon="field.includes('password') ? (showPassword[field] ? 'icons/eye' : 'icons/eye-slash') : null"
-        @icon-click="() => { if(field.includes('password')) showPassword[field] = !showPassword[field] }"
-        :iconColor="'var(--border-gray)'"
-      />
+        <!-- Input reutilizable con icono de ojo para contraseñas -->
+        <UInput
+          v-model="inputModels[field]"
+          :type="isPasswordField(field) && !showPassword[field] ? 'password' : 'text'"
+          :placeholder="fieldLabels[field]"
+          :error="inputErrors[field]"
+          :icon="isPasswordField(field) ? (showPassword[field] ? 'icons/eye' : 'icons/eye-slash') : null"
+          @icon-click="() => { if(isPasswordField(field)) showPassword[field] = !showPassword[field] }"
+          :iconColor="'var(--border-gray)'"
+          @update:modelValue="() => { inputErrors[field] = '' }"
+        />
 
-      <p v-if="inputErrors[field]" class="input-error-label">
-        {{ inputErrors[field] }}
-      </p>
-
-      <RouterLink :to="{ name: 'Recovery' }">
-        <p
-        v-if="currentMode === 'Login' && field === 'password'"
-        class="forgot-password-link"
-        >
-        ¿Olvidaste tu contraseña?
+        <!-- Mensaje de error -->
+        <p v-if="inputErrors[field]" class="input-error-label">
+          {{ inputErrors[field] }}
         </p>
-      </RouterLink>
-      
-    </div>
 
-    <div class="button-container">
-      <UButton
-        :text="buttonTexts[currentMode]"
-        :type="isFormValid ? 'contrast-2' : 'deactivated'"
-        @click="handleSubmit"
-      />
-    </div>
-    <div class="text-container">
-      <p class="register-link" style="margin:0;">
-        <template v-if="currentMode === 'Login'">
-          ¿No tienes cuenta?
-          <RouterLink :to="{ name: 'Signup' }">
-          <b>Regístrate aquí</b>
-          </RouterLink>
-          
-        </template>
-        <template v-else-if="currentMode === 'Signup'">
-          ¿Ya tienes cuenta?
-          <RouterLink :to="{ name: 'Login' }">
-            <b>Inicia sesión</b>
-          </RouterLink>
-          
-        </template>
-      </p>
-    </div>
-    
+        <!-- Link de recuperación solo en login y campo password -->
+        <RouterLink v-if="currentMode === 'Login' && field === 'password'" :to="{ name: 'Recovery' }">
+          <p class="forgot-password-link">¿Olvidaste tu contraseña?</p>
+        </RouterLink>
+      </div>
 
+      <!-- Botón principal -->
+      <div class="button-container">
+        <UButton
+          :text="buttonTexts[currentMode]"
+          :type="isFormValid ? 'contrast-2' : 'deactivated'"
+          @click="handleSubmit"
+        />
+      </div>
+
+      <!-- Link para cambiar entre login y registro -->
+      <div class="text-container">
+        <p class="register-link" style="margin:0;">
+          <template v-if="currentMode === 'Login'">
+            ¿No tienes cuenta?
+            <RouterLink :to="{ name: 'Signup' }">
+              <b>Regístrate aquí</b>
+            </RouterLink>
+          </template>
+          <template v-else-if="currentMode === 'Signup'">
+            ¿Ya tienes cuenta?
+            <RouterLink :to="{ name: 'Login' }">
+              <b>Inicia sesión</b>
+            </RouterLink>
+          </template>
+        </p>
+      </div>
+    </div>
   </div>
-
-</div>
 </template>
 
 <script setup>
-import { useRoute, RouterLink } from "vue-router";
-import { reactive, computed, ref } from "vue";
+import { useRoute, RouterLink, onBeforeRouteUpdate } from "vue-router";
+import { reactive, computed, ref, watch } from "vue";
 
 import UInput from "@/components/UInput.vue";
 import UButton from "@/components/UButton.vue";
 
-// ═══════════════  Components variables  ═══════════════
+
+// ═══════════════  Variables reactivas y helpers  ═══════════════
+// Estado para mostrar/ocultar contraseñas
 const showPassword = reactive({
   password: false,
   confirmPassword: false
-}
-)
+});
 
 const route = useRoute();
 
@@ -140,26 +141,35 @@ const inputErrors = reactive({
 });
 
 
+
+// Helpers para modo, campos y textos actuales
 const currentMode = computed(() => route.name || "Login");
 const currentFields = computed(() => formFields[currentMode.value] || []);
 const currentTexts = computed(() => authTexts[currentMode.value] || authTexts.Login);
 
+// Helper para saber si un campo es de tipo contraseña
+function isPasswordField(field) {
+  return field === 'password' || field === 'confirmPassword';
+}
+
+
 // ═══════════════  Validación de formulario  ═══════════════
-const isFormValid = computed(() => {
-  // Todos los campos requeridos deben estar llenos y sin errores
-  return currentFields.value.every(field => {
-    return inputModels[field] && !inputErrors[field];
-  });
-});
+// El formulario es válido si todos los campos requeridos están llenos y sin errores
+const isFormValid = computed(() =>
+  currentFields.value.every(field => inputModels[field] && !inputErrors[field])
+);
 
+
+// ═══════════════  Validación y envío del formulario  ═══════════════
+/**
+ * Valida los campos del formulario según el modo actual y muestra errores si corresponde.
+ * Si no hay errores, ejecuta la lógica de submit (API, etc).
+ */
 function handleSubmit() {
-  // Validaciones básicas por modo
-  // Limpia errores
-  currentFields.value.forEach(field => {
-    inputErrors[field] = "";
-  });
+  // Limpiar errores previos
+  currentFields.value.forEach(field => inputErrors[field] = "");
 
-  // Email simple
+  // Validación de email
   if (currentFields.value.includes("email")) {
     const email = inputModels.email;
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
@@ -167,27 +177,40 @@ function handleSubmit() {
     }
   }
 
-  // Passwords
+  // Validación de contraseña
   if (currentFields.value.includes("password")) {
     if (!inputModels.password || inputModels.password.length < 6) {
       inputErrors.password = "La contraseña debe tener al menos 6 caracteres";
     }
   }
 
-  // Confirmar contraseña
+  // Validación de confirmación de contraseña
   if (currentFields.value.includes("confirmPassword")) {
     if (inputModels.confirmPassword !== inputModels.password) {
       inputErrors.confirmPassword = "Las contraseñas no coinciden";
     }
   }
 
-  // Si hay algún error, no continuar
-  const hasError = currentFields.value.some(field => inputErrors[field]);
-  if (hasError) return;
+  // Si hay errores, no continuar
+  if (!isFormValid.value) return;
 
   // Aquí iría la lógica de submit real (API, etc.)
   alert(`Formulario enviado para modo: ${currentMode.value}`);
 }
+
+
+// ═══════════════  Limpiar formulario al cambiar de modo  ═══════════════
+/**
+ * Limpia los modelos, errores y visibilidad de contraseñas.
+ */
+function resetForm() {
+  Object.keys(inputModels).forEach(key => inputModels[key] = "");
+  Object.keys(inputErrors).forEach(key => inputErrors[key] = "");
+  Object.keys(showPassword).forEach(key => showPassword[key] = false);
+}
+
+// Limpiar formulario cada vez que cambia el modo (ruta)
+watch(currentMode, resetForm);
 
 </script>
 
