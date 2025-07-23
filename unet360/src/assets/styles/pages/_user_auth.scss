@@ -1,4 +1,3 @@
-
 .form-container {
   display: flex;
   flex-direction: column;
@@ -105,3 +104,14 @@
   }
 }
 
+// ═══════════════  Lista de detalles en pantallas de éxito  ═══════════════
+.text-section ul {
+  color: var(--full-white);
+  padding: 0;
+  list-style: disc inside;
+}
+.text-section ul li {
+  color: var(--full-white);
+  margin-bottom: 0.25rem;
+  margin:0;
+}

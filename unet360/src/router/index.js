@@ -8,6 +8,7 @@ import NodeCreate from "@/pages/UNodeCreate.vue";
 import Home from "@/pages/UHome.vue";
 import Showcase from "@/pages/UShowcase.vue";
 import Auth from "@/pages/UAuth.vue";
+import AuthSuccess from "@/pages/UAuthSuccess.vue";
 
 const routes = [
   {
@@ -54,6 +55,26 @@ const routes = [
         path: "recovery",
         name: "Recovery",
         component: Auth,
+      },
+      {
+        path: "success-register",
+        name: "SuccessRegister",
+        component: AuthSuccess,
+      },
+      {
+        path: "success-newpassword",
+        name: "SuccessNewPassword",
+        component: AuthSuccess,
+      },
+      {
+        path: "success-prepassword",
+        name: "SuccessPrePassword",
+        component: AuthSuccess,
+      },
+      {
+        path: "success-confirmation",
+        name: "SuccessConfirmation",
+        component: AuthSuccess,
       },
     ],
   },

@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { useRoute, RouterLink, onBeforeRouteUpdate } from "vue-router";
+import { useRoute, RouterLink } from "vue-router";
 import { reactive, computed, ref, watch } from "vue";
 
 import UInput from "@/components/UInput.vue";
