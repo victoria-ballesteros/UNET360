@@ -3,14 +3,7 @@
     <div class="text-section">
       <p class="upper-paragrah">{{ currentTexts.upper }}</p>
       <p class="lower-paragraph">
-        <!-- Mensaje principal para SuccessPrePassword -->
-        <template v-if="currentMode === 'SuccessPrePassword'">
-          {{ currentTexts.lowerMain }}
-        </template>
-        <!-- Mensaje normal para otros modos -->
-        <template v-else>
-          {{ currentTexts.lower }}
-        </template>
+        {{ lowerText }}
       </p>
       <!-- Lista de detalles para SuccessPrePassword -->
       <ul v-if="currentMode === 'SuccessPrePassword'">
@@ -31,18 +24,31 @@
 </template>
 
 <script setup>
-import { useRoute, RouterLink } from "vue-router";
-import { computed } from "vue";
+import { useRoute, useRouter, RouterLink } from "vue-router";
+import { computed, onMounted } from "vue";
+
+import { useAuthSuccessStore } from '@/service/stores/authSuccess';
 
 import UButton from "@/components/UButton.vue";
 
 // ═══════════════  Variables reactivas y helpers  ═══════════════
 const route = useRoute();
+const router = useRouter();
+const authSuccessStore = useAuthSuccessStore();
+const email = computed(() => authSuccessStore.email);
+// Bloquear acceso si no se permite y desactivar flag tras cargar
+onMounted(() => {
+  if (!authSuccessStore.canAccessSuccess) {
+    router.replace({ name: 'Login' });
+    return;
+  }
+  authSuccessStore.blockSuccess();
+});
 
 const successTexts = {
     SuccessRegister: {
     upper: "¡CUENTA CREADA CON EXITO!",
-    lower: "Hemos enviado un correo de confirmación a pedro.perez@unet.edu.ve. Por favor, verifica tu bandeja de entrada."
+    lower: "Hemos enviado un correo de confirmación a %EMAIL%. Por favor, verifica tu bandeja de entrada."
     },
     SuccessConfirmation: {
         upper: "SU CUENTA HA SIDO CONFIRMADA",
@@ -50,7 +56,7 @@ const successTexts = {
     },
     SuccessPrePassword: {
         upper: "¡ENLACE ENVIADO!",
-        lowerMain: "Hemos enviado un correo a gabriel.ulacio@unet.edu.ve con instrucciones para restablecer tu contraseña.",
+        lowerMain: "Hemos enviado un correo a %EMAIL% con instrucciones para restablecer tu contraseña.",
         lowerList: [
             "¿No lo ves? Revisa tu carpeta de spam.",
             "El enlace expirará en 24 horas por seguridad."
@@ -68,9 +74,19 @@ const buttonText = "Iniciar Sesión";
 const currentMode = computed(() => route.name);
 const currentTexts = computed(() => successTexts[currentMode.value]);
 
+const lowerText = computed(() => {
+  if (currentMode.value === 'SuccessRegister') {
+    return currentTexts.value.lower.replace('%EMAIL%', email.value);
+  }
+  if (currentMode.value === 'SuccessPrePassword') {
+    return currentTexts.value.lowerMain.replace('%EMAIL%', email.value);
+  }
+  return currentTexts.value.lower;
+});
+
 function handleSubmit() {
   // Ejemplo: navega a login
-  // router.push({ name: 'Login' });
+  router.push({ name: 'Login' });
 }
 
 </script>

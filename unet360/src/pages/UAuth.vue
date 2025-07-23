@@ -28,7 +28,7 @@
           :icon="isPasswordField(field) ? (showPassword[field] ? 'icons/eye' : 'icons/eye-slash') : null"
           @icon-click="() => { if(isPasswordField(field)) showPassword[field] = !showPassword[field] }"
           :iconColor="'var(--border-gray)'"
-          @update:modelValue="() => { inputErrors[field] = '' }"
+          @update:modelValue="() => { inputErrors.email = ''; inputErrors.password = ''; }"
         />
 
         <!-- Mensaje de error -->
@@ -73,8 +73,11 @@
 </template>
 
 <script setup>
-import { useRoute, RouterLink } from "vue-router";
+import { useRoute, useRouter, RouterLink } from "vue-router";
 import { reactive, computed, ref, watch } from "vue";
+
+import { useAuthSuccessStore } from '@/service/stores/authSuccess';
+import { useAuthStore } from '@/service/stores/auth';
 
 import UInput from "@/components/UInput.vue";
 import UButton from "@/components/UButton.vue";
@@ -87,7 +90,10 @@ const showPassword = reactive({
   confirmPassword: false
 });
 
+const authSuccessStore = useAuthSuccessStore();
+const authStore = useAuthStore();
 const route = useRoute();
+const router = useRouter();
 
 const authTexts = {
   Login: {
@@ -165,7 +171,7 @@ const isFormValid = computed(() =>
  * Valida los campos del formulario según el modo actual y muestra errores si corresponde.
  * Si no hay errores, ejecuta la lógica de submit (API, etc).
  */
-function handleSubmit() {
+async function handleSubmit() {
   // Limpiar errores previos
   currentFields.value.forEach(field => inputErrors[field] = "");
 
@@ -194,8 +200,40 @@ function handleSubmit() {
   // Si hay errores, no continuar
   if (!isFormValid.value) return;
 
+  // ═══════════════ LOGIN FLOW ═══════════════
+  if (currentMode.value === 'Login') {
+    // Llama al store de autenticación
+    await authStore.login(inputModels.email, inputModels.password);
+
+    // Si login exitoso, redirige a Home
+    if (authStore.isAuthenticated) {
+      router.push({ name: 'Home' });
+    } else {
+      // Si falla, muestra el error debajo de Contraseña y pone el input de email en rojo
+      inputErrors.email = ' '; 
+      inputErrors.password = authStore.error || 'Error de autenticación';
+    }
+    return;
+  }
+
+  if (backendResult) {
+    // Solo guardar el email y permitir acceso a éxito si se usará en la pantalla de éxito
+    if (currentMode.value === 'Signup') {
+      authSuccessStore.setEmail(inputModels.email);
+      authSuccessStore.allowSuccess();
+      router.push({ name: 'SuccessRegister' });
+    } else if (currentMode.value === 'Recovery') {
+      authSuccessStore.setEmail(inputModels.email);
+      authSuccessStore.allowSuccess();
+      router.push({ name: 'SuccessPrePassword' });
+    } else if (currentMode.value === 'NewPassword') {
+      authSuccessStore.allowSuccess();
+      router.push({ name: 'SuccessNewPassword' });
+    }
+  }
   // Aquí iría la lógica de submit real (API, etc.)
   alert(`Formulario enviado para modo: ${currentMode.value}`);
+
 }
 
 
