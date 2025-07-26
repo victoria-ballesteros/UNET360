@@ -23,6 +23,7 @@
       :size="16"
       :color="props.iconColor"
       :rotation="props.iconRotation"
+      @click="emitIconClick"
     />
   </div>
 </template>
@@ -78,7 +79,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'icon-click'])
 
 const handleInput = (event) => {
   let value = event.target.value
@@ -95,6 +96,10 @@ const handleInput = (event) => {
 
   emit('update:modelValue', event.target.value)
 }
+
+const emitIconClick = () => {
+  emit('icon-click');
+};
 </script>
 
 <style scoped lang="scss">

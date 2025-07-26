@@ -79,6 +79,11 @@ const handleClick = (event) => {
   color: var(--strong-gray);
 }
 
+.button-contrast-2 {
+  background: var(--main-yellow);
+  color: var(--strong-gray);
+}
+
 .button-contrast {
   background-color: var(--main-yellow);
   color: var(--strong-gray);
@@ -90,6 +95,8 @@ const handleClick = (event) => {
     @include paragraph-contrast;
   }
 }
+
+
 
 .button-deactivated {
   background: var(--border-gray);

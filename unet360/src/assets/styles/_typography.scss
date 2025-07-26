@@ -12,7 +12,7 @@ $font-primary: 'Inter', sans-serif;
 @mixin paragraph-small {
   font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1.138rem;
+  line-height: 1.25rem;
   font-family: $font-primary;
 }
 

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { useUserStore } from "@/service/stores/user";
+// Importa el store de autenticación global
+import { useAuthStore } from "@/service/stores/auth";
 
 // Node related pages
 import NodeCreate from "@/pages/UNodeCreate.vue";
@@ -8,6 +9,7 @@ import NodeCreate from "@/pages/UNodeCreate.vue";
 import Home from "@/pages/UHome.vue";
 import Showcase from "@/pages/UShowcase.vue";
 import Auth from "@/pages/UAuth.vue";
+import AuthSuccess from "@/pages/UAuthSuccess.vue";
 
 const routes = [
   {
@@ -41,9 +43,39 @@ const routes = [
     path: "/user",
     children: [
       {
-        path: "auth",
-        name: "Auth",
+        path: "login",
+        name: "Login",
         component: Auth,
+      },
+      {
+        path: "signup",
+        name: "Signup",
+        component: Auth,
+      },
+      {
+        path: "recovery",
+        name: "Recovery",
+        component: Auth,
+      },
+      {
+        path: "success-register",
+        name: "SuccessRegister",
+        component: AuthSuccess,
+      },
+      {
+        path: "success-newpassword",
+        name: "SuccessNewPassword",
+        component: AuthSuccess,
+      },
+      {
+        path: "success-prepassword",
+        name: "SuccessPrePassword",
+        component: AuthSuccess,
+      },
+      {
+        path: "success-confirmation",
+        name: "SuccessConfirmation",
+        component: AuthSuccess,
       },
     ],
   },
@@ -54,20 +86,26 @@ const router = createRouter({
   routes,
 });
 
+// Guard global para proteger rutas que requieren autenticación
 router.beforeEach(async (to, from, next) => {
-  const store = useUserStore();
+  const auth = useAuthStore();
 
-  if (store.authState === null) {
-    await store.fetchUserState();
+  // Sincroniza el token desde la cookie en cada navegación
+  auth.checkAuthCookie();
+
+  // Si la ruta requiere autenticación, valida el token con backend
+  if (to.meta.requiresAuth) {
+    // Valida el token (puede ser asíncrono si consulta backend)
+    const valid = await auth.validateToken();
+    console.log("Ruta protegida, validando token...");
+    console.log("Token válido:", valid);
+    if (!valid) {
+      next({ name: "Login", query: { redirect: to.fullPath } });
+      return;
+    }
   }
-
-  const isAuth = store.authState;
-
-  if (to.meta.requiresAuth && !isAuth) {
-    next({ name: "Auth" });
-  } else {
-    next();
-  }
+  // Si está autenticado o la ruta no requiere auth, continúa
+  next();
 });
 
 export default router;
