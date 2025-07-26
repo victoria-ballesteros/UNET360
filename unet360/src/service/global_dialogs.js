@@ -19,7 +19,7 @@ export const getSidebarOptions = (authState, isAdmin = false) => {
 
   return [
     { label: "Acerca de", to: { name: "About" } },
-    { label: "Cerrar sesión", to: { name: "Logout" } },
+    { label: "Cerrar sesión", to: { action: "logout" } },
   ];
 };
 

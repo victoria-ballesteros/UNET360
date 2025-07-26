@@ -22,16 +22,15 @@ class AuthMiddleware(BaseHTTPMiddleware):
         self.excluded_paths = [
             "/", "/auth/signup/", "/auth/signup",
             "/auth/login/", "/auth/login",
-            "/auth/status/", "/auth/status",
             "/docs", "/redoc", "/openapi.json"
         ]
 
     async def dispatch(self, request: Request, call_next):
+
         # Si la ruta está excluida, simplemente la pasa
         if request.url.path in self.excluded_paths:
             return await call_next(request)
-
-        # Ruta especial para status: permite verificar autenticación sin bloquear
+        # Ruta especial para status: solo valida el token con Supabase, no requiere tenant
         if request.url.path == "/auth/status" and request.headers.get("Authorization"):
             try:
                 auth_header = request.headers.get("Authorization")
@@ -41,11 +40,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
                     user_response = supabase_client.auth.get_user(access_token)
                     if user_response.user is not None:
                         request.state.user_id = user_response.user.id
-                        tenant_profile = await self.tenant_service.get_tenant_by_supabase_user_id(request.state.user_id)
-                        request.state.user_role = tenant_profile.role if tenant_profile else None
-                        logger.info(f"Auth status check: User {request.state.user_id} authenticated.")
-            except Exception as e:
-                logger.warning(f"Auth status check failed: {e}")
+                        request.state.user_role = getattr(user_response.user, 'role', None)
+            except Exception:
+                pass
             return await call_next(request)
 
         # ═══════════════ VALIDACIÓN DE TOKEN PARA RUTAS PROTEGIDAS ═══════════════

@@ -1,6 +1,5 @@
 
 // Pinia store para autenticación global
-// Simplificado y comentado para claridad y mantenibilidad
 import { defineStore } from 'pinia';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,11 +19,24 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = !!this.token;
     },
 
-    // Valida el token (simulación, reemplaza por lógica real de backend)
+    // Valida el token con el backend usando /auth/status
     async validateToken() {
       this.loading = true;
-      // Aquí deberías validar el token con el backend
-      const valid = !!this.token; // Simulación
+      let valid = false;
+      if (this.token) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/auth/status`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${this.token}` }
+          });
+
+          console.log("response", this.token);
+          const data = await res.json();
+          valid = res.ok && data.status;
+        } catch (e) {
+          valid = false;
+        }
+      }
       this.isAuthenticated = valid;
       this.loading = false;
       if (!valid) this.token = null;
