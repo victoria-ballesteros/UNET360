@@ -13,13 +13,13 @@ export const getSidebarOptions = (authState, isAdmin = false) => {
     return [
       { label: "Administrar nodos", to: { name: "NodeCreate" } },
       { label: "Acerca de", to: { name: "About" } },
-      { label: "Cerrar sesión", to: { name: "Logout" } },
+      { label: "Cerrar sesión", action: "logout" },
     ];
   }
 
   return [
     { label: "Acerca de", to: { name: "About" } },
-    { label: "Cerrar sesión", to: { action: "logout" } },
+    { label: "Cerrar sesión", action: "logout" },
   ];
 };
 

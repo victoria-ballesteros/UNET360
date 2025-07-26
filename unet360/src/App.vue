@@ -13,7 +13,7 @@
   <USidebar :isOpen="isPanelOpen" @close="isPanelOpen = false">
     <template v-for="(option, index) in sidebarOptions" :key="index">
       <RouterLink
-        v-if="option.to"
+        v-if="option.to && !option.action"
         :to="option.to"
         class="nav-item"
         @click="isPanelOpen = false"
@@ -38,11 +38,12 @@ import { ref, onBeforeMount, onMounted, computed } from "vue";
 import { useNodeStore } from "./service/stores/nodes.js";
 import { useTagStore } from "./service/stores/tags.js";
 import { useUserStore } from "./service/stores/user";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { getSidebarOptions } from "./service/global_dialogs";
 import { useAuthStore } from "@/service/stores/auth";
 
 const route = useRoute();
+const router = useRouter();
 
 const nodeStore = useNodeStore();
 const tagStore = useTagStore();
@@ -54,8 +55,13 @@ const isPanelOpen = ref(false);
 const sidebarOptions = computed(() => getSidebarOptions(authStore.isAuthenticated, authStore.isAdmin));
 
 function handleLogout() {
+  console.log("Logout clicked");
   isPanelOpen.value = false;
   authStore.logout();
+  // Si la ruta actual requiere autenticación, redirige al Home
+  if (route.meta && route.meta.requiresAuth) {
+    router.push({ name: 'Home' });
+  }
 }
 
 onBeforeMount(async () => {

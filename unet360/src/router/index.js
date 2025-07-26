@@ -89,22 +89,25 @@ const router = createRouter({
 // Guard global para proteger rutas que requieren autenticación
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore();
+  auth.checkAuthCookie(); // Sincroniza el token desde la cookie en cada navegación
+  
+  const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessRegister", "SuccessNewPassword", "SuccessPrePassword", "SuccessConfirmation"];
+  const isAuthRoute = authOnlyRoutes.includes(to.name);
+  const isAuthenticated = await auth.validateToken();
 
-  // Sincroniza el token desde la cookie en cada navegación
-  auth.checkAuthCookie();
+  // Si el usuario está autenticado y visita una ruta de autenticación, redirige al Home
+  if (isAuthRoute && isAuthenticated) {
+    next({ name: "Home" });
+    return;
+  }
 
   // Si la ruta requiere autenticación, valida el token con backend
   if (to.meta.requiresAuth) {
-    // Valida el token (puede ser asíncrono si consulta backend)
-    const valid = await auth.validateToken();
-    console.log("Ruta protegida, validando token...");
-    console.log("Token válido:", valid);
-    if (!valid) {
+    if (!isAuthenticated) {
       next({ name: "Login", query: { redirect: to.fullPath } });
       return;
     }
   }
-  // Si está autenticado o la ruta no requiere auth, continúa
   next();
 });
 

@@ -207,7 +207,8 @@ async function handleSubmit() {
 
     // Si login exitoso, redirige a Home
     if (authStore.isAuthenticated) {
-      router.push({ name: 'Home' });
+      const redirectPath = route.query.redirect || { name: 'Home' };
+      router.push(redirectPath);
     } else {
       // Si falla, muestra el error debajo de Contraseña y pone el input de email en rojo
       inputErrors.email = ' '; 
