@@ -69,6 +69,13 @@ function closePanel() {
       color: var(--fill-white);
       text-transform: uppercase;
       text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      padding: 0;
+      display: block;
     }
   }
 }
