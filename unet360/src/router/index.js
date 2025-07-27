@@ -89,26 +89,47 @@ const router = createRouter({
 // Guard global para proteger rutas que requieren autenticación
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore();
-  auth.checkAuthCookie(); // Sincroniza el token desde la cookie en cada navegación
-  
-  const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessRegister", "SuccessNewPassword", "SuccessPrePassword", "SuccessConfirmation"];
+  auth.checkAuthCookie();
+
+  const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessNewPassword", "SuccessPrePassword"];
   const isAuthRoute = authOnlyRoutes.includes(to.name);
+  const hash = window.location.hash;
+  let isSupabaseSignup = hash.includes('access_token') && hash.includes('type=signup');
+  if (!isSupabaseSignup && sessionStorage.getItem('supabase_signup') === 'true') {
+    isSupabaseSignup = true;
+  }
   const isAuthenticated = await auth.validateToken();
 
-  // Si el usuario está autenticado y visita una ruta de autenticación, redirige al Home
   if (isAuthRoute && isAuthenticated) {
     next({ name: "Home" });
     return;
   }
 
-  // Si la ruta requiere autenticación, valida el token con backend
-  if (to.meta.requiresAuth) {
-    if (!isAuthenticated) {
-      next({ name: "Login", query: { redirect: to.fullPath } });
-      return;
-    }
+  // Permitir acceso a SuccessConfirmation solo si viene de confirmación de Supabase
+  if (to.name === "SuccessConfirmation" && !isSupabaseSignup) {
+    next({ name: "Login" });
+    return;
+  }
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ name: "Login", query: { redirect: to.fullPath } });
+    return;
   }
   next();
 });
+
+// Detecta el hash de Supabase y redirige a success-confirmation si corresponde
+function handleSupabaseRedirect(router) {
+  const hash = window.location.hash;
+  if (hash.includes('access_token') && hash.includes('type=signup')) {
+    sessionStorage.setItem('supabase_signup', 'true');
+    import('@/service/stores/auth').then(mod => {
+      mod.useAuthStore().successState = true;
+      router.replace({ name: 'SuccessConfirmation' });
+    });
+  }
+}
+
+setTimeout(() => handleSupabaseRedirect(router), 0);
 
 export default router;

@@ -27,22 +27,22 @@
 import { useRoute, useRouter, RouterLink } from "vue-router";
 import { computed, onMounted } from "vue";
 
-import { useAuthSuccessStore } from '@/service/stores/authSuccess';
+import { useAuthStore } from '@/service/stores/auth';
 
 import UButton from "@/components/UButton.vue";
 
 // ═══════════════  Variables reactivas y helpers  ═══════════════
 const route = useRoute();
 const router = useRouter();
-const authSuccessStore = useAuthSuccessStore();
-const email = computed(() => authSuccessStore.email);
+const authStore = useAuthStore();
+const email = computed(() => authStore.successEmail);
 // Bloquear acceso si no se permite y desactivar flag tras cargar
 onMounted(() => {
-  if (!authSuccessStore.canAccessSuccess) {
+  if (!authStore.successState) {
     router.replace({ name: 'Login' });
     return;
   }
-  authSuccessStore.blockSuccess();
+  authStore.successState = false;
 });
 
 const successTexts = {

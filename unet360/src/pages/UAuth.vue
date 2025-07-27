@@ -28,7 +28,7 @@
           :icon="isPasswordField(field) ? (showPassword[field] ? 'icons/eye' : 'icons/eye-slash') : null"
           @icon-click="() => { if(isPasswordField(field)) showPassword[field] = !showPassword[field] }"
           :iconColor="'var(--border-gray)'"
-          @update:modelValue="() => { inputErrors.email = ''; inputErrors.password = ''; }"
+          @update:modelValue="() => { inputErrors.email = ''; inputErrors.password = ''; inputErrors.confirmPassword = ''; }"
         />
 
         <!-- Mensaje de error -->
@@ -76,7 +76,6 @@
 import { useRoute, useRouter, RouterLink } from "vue-router";
 import { reactive, computed, ref, watch } from "vue";
 
-import { useAuthSuccessStore } from '@/service/stores/authSuccess';
 import { useAuthStore } from '@/service/stores/auth';
 
 import UInput from "@/components/UInput.vue";
@@ -90,7 +89,6 @@ const showPassword = reactive({
   confirmPassword: false
 });
 
-const authSuccessStore = useAuthSuccessStore();
 const authStore = useAuthStore();
 const route = useRoute();
 const router = useRouter();
@@ -194,6 +192,7 @@ async function handleSubmit() {
   if (currentFields.value.includes("confirmPassword")) {
     if (inputModels.confirmPassword !== inputModels.password) {
       inputErrors.confirmPassword = "Las contraseñas no coinciden";
+      inputErrors.password = " ";
     }
   }
 
@@ -217,23 +216,33 @@ async function handleSubmit() {
     return;
   }
 
-  if (backendResult) {
-    // Solo guardar el email y permitir acceso a éxito si se usará en la pantalla de éxito
-    if (currentMode.value === 'Signup') {
-      authSuccessStore.setEmail(inputModels.email);
-      authSuccessStore.allowSuccess();
+  // ═══════════════ SIGNUP FLOW ═══════════════
+  if (currentMode.value === 'Signup') {
+    const result = await authStore.signup(inputModels.email, inputModels.password);
+    if (result.success) {
+      // Puedes guardar el email en el store principal si lo necesitas
+      authStore.successEmail = inputModels.email;
+      authStore.successState = true;
       router.push({ name: 'SuccessRegister' });
-    } else if (currentMode.value === 'Recovery') {
-      authSuccessStore.setEmail(inputModels.email);
-      authSuccessStore.allowSuccess();
-      router.push({ name: 'SuccessPrePassword' });
-    } else if (currentMode.value === 'NewPassword') {
-      authSuccessStore.allowSuccess();
-      router.push({ name: 'SuccessNewPassword' });
+    } else {
+      inputErrors.email = ' ';
+      inputErrors.password = result.message;
     }
+    return;
   }
-  // Aquí iría la lógica de submit real (API, etc.)
-  alert(`Formulario enviado para modo: ${currentMode.value}`);
+  // ═══════════════ RECOVERY FLOW ═══════════════
+  if (currentMode.value === 'Recovery') {
+    authStore.successEmail = inputModels.email;
+    authStore.successState = true;
+    router.push({ name: 'SuccessPrePassword' });
+    return;
+  }
+  // ═══════════════ NEW PASSWORD FLOW ═══════════════
+  if (currentMode.value === 'NewPassword') {
+    authStore.successState = true;
+    router.push({ name: 'SuccessNewPassword' });
+    return;
+  }
 
 }
 
