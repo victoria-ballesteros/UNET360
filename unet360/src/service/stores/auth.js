@@ -1,6 +1,7 @@
 
 // Pinia store para autenticación global
 import { defineStore } from 'pinia';
+import api from "@/axios";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useAuthStore = defineStore('auth', {
@@ -16,6 +17,7 @@ export const useAuthStore = defineStore('auth', {
     checkAuthCookie() {
       const match = document.cookie.match(/(^|;)\s*auth=([^;]*)/);
       this.token = match ? match[2] : null;
+      api.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
       this.isAuthenticated = !!this.token;
     },
 
@@ -30,9 +32,19 @@ export const useAuthStore = defineStore('auth', {
             headers: { 'Authorization': `Bearer ${this.token}` }
           });
 
-          console.log("response", this.token);
           const data = await res.json();
           valid = res.ok && data.status;
+
+          if (valid) {
+            if (data.response_obj.user_id) {
+              const userRes = await fetch(`${API_BASE_URL}/tenants/${data.response_obj.user_id}`, {
+                  method: 'GET',
+                  headers: { 'Authorization': `Bearer ${this.token}` }
+              });
+              const userData = await userRes.json();
+              this.user = userData.response_obj;
+            }
+          }
         } catch (e) {
           valid = false;
         }
@@ -74,7 +86,7 @@ export const useAuthStore = defineStore('auth', {
       this.token = null;
       this.user = null;
       this.isAuthenticated = false;
-      document.cookie = 'auth=; Max-Age=0; path=/';
+      document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     },
 
     // Registra un nuevo usuario

@@ -1,6 +1,6 @@
 // ═══════════════   Layout related dialogs  ═══════════════
 
-export const getSidebarOptions = (authState, isAdmin = false) => {
+export const getSidebarOptions = (authState, isAdmin = null) => {
   if (!authState) {
     return [
       { label: "Inicia sesión", to: { name: "Login" } },
@@ -9,7 +9,7 @@ export const getSidebarOptions = (authState, isAdmin = false) => {
     ];
   }
 
-  if (isAdmin) {
+  if (isAdmin == "admin") {
     return [
       { label: "Administrar nodos", to: { name: "NodeCreate" } },
       { label: "Acerca de", to: { name: "About" } },
@@ -19,6 +19,7 @@ export const getSidebarOptions = (authState, isAdmin = false) => {
 
   return [
     { label: "Acerca de", to: { name: "About" } },
+    { label: "Mapa 360", to: { name: "Map" } },
     { label: "Cerrar sesión", action: "logout" },
   ];
 };
@@ -44,4 +45,8 @@ export const getCardsInfo = () => {
 
 export const getGeneralInfo = () => {
   return "Navega el campus con mapas 360°, rutas personalizadas y búsqueda inteligente. Olvídate de perderte y disfruta de una experiencia universitaria fluida.";
+};
+
+export const getButtonLabel = (authStatus = false) => {
+  return authStatus ? "Ir al mapa" : "Empieza ahora";
 };

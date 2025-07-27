@@ -14,3 +14,7 @@ html, body {
 body {
   @include paragraph-small;
 }
+
+.no-underline-link {
+  text-decoration: none;
+}

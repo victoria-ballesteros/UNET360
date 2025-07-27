@@ -11,6 +11,7 @@ export const useNodeStore = defineStore("node", () => {
   async function fetchNodes() {
     isLoading.value = true;
     try {
+      console.log("Token: ", token)
       const response = await getNodes();
       if (!response?.status) {
         error.value = new Error(

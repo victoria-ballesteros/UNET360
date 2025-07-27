@@ -34,10 +34,9 @@
 <script setup>
 import USidebar from "./components/USidebar.vue";
 import UHeader from "./components/UHeader.vue";
-import { ref, onBeforeMount, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useNodeStore } from "./service/stores/nodes.js";
 import { useTagStore } from "./service/stores/tags.js";
-import { useUserStore } from "./service/stores/user";
 import { useRoute, useRouter } from "vue-router";
 import { getSidebarOptions } from "./service/global_dialogs";
 import { useAuthStore } from "@/service/stores/auth";
@@ -47,29 +46,21 @@ const router = useRouter();
 
 const nodeStore = useNodeStore();
 const tagStore = useTagStore();
-const userStore = useUserStore();
 const authStore = useAuthStore();
 
 const headerHeight = ref(0);
 const isPanelOpen = ref(false);
-const sidebarOptions = computed(() => getSidebarOptions(authStore.isAuthenticated, authStore.isAdmin));
+const sidebarOptions = computed(() => getSidebarOptions(authStore.isAuthenticated, authStore.user?.role));
 
 function handleLogout() {
   console.log("Logout clicked");
   isPanelOpen.value = false;
   authStore.logout();
-  // Si la ruta actual requiere autenticación, redirige al Home
-  if (route.meta && route.meta.requiresAuth) {
-    router.push({ name: 'Home' });
-  }
+  router.push({ name: 'Login' });
 }
 
-onBeforeMount(async () => {
-  if (userStore.authState == null || !userStore.authState) {
-    await userStore.fetchUserState();
-  }
-
-  if (userStore.authState) {
+async function obtainData() {
+  if (authStore.isAuthenticated) {
     if (!nodeStore.nodes) {
       await nodeStore.fetchNodes();
     }
@@ -78,9 +69,11 @@ onBeforeMount(async () => {
       await tagStore.fetchTags();
     }
   }
-});
+}
 
-onMounted(async () => {
+onMounted(async() => {
+  await obtainData();
+
   const headerEl = document.querySelector(".header-container");
   if (headerEl) {
     headerHeight.value = headerEl.getBoundingClientRect().height;

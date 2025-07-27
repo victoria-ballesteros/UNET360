@@ -31,9 +31,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if request.url.path in self.excluded_paths:
             return await call_next(request)
         # Ruta especial para status: solo valida el token con Supabase, no requiere tenant
-        if request.url.path == "/auth/status" and request.headers.get("Authorization"):
+        if request.url.path == "/auth/status":
             try:
                 auth_header = request.headers.get("Authorization")
+                if not auth_header:
+                    return await call_next(None)
                 if auth_header and auth_header.startswith("Bearer "):
                     access_token = auth_header.split(" ", 1)[1]
                     supabase_client: SupabaseClient = request.app.state.supabase

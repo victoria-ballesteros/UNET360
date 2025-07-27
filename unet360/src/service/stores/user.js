@@ -16,6 +16,10 @@ export const useUserStore = defineStore(
       try {
         const response = await isAuthenticated();
         authState.value = !!response?.status;
+
+        if (authState.value){
+          user.value = response?.response_obj
+        }
       } catch (err) {
         error.value = err;
       } finally {

@@ -10,6 +10,7 @@ import Home from "@/pages/UHome.vue";
 import Showcase from "@/pages/UShowcase.vue";
 import Auth from "@/pages/UAuth.vue";
 import AuthSuccess from "@/pages/UAuthSuccess.vue";
+import Map from "@/pages/UMap.vue";
 
 const routes = [
   {
@@ -79,6 +80,12 @@ const routes = [
       },
     ],
   },
+    {
+    path: "/360-map",
+    name: "Map",
+    component: Map,
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({
@@ -88,27 +95,29 @@ const router = createRouter({
 
 // Guard global para proteger rutas que requieren autenticación
 router.beforeEach(async (to, from, next) => {
-  const auth = useAuthStore();
-  auth.checkAuthCookie(); // Sincroniza el token desde la cookie en cada navegación
-  
-  const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessRegister", "SuccessNewPassword", "SuccessPrePassword", "SuccessConfirmation"];
-  const isAuthRoute = authOnlyRoutes.includes(to.name);
-  const isAuthenticated = await auth.validateToken();
+  try {
+    const auth = useAuthStore();
+    auth.checkAuthCookie();
 
-  // Si el usuario está autenticado y visita una ruta de autenticación, redirige al Home
-  if (isAuthRoute && isAuthenticated) {
-    next({ name: "Home" });
-    return;
-  }
+    const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessRegister", "SuccessNewPassword", "SuccessPrepassword", "SuccessConfirmation"];
+    const isAuthRoute = authOnlyRoutes.includes(to.name);
+    const isAuthenticated = await auth.validateToken();
 
-  // Si la ruta requiere autenticación, valida el token con backend
-  if (to.meta.requiresAuth) {
-    if (!isAuthenticated) {
+    if (isAuthRoute && isAuthenticated) {
+      next({ name: "Home" });
+      return;
+    }
+
+    if (to.meta.requiresAuth && !isAuthenticated) {
       next({ name: "Login", query: { redirect: to.fullPath } });
       return;
     }
+
+    next();
+  } catch (error) {
+    console.error("Error en router.beforeEach:", error);
+    next({ name: "Login" });
   }
-  next();
 });
 
 export default router;

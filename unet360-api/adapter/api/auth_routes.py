@@ -51,7 +51,6 @@ async def signup_user(user_data: UserSignUpDTO,
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
 
-
 @router.post("/login", response_model=GeneralResponse)
 async def login_user(user_data: UserLoginDTO, 
                      auth_service: AuthService = Depends(get_auth_service)):

@@ -6,11 +6,15 @@
       </p>
       <UIcon name="images/home-image" size="280" />
       <p class="lower-paragraph">{{ generalInfo }}</p>
-      <UButton
-        text="Empieza ahora"
-        @click="handleButtonClick"
-        type="contrast"
-      />
+      <RouterLink
+        :to="{ name: 'Login' }"
+        class="no-underline-link"
+      >
+        <UButton
+          text="Empieza ahora"
+          type="contrast"
+        />
+      </RouterLink>
     </div>
     <div class="card-wrapper">
       <div v-for="(item, index) in cardsInfo" :key="index" class="box">
@@ -25,18 +29,21 @@ import UIcon from "@/components/UIcon.vue";
 import UButton from "@/components/UButton.vue";
 import UCard from "@/components/UCard.vue";
 import { ref, onMounted } from "vue";
-import { getCardsInfo, getGeneralInfo } from "@/service/global_dialogs";
+import { getCardsInfo, getGeneralInfo, getButtonLabel } from "@/service/global_dialogs";
+import { useAuthStore } from "@/service/stores/auth";
 
 const cardsInfo = getCardsInfo();
 const generalInfo = getGeneralInfo();
+const authStore = useAuthStore();
+const isAuthenticated = ref(false);
+const buttonLabel = ref(null);
 
 const heroRef = ref(null);
 
-const handleButtonClick = () => {
-  return;
-};
+onMounted(async () => {
+  isAuthenticated.value = authStore.isAuthenticated;
+  buttonLabel.value = getButtonLabel(isAuthenticated.value);
 
-onMounted(() => {
   const headerHeightVar = getComputedStyle(
     document.documentElement
   ).getPropertyValue("--header-height");
