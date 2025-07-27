@@ -92,8 +92,22 @@ export const useAuthStore = defineStore('auth', {
     // Registra un nuevo usuario
     async signup(email, password) {
       this.loading = true;
-      // Aquí iría la lógica real y el envío de email de confirmación
+      let result = { success: false, message: 'Error en el registro' };
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        result.success = res.ok && data.status;
+        result.message = data.response_obj?.message || result.message;
+      } catch (e) {
+        this.error = 'Error de red';
+        result.message = 'Error de red';
+      }
       this.loading = false;
+      return result;
     },
 
     // Envía email de recuperación de contraseña

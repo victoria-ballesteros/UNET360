@@ -99,25 +99,49 @@ router.beforeEach(async (to, from, next) => {
     const auth = useAuthStore();
     auth.checkAuthCookie();
 
-    const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessRegister", "SuccessNewPassword", "SuccessPrepassword", "SuccessConfirmation"];
+    const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessNewPassword", "SuccessPrePassword"];
     const isAuthRoute = authOnlyRoutes.includes(to.name);
+
+    const hash = window.location.hash;
+    let isSupabaseSignup = hash.includes('access_token') && hash.includes('type=signup');
+    if (!isSupabaseSignup && sessionStorage.getItem('supabase_signup') === 'true') {
+      isSupabaseSignup = true;
+    }
+
     const isAuthenticated = await auth.validateToken();
 
     if (isAuthRoute && isAuthenticated) {
-      next({ name: "Home" });
-      return;
+      return next({ name: "Home" });
+    }
+
+    if (to.name === "SuccessConfirmation" && !isSupabaseSignup) {
+      return next({ name: "Login" });
     }
 
     if (to.meta.requiresAuth && !isAuthenticated) {
-      next({ name: "Login", query: { redirect: to.fullPath } });
-      return;
+      return next({ name: "Login", query: { redirect: to.fullPath } });
     }
 
     next();
   } catch (error) {
-    console.error("Error en router.beforeEach:", error);
+    console.error("Error en beforeEach:", error);
     next({ name: "Login" });
   }
 });
+
+
+// Detecta el hash de Supabase y redirige a success-confirmation si corresponde
+function handleSupabaseRedirect(router) {
+  const hash = window.location.hash;
+  if (hash.includes('access_token') && hash.includes('type=signup')) {
+    sessionStorage.setItem('supabase_signup', 'true');
+    import('@/service/stores/auth').then(mod => {
+      mod.useAuthStore().successState = true;
+      router.replace({ name: 'SuccessConfirmation' });
+    });
+  }
+}
+
+setTimeout(() => handleSupabaseRedirect(router), 0);
 
 export default router;
