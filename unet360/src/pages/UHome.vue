@@ -7,11 +7,11 @@
       <UIcon name="images/home-image" size="280" />
       <p class="lower-paragraph">{{ generalInfo }}</p>
       <RouterLink
-        :to="{ name: 'Login' }"
+        :to="{ name: button.route }"
         class="no-underline-link"
       >
         <UButton
-          text="Empieza ahora"
+          :text="button.label"
           type="contrast"
         />
       </RouterLink>
@@ -28,22 +28,26 @@
 import UIcon from "@/components/UIcon.vue";
 import UButton from "@/components/UButton.vue";
 import UCard from "@/components/UCard.vue";
-import { ref, onMounted } from "vue";
-import { getCardsInfo, getGeneralInfo, getButtonLabel } from "@/service/global_dialogs";
+import { ref, onMounted, onBeforeMount } from "vue";
+import { getCardsInfo, getGeneralInfo, getButtonData } from "@/service/global_dialogs";
 import { useAuthStore } from "@/service/stores/auth";
+
+let authStore = null;
 
 const cardsInfo = getCardsInfo();
 const generalInfo = getGeneralInfo();
-const authStore = useAuthStore();
 const isAuthenticated = ref(false);
-const buttonLabel = ref(null);
+const button = ref(null);
 
 const heroRef = ref(null);
 
-onMounted(async () => {
+onBeforeMount(() => {
+  authStore = useAuthStore();
   isAuthenticated.value = authStore.isAuthenticated;
-  buttonLabel.value = getButtonLabel(isAuthenticated.value);
+  button.value = getButtonData(isAuthenticated.value);
+});
 
+onMounted(async () => {
   const headerHeightVar = getComputedStyle(
     document.documentElement
   ).getPropertyValue("--header-height");

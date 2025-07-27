@@ -47,6 +47,7 @@ export const getGeneralInfo = () => {
   return "Navega el campus con mapas 360°, rutas personalizadas y búsqueda inteligente. Olvídate de perderte y disfruta de una experiencia universitaria fluida.";
 };
 
-export const getButtonLabel = (authStatus = false) => {
-  return authStatus ? "Ir al mapa" : "Empieza ahora";
-};
+export const getButtonData = (authStatus = false) => ({
+  label: authStatus ? "Ir al mapa" : "Empieza ahora",
+  route: authStatus ? "Map" : "Auth",
+});
