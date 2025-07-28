@@ -15,3 +15,11 @@ class AuthResponseDTO(BaseModel):
     user_id: str
     user_role: Optional[str] = None
     expires_in: Optional[int] = None
+
+class ForgotPasswordDTO(BaseModel):
+    email: str
+
+class ResetPasswordDTO(BaseModel):
+    access_token: str
+    refresh_token: str
+    new_password: str

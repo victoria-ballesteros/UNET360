@@ -1,15 +1,15 @@
 from typing import Optional, Any
 import logging
-from fastapi import HTTPException, status 
-from gotrue.errors import AuthApiError 
-from supabase import Client as SupabaseClient 
+from fastapi import HTTPException, status
+from gotrue.errors import AuthApiError
+from supabase import Client as SupabaseClient
 
-from core.dtos.auth_dto import UserSignUpDTO, UserLoginDTO, AuthResponseDTO 
-from core.services.tenant_service import TenantService 
+from core.dtos.auth_dto import UserSignUpDTO, UserLoginDTO, AuthResponseDTO, ForgotPasswordDTO, ResetPasswordDTO
+from core.services.tenant_service import TenantService
 from core.dtos.tenant_dto import TenantCreateDTO
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO) 
+logger.setLevel(logging.INFO)
 
 
 class AuthService:
@@ -137,3 +137,45 @@ class AuthService:
                 detail=f"An unexpected error occurred: {str(e)}"
             )
 
+    async def forgot_password(self, dto: ForgotPasswordDTO) -> dict:
+        try:
+            self.supabase_client.auth.reset_password_for_email(email=dto.email)
+            return {"message": "If an account with this email exists, a password reset link has been sent."}
+        except AuthApiError as e:
+            logger.error(f"AuthApiError during forgot password: {e.message}")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error sending password reset: {e.message}")
+        except Exception as e:
+            logger.error(f"An unexpected error occurred during forgot password: {e}", exc_info=True)
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred.")
+
+    async def reset_password(self, dto: ResetPasswordDTO) -> dict:
+        """
+        Updates the user's password using a valid access token and refresh token from a recovery link.
+        """
+        try:
+            logger.info(f"Attempting to reset password...")
+            
+            # 1. Establecemos la sesión del usuario temporalmente con ambos tokens.
+            self.supabase_client.auth.set_session(dto.access_token, dto.refresh_token)
+            
+            # 2. Actualizamos la contraseña. Ahora el cliente sabe a quién actualizar.
+            user_response = self.supabase_client.auth.update_user(
+                {"password": dto.new_password}
+            )
+            
+            # 3. Cerramos la sesión temporal para no dejarla abierta (buena práctica).
+            self.supabase_client.auth.sign_out()
+
+            if not user_response.user:
+                logger.warning("Password reset failed: Supabase returned no user for the provided token.")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired token.")
+            
+            logger.info(f"Password for user {user_response.user.id} updated successfully.")
+            return {"message": "Password has been updated successfully."}
+        
+        except AuthApiError as e:
+            logger.error(f"AuthApiError during password reset: {e.message}")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error updating password: {e.message}")
+        except Exception as e:
+            logger.error("An unexpected error occurred during password reset:", exc_info=True)
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred.")
