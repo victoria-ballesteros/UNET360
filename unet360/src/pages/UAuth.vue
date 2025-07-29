@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="form-container">
     <!-- ═══════════════  Títulos y subtítulos  ═══════════════ -->
@@ -46,7 +44,8 @@
       <div class="button-container">
         <UButton
           :text="buttonTexts[currentMode]"
-          :type="isFormValid ? 'contrast-2' : 'deactivated'"
+          :type="isFormValid && !authStore.loading ? 'contrast-2' : 'deactivated'"
+          :disabled="authStore.loading"
           @click="handleSubmit"
         />
       </div>
@@ -147,7 +146,8 @@ const inputErrors = reactive({
 
 
 // Helpers para modo, campos y textos actuales
-const currentMode = computed(() => route.name || "Login");
+const validModes = ["Login", "Signup", "Recovery", "NewPassword"];
+const currentMode = computed(() => validModes.includes(route.name) ? route.name : "Login");
 const currentFields = computed(() => formFields[currentMode.value] || []);
 const currentTexts = computed(() => authTexts[currentMode.value] || authTexts.Login);
 
@@ -170,6 +170,7 @@ const isFormValid = computed(() =>
  * Si no hay errores, ejecuta la lógica de submit (API, etc).
  */
 async function handleSubmit() {
+  if (authStore.loading) return;
   // Limpiar errores previos
   currentFields.value.forEach(field => inputErrors[field] = "");
 
@@ -232,6 +233,7 @@ async function handleSubmit() {
   }
   // ═══════════════ RECOVERY FLOW ═══════════════
   if (currentMode.value === 'Recovery') {
+    const result = await authStore.sendRecoveryEmail(inputModels.email);
     authStore.successEmail = inputModels.email;
     authStore.successState = true;
     router.push({ name: 'SuccessPrePassword' });
@@ -239,8 +241,25 @@ async function handleSubmit() {
   }
   // ═══════════════ NEW PASSWORD FLOW ═══════════════
   if (currentMode.value === 'NewPassword') {
-    authStore.successState = true;
-    router.push({ name: 'SuccessNewPassword' });
+    // Extrae los tokens del hash
+    const hash = window.location.hash;
+    const access_token = hash.match(/access_token=([^&]+)/)?.[1] || '';
+    const refresh_token = hash.match(/refresh_token=([^&]+)/)?.[1] || '';
+    if (!access_token || !refresh_token) {
+      inputErrors.password = 'Enlace inválido o expirado.';
+      return;
+    }
+    const result = await authStore.changePassword({
+      access_token,
+      refresh_token,
+      new_password: inputModels.password
+    });
+    if (result.success) {
+      authStore.successState = true;
+      router.push({ name: 'SuccessNewPassword' });
+    } else {
+      inputErrors.password = result.message;
+    }
     return;
   }
 
