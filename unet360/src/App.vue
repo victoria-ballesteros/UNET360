@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="upper-container">
-      <UHeader @isPanelOpen="isPanelOpen = !isPanelOpen"></UHeader>
+      <UHeader @isPanelOpen="isPanelOpen = !isPanelOpen" class="provisional-header-container"></UHeader>
       <main class="content-container">
         <router-view />
       </main>
@@ -60,8 +60,11 @@ function handleLogout() {
 }
 
 async function obtainData() {
+  console.log("Obteniendo datos");
   if (authStore.isAuthenticated) {
+    console.log("Autenticado");
     if (!nodeStore.nodes) {
+      console.log("Busca nodos");
       await nodeStore.fetchNodes();
     }
 

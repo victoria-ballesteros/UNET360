@@ -1,83 +1,34 @@
 <template>
   <transition name="fade-panorama">
-    <div
-      v-show="isImageLoaded"
-      ref="viewerContainer"
-      class="background-viewer"
-    />
+    <div v-show="isImageLoaded" ref="viewerContainer" class="background-viewer" />
   </transition>
-  <div class="outer-container">
+  <div class="outer-container" :key="componentKey">
     <div v-if="!imageFile" class="upper-container">
-      <UButton
-        text="Subir imagen"
-        @click="openUploadFileDialog"
-        type="secondary"
-        icon="cloud-upload"
-      />
-      <input
-        type="file"
-        ref="fileInput"
-        style="display: none"
-        @change="handleFileChange"
-      />
+      <UButton text="Subir imagen" @click="openUploadFileDialog" type="secondary" icon="cloud-upload" />
+      <input type="file" ref="fileInput" style="display: none" @change="handleFileChange" />
       <div class="icons-container">
         <div class="pair-container">
-          <UIcon
-            name="icons/star"
-            size="22"
-            color="var(--strong-gray)"
-            :rotation="15"
-          />
-          <UIcon
-            name="icons/star"
-            size="15"
-            color="var(--strong-gray)"
-            :rotation="22"
-          />
+          <UIcon name="icons/star" size="22" color="var(--strong-gray)" :rotation="15" />
+          <UIcon name="icons/star" size="15" color="var(--strong-gray)" :rotation="22" />
         </div>
         <UIcon name="icons/star" size="22" color="var(--strong-gray)" />
       </div>
     </div>
-    <div
-      class="lower-container"
-      :class="['lower-container', { 'transparent-bg': isImageLoaded }]"
-      ref="lowerContainer"
-    >
+    <div class="lower-container" :class="['lower-container', { 'transparent-bg': isImageLoaded }]" ref="lowerContainer">
       <p class="form-title">{{ formTitle }}</p>
       <div class="form-container" ref="scrollContainer">
-        <div
-          class="input-container"
-          :class="{ 'has-error': inputErrors[input] }"
-          v-for="(input, index) in inputLabels"
-          :key="index"
-        >
-          <p
-            class="input-label"
-            :class="{ 'label-disabled': inputDisabled[input] }"
-          >
+        <div class="input-container" :class="{ 'has-error': inputErrors[input] }" v-for="(input, index) in inputLabels"
+          :key="index">
+          <p class="input-label" :class="{ 'label-disabled': inputDisabled[input] }">
             {{ input }}
           </p>
           <div class="node-input-container">
-            <UInput
-              v-model="inputModels[input]"
-              styleType="default"
-              :placeholder="inputPlaceholders[input]"
-              :icon="inputIcon[input]"
-              :iconRotation="index * 90"
-              :disabled="inputDisabled[input]"
-              @input="() => (inputTouched[input] = true)"
-            />
-            <UInput
-              v-if="inputWeightModels[input] != null"
-              v-model="inputWeightModels[input]"
-              styleType="default"
-              :disabled="inputDisabled[input]"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9.]*"
-              placeholder="Peso"
-              @input="() => (inputTouched[input] = true)"
-            />
+            <UInput v-model="inputModels[input]" styleType="default" :placeholder="inputPlaceholders[input]"
+              :icon="inputIcon[input]" :iconRotation="index * 90" :disabled="inputDisabled[input]"
+              @input="() => (inputTouched[input] = true)" />
+            <UInput v-if="inputWeightModels[input] != null" v-model="inputWeightModels[input]" styleType="default"
+              :disabled="inputDisabled[input]" type="text" inputmode="numeric" pattern="[0-9.]*" placeholder="Peso"
+              @input="() => (inputTouched[input] = true)" />
           </div>
           <p v-if="inputErrors[input]" class="input-error-label">
             {{ inputErrors[input] }}
@@ -86,45 +37,24 @@
         <div class="input-container" v-show="expandForm">
           <p class="input-label">Datos opcionales</p>
           <div class="tag-container">
-            <UIcon
-              v-for="(tag, index) in tags"
-              :key="index"
-              :name="'icons/' + tag.icon_name"
-              size="34"
-              :color="
-                tagSelection[tag.name]
-                  ? 'var(--main-blue)'
-                  : 'var(--border-gray)'
-              "
-              @click="handleTagClick(tag.name)"
-            />
+            <UIcon v-for="(tag, index) in tags" :key="index" :name="'icons/' + tag.icon_name" size="34" :color="tagSelection[tag.name]
+                ? 'var(--main-blue)'
+                : 'var(--border-gray)'
+              " @click="handleTagClick(tag.name)" />
           </div>
         </div>
       </div>
       <div class="button-container">
         <UButton text="Cancelar" @click="handleCancelEvent" type="tertiary" />
-        <UButton
-          :text="actionButton"
-          @click.stop="handleFormExpansion"
-          :type="buttonType"
-        />
+        <UButton :text="actionButton" @click.stop="handlePrimaryClick" :type="buttonType" />
       </div>
     </div>
   </div>
 
   <UDialog v-model="showDialog" headerTitle="Identificación del tag">
     <div class="tag-dialog-content">
-      <UInput
-        v-model="tagCustomName[actualTagSelected]"
-        styleType="default"
-        placeholder="Baño oeste"
-      />
-      <UButton
-        style="align-self: flex-end"
-        text="Aceptar"
-        @click="handleTagCustomization"
-        :type="dialogButtonType"
-      />
+      <UInput v-model="tagCustomName[actualTagSelected]" styleType="default" placeholder="Baño oeste" />
+      <UButton style="align-self: flex-end" text="Aceptar" @click="handleTagCustomization" :type="dialogButtonType" />
     </div>
   </UDialog>
 </template>
@@ -162,6 +92,14 @@ const showDialog = ref(false);
 const scrollContainer = ref(null);
 const actualTagSelected = ref("");
 const dialogButtonType = ref("deactivated");
+
+
+// ═══════════════  Reload page state  ═══════════════
+
+const componentKey = ref(0);
+function resetForm() {
+  componentKey.value++;
+}
 
 // ═══════════════  360 viewer  ═══════════════
 
@@ -206,7 +144,7 @@ function checkIfReadyToSubmit() {
   //     (value) => value?.trim() !== ""
   //   );
   const noErrors = Object.values(inputErrors).every((error) => error === "");
-  buttonType.value = noErrors && imageFile.value ? "primary" : "deactivated";
+  buttonType.value = (noErrors && imageFile.value) ? "primary" : "deactivated";
 }
 
 const inputTouched = reactive({});
@@ -218,7 +156,7 @@ inputLabels.forEach((label) => {
   watch(
     [() => inputModels[label], () => inputWeightModels[label]],
     ([newVal, newWeight]) => {
-      if (!inputTouched[label] && !newVal) {
+      if (!inputTouched[label] && !newVal && !newWeight) {
         return;
       }
       const trimmed = newVal?.trim();
@@ -233,12 +171,8 @@ inputLabels.forEach((label) => {
 
       if (!newWeight?.toString().trim() && trimmed) {
         inputErrors[label] = "El peso no puede estar vacío";
-        return;
-      }
-
-      if (newWeight?.toString().trim() && !inputModels[label]) {
+      } else if (newWeight?.toString().trim() && inputModels[label] == "") {
         inputErrors[label] = "Peso asignado a una arista incompleta";
-        return;
       }
 
       checkIfReadyToSubmit();
@@ -286,7 +220,15 @@ function handleCloseViewer() {
 
 // ═══════════════  Form buttons  ═══════════════
 
-function handleCancelEvent() {}
+function handleCancelEvent() { }
+
+async function handlePrimaryClick() {
+  if (actionButton.value == "Continuar") {
+    await handleFormExpansion();
+  } else {
+    await handleFormSubmit();
+  }
+}
 
 async function handleFormExpansion() {
   handleCloseViewer();
@@ -322,6 +264,12 @@ async function handleFormExpansion() {
       checkIfReadyToSubmit();
     }
   );
+}
+
+async function handleFormSubmit() {
+  console.log("Data submitted.");
+  resetForm();
+  handleCloseViewer();
 }
 
 // ═══════════════  Tag handling  ═══════════════

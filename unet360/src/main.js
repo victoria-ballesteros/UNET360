@@ -8,5 +8,11 @@ import './assets/styles/_main.scss'
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
+const app = createApp(App)
 
-createApp(App).use(pinia).use(router).mount('#app')
+app.use(pinia)
+app.use(router)
+
+router.isReady().then(() => {
+  app.mount('#app')
+})
