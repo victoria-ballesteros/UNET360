@@ -78,6 +78,11 @@ const routes = [
         name: "SuccessConfirmation",
         component: AuthSuccess,
       },
+      {
+        path: "newpassword",
+        name: "NewPassword",
+        component: Auth,
+      },
     ],
   },
     {
@@ -99,7 +104,7 @@ router.beforeEach(async (to, from, next) => {
     const auth = useAuthStore();
     auth.checkAuthCookie();
 
-    const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessNewPassword", "SuccessPrePassword"];
+    const authOnlyRoutes = ["Login", "Signup", "Recovery", "NewPassword", "SuccessNewPassword", "SuccessPrePassword"];
     const isAuthRoute = authOnlyRoutes.includes(to.name);
 
     const hash = window.location.hash;
@@ -133,12 +138,17 @@ router.beforeEach(async (to, from, next) => {
 // Detecta el hash de Supabase y redirige a success-confirmation si corresponde
 function handleSupabaseRedirect(router) {
   const hash = window.location.hash;
+  // Confirmación de registro
   if (hash.includes('access_token') && hash.includes('type=signup')) {
     sessionStorage.setItem('supabase_signup', 'true');
     import('@/service/stores/auth').then(mod => {
       mod.useAuthStore().successState = true;
       router.replace({ name: 'SuccessConfirmation' });
     });
+  }
+  // Recuperación de contraseña
+  if (hash.includes('access_token') && hash.includes('type=recovery')) {
+    router.replace({ name: 'NewPassword', hash });
   }
 }
 

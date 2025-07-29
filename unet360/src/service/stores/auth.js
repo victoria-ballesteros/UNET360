@@ -1,4 +1,3 @@
-
 // Pinia store para autenticación global
 import { defineStore } from 'pinia';
 import api from "@/axios";
@@ -113,15 +112,45 @@ export const useAuthStore = defineStore('auth', {
     // Envía email de recuperación de contraseña
     async sendRecoveryEmail(email) {
       this.loading = true;
-      // Aquí iría la lógica real para enviar el email
+      this.error = null;
+      let result = { success: false, message: '' };
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        result.success = res.ok && data.status;
+        result.message = data.response_obj?.message || 'Si existe una cuenta, se ha enviado un enlace de recuperación.';
+      } catch (e) {
+        this.error = 'Error de red';
+        result.message = 'Error de red';
+      }
       this.loading = false;
+      return result;
     },
 
-    // Cambia la contraseña del usuario autenticado
-    async changePassword(newPassword) {
+    // Cambia la contraseña usando los tokens de recuperación
+    async changePassword({ access_token, refresh_token, new_password }) {
       this.loading = true;
-      // Aquí iría la lógica real para cambiar la contraseña usando el token
+      this.error = null;
+      let result = { success: false, message: '' };
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token, refresh_token, new_password })
+        });
+        const data = await res.json();
+        result.success = res.ok && data.status;
+        result.message = data.response_obj?.message || (result.success ? 'Contraseña cambiada correctamente.' : 'No se pudo cambiar la contraseña.');
+      } catch (e) {
+        this.error = 'Error de red';
+        result.message = 'Error de red';
+      }
       this.loading = false;
+      return result;
     }
   }
 });
