@@ -1,6 +1,7 @@
 from beanie import Document, Link, Indexed
 from pydantic import Field
 from typing import Optional, Dict, List
+import math
 
 from .location_model import Location
 from .tag_model import Tag
@@ -23,10 +24,14 @@ class Node(Document):
         example=[{"003": 1.5}, None, {"001": 0.5}, None]
     )
     
+    path_weights: List[float] = Field(
+        default=[0, math.pi / 2, math.pi, -math.pi / 2],
+        description="Lista de pesos (floats) para cada nodo adyacente."
+    )
+    
     tags: Optional[Dict[str, List[str]]] = Field(
         description="Clave = nombre del tag, Valores = lista"
     )
 
     class Settings:
         name = "node"
-        
