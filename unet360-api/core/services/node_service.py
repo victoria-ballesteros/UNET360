@@ -59,8 +59,8 @@ class NodeService:
             location=location,
             url_image=new_node.url_image,
             adjacent_nodes=adjacent_nodes,
+            path_weights=new_node.path_weights,
             tags=tags_dict
-
         )
 
         new_node_db_obj = await self.repository.create(new_node=node_db_obj)
@@ -68,13 +68,12 @@ class NodeService:
         if not new_node_db_obj.id:
             raise HTTPException(status_code=500, detail=CREATE_ERROR_MESSAGE)
         
-        
-
         return NodeCreateDTO(
             name=new_node_db_obj.name,
             location=new_node_db_obj.location.name if new_node_db_obj.location else None,
             url_image=new_node_db_obj.url_image,
             adjacent_nodes=new_node_db_obj.adjacent_nodes,
+            path_weights=new_node_db_obj.path_weights,
             tags=new_node_db_obj.tags
         )
 
@@ -101,18 +100,15 @@ class NodeService:
         
         update_data = dto.dict(exclude_unset=True)
 
-        # Procesamiento especial para tags si vienen en el update
         if 'tags' in update_data:
             tags_dict = {}
             for tag_name, tag_values in update_data['tags'].items():
-                # Verificar que el tag exista en la base de datos
                 tag = await self.tag_repo.get_by_name(tag_name)
                 if not tag:
                     raise HTTPException(status_code=404, detail=f"Tag '{tag_name}' no encontrado")
                 tags_dict[tag_name] = tag_values
             update_data['tags'] = tags_dict
 
-        # Procesamiento especial para adjacent_nodes si vienen en el update
         if 'adjacent_nodes' in update_data:
             adjacent_nodes = []
             for adjacent in update_data['adjacent_nodes']:
