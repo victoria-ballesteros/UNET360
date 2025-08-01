@@ -3,16 +3,12 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import App from './App.vue'
 import router from './router'
+import '@photo-sphere-viewer/core/index.css';
+import '@photo-sphere-viewer/markers-plugin/index.css';
 
 import './assets/styles/_main.scss'
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
-const app = createApp(App)
 
-app.use(pinia)
-app.use(router)
-
-router.isReady().then(() => {
-  app.mount('#app')
-})
+createApp(App).use(pinia).use(router).mount('#app')

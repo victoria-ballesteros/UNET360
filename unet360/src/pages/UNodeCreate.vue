@@ -1,8 +1,11 @@
 <template>
+  <div v-if="isUploading" class="loading-bar-container">
+    <div class="loading-bar"></div>
+  </div>
   <transition name="fade-panorama">
     <div v-show="isImageLoaded" ref="viewerContainer" class="background-viewer" />
   </transition>
-  <div class="outer-container" :key="componentKey">
+  <div v-if="!isUploading" class="outer-container">
     <div v-if="!imageFile" class="upper-container">
       <UButton text="Subir imagen" @click="openUploadFileDialog" type="secondary" icon="cloud-upload" />
       <input type="file" ref="fileInput" style="display: none" @change="handleFileChange" />
@@ -77,8 +80,15 @@ import UDialog from "@/components/UDialog.vue";
 import { useNodeStore } from "../service/stores/nodes";
 import { useTagStore } from "@/service/stores/tags";
 
+import { obtainData } from "../service/shared/utils";
+import { uploadImageToServer, createNode } from "@/service/requests/requests";
+
+import { useRouter } from "vue-router";
+
 import { Viewer } from "@photo-sphere-viewer/core";
 import "@photo-sphere-viewer/core/index.css";
+
+const router = useRouter();
 
 // ═══════════════  Components variables  ═══════════════
 
@@ -96,9 +106,10 @@ const dialogButtonType = ref("deactivated");
 
 // ═══════════════  Reload page state  ═══════════════
 
-const componentKey = ref(0);
+const isUploading = ref(false);
+
 function resetForm() {
-  componentKey.value++;
+  window.location.reload();
 }
 
 // ═══════════════  360 viewer  ═══════════════
@@ -267,10 +278,51 @@ async function handleFormExpansion() {
 }
 
 async function handleFormSubmit() {
-  console.log("Data submitted.");
+  isUploading.value = true;
+  const uploadImageResponse = await uploadImageToServer(imageFile.value);
+  if (!uploadImageResponse || !uploadImageResponse?.status){
+    isUploading.value = false;
+    resetForm();
+    return;
+  }
+
+  const adjacentNodes = [];
+  const tagDict = {};
+
+  for (let i = 0; i < 4; i++) {
+    const label = inputLabels[i];
+    const nodeName = inputModels[label];
+    const rawWeight = inputWeightModels[label];
+
+    const parsedWeight = parseInt(rawWeight);
+    const weight = isNaN(parsedWeight) ? null : parsedWeight;
+
+    if (nodeName) {
+      adjacentNodes.push({ [nodeName]: weight });
+    } else {
+      adjacentNodes.push(null);
+    }
+  }
+
+  for (const tag of tagStore.tags) {
+    if (tagSelection[tag.name]){
+      tagDict[tag.name] = [tagCustomName[tag.name]];
+    }
+  }
+    
+  const nodeData = {
+    name: inputModels["Identificación"],
+    location: null,
+    url_image: uploadImageResponse?.response_obj.signed_url,
+    adjacent_nodes: adjacentNodes,
+    tags: tagDict
+  }
+
+  await createNode(nodeData);
+  
   resetForm();
-  handleCloseViewer();
 }
+
 
 // ═══════════════  Tag handling  ═══════════════
 
@@ -334,7 +386,10 @@ watch(showDialog, (newVal, oldVal) => {
 
 // ═══════════════  Page state related functions  ═══════════════
 
-onMounted(() => {
+onMounted(async () => {
+  router.isReady().then(async () => {
+    await obtainData();
+  });
   viewer = new Viewer({
     container: viewerContainer.value,
     panorama: "",

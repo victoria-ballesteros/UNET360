@@ -1,0 +1,59 @@
+.viewer-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.viewer-container {
+  width: 100%;
+  height: 100%;
+}
+
+.floating-icon {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  background: var(--strong-gray);
+  border-radius: 20px;
+  padding: 4px 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.floating-icon:hover {
+  background: var(--main-blue);
+  transform: translateX(-50%) scale(1.1);
+}
+
+.arrow-marker-img {
+  transition: transform 0.1s linear;
+  transform-origin: center center;
+  width: 32px;
+  height: 32px;
+}
+
+.map-2d-box {
+  position: absolute;
+  bottom: 3rem;
+  left: 0.5rem;
+  width: 40%;
+  height: 20%;
+  background-color: rgba(40, 40, 40, 0.8);
+  border-radius: 12px;
+  border: 1px solid var(--main-blue);
+  z-index: 10;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

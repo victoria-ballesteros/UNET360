@@ -10,10 +10,8 @@ export const useNodeStore = defineStore("node", () => {
 
   async function fetchNodes() {
     isLoading.value = true;
-    console.log("Fetching nodes...");
     try {
       const response = await getNodes();
-      console.log("Response: ", response);
       if (!response?.status) {
         error.value = new Error(
           "Respuesta inválida del servidor: status code ",

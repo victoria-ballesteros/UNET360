@@ -49,5 +49,5 @@ export const getGeneralInfo = () => {
 
 export const getButtonData = (authStatus = false) => ({
   label: authStatus ? "Ir al mapa" : "Empieza ahora",
-  route: authStatus ? "Map" : "Auth",
+  route: authStatus ? "Map" : "Login",
 });

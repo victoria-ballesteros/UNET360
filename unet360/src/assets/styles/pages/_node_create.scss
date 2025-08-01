@@ -1,3 +1,39 @@
+// ═══════════════ ✦ Loader ✦ ═══════════════
+.loading-bar-container {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    position: relative;
+}
+
+.loading-bar {
+    position: absolute;
+    width: 80%;
+    height: 4px;
+    background: linear-gradient(to right,
+            transparent 0%,
+            #007bff 25%,
+            #0056b3 50%,
+            #007bff 75%,
+            transparent 100%);
+    background-size: 200% 100%;
+    animation: loading 1.2s infinite ease-in-out;
+    border-radius: 2px;
+}
+
+@keyframes loading {
+    0% {
+        background-position: -100% 0;
+    }
+
+    100% {
+        background-position: 100% 0;
+    }
+}
+
 // ═══════════════ ✦ 360 background viewer ✦ ═══════════════
 
 .background-viewer {
@@ -28,20 +64,20 @@
 
 .expand-height-enter-active,
 .expand-height-leave-active {
-  overflow: hidden;
-  transition: max-height 0.4s ease, opacity 0.4s ease;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
 }
 
 .expand-height-enter-from,
 .expand-height-leave-to {
-  max-height: 0;
-  opacity: 0;
+    max-height: 0;
+    opacity: 0;
 }
 
 .expand-height-enter-to,
 .expand-height-leave-from {
-  max-height: 999px;
-  opacity: 1;
+    max-height: 999px;
+    opacity: 1;
 }
 
 // ═══════════════ ✦ Page container ✦ ═══════════════
