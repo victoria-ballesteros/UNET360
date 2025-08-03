@@ -28,26 +28,22 @@ export async function obtainMockNodes() {
             "location": null,
             "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images//01.PHOTOSPHERE.jpg",
             "adyacent_nodes": [
-                {
-                    "002": 3, // Frente
-                },
-                {
-                    "003": 4 // Derecha
-                },
-                {},          // Atrás
-                {}           // Izquierda
+                { "002": 3 },
+                { "003": 4 },
+                {},
+                {}
             ],
             "tags": [
                 {
-                    "Aula": [
-                        "15A",
-                        "14A"
-                    ],
-                    "Baño de damas": [
-                        "Baño oeste del A"
-                    ]
+                    "Aula": ["15A", "14A"],
+                    "Baño de damas": ["Baño oeste del A"]
                 }
-            ]
+            ],
+            "minimap": {
+                "image": "map-A1.jpg",
+                "x": 185,
+                "y": 568
+            }
         },
         {
             "name": "002",
@@ -55,23 +51,21 @@ export async function obtainMockNodes() {
             "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images//21.PHOTOSPHERE.jpg",
             "adyacent_nodes": [
                 {},
-                {
-                    "001": 3
-                },
+                { "001": 3 },
                 {},
                 {}
             ],
             "tags": [
                 {
-                    "Aula": [
-                        "15A",
-                        "14A"
-                    ],
-                    "Baño de damas": [
-                        "Baño oeste del A"
-                    ]
+                    "Aula": ["15A", "14A"],
+                    "Baño de damas": ["Baño oeste del A"]
                 }
-            ]
+            ],
+            "minimap": {
+                "image": "map-A1.jpg",
+                "x": 121,
+                "y": 903
+            }
         },
         {
             "name": "003",
@@ -81,21 +75,19 @@ export async function obtainMockNodes() {
                 {},
                 {},
                 {},
-                {
-                    "001": 4
-                }
+                { "001": 4 }
             ],
             "tags": [
                 {
-                    "Aula": [
-                        "15A",
-                        "14A"
-                    ],
-                    "Baño de damas": [
-                        "Baño oeste del A"
-                    ]
+                    "Aula": ["15A", "14A"],
+                    "Baño de damas": ["Baño oeste del A"]
                 }
-            ]
+            ],
+            "minimap": {
+                "image": "campus-map.jpg",
+                "x": 300,
+                "y": 350
+            }
         },
     ]
 }

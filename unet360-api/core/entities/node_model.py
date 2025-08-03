@@ -26,6 +26,7 @@ class Node(Document):
     tags: Optional[Dict[str, List[str]]] = Field(
         description="Clave = nombre del tag, Valores = lista"
     )
+    minimap: Optional[dict] = Field(default=None, description="Información del minimapa, ejemplo: {'image': 'ruta.jpg', 'x': 200, 'y': 250}")
 
     class Settings:
         name = "node"

@@ -65,7 +65,8 @@ async def transform_node_to_node_out_dto(node_db_obj: Node) -> NodeOutDTO:
         location=location_name,
         url_image=node_db_obj.url_image,
         adjacent_nodes=adjacent_nodes_with_weights,
-        tags=tags_dict
+        tags=tags_dict,
+        minimap=getattr(node_db_obj, "minimap", None)
     )
 
 async def update_db_obj(node_db_obj: Node, new_data: dict) -> None:

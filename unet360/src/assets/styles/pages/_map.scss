@@ -36,7 +36,7 @@
   width: 32px;
   height: 32px;
 }
-
+ 
 .map-2d-box {
   position: absolute;
   bottom: 3rem;
@@ -44,10 +44,9 @@
   width: 40%;
   height: 20%;
   background-color: rgba(40, 40, 40, 0.8);
-  border-radius: 12px;
-  border: 1px solid var(--main-blue);
+  border-radius: 0.6rem;
   z-index: 10;
-  padding: 16px;
+  padding: 0.15rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(5px);
   animation: fadeIn 0.5s ease-out forwards;

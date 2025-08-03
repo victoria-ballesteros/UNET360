@@ -7,6 +7,13 @@
     </RouterLink>
 
     <div class="map-2d-box">
+      <UCustomMap
+        v-if="currentNodeData && visualMapCoords"
+        :key="customMapUrl"
+        :mapUrl="customMapUrl"
+        :iconUrl="customIconUrl"
+        :node="visualMapCoords"
+      />
     </div>
   </div>
 </template>
@@ -15,8 +22,11 @@
 import { onMounted, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import UIcon from '@/components/UIcon.vue';
+import UCustomMap from '@/components/UCustomMap.vue';
 import { obtainMockNodes } from '@/service/shared/utils';
 import arrowImg from '../assets/images/arrow-up.png';
+import campusMap from '@/assets/images/campus-map.jpg';
+import locationIconRaw from '@/assets/icons/location.svg?url';
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 
@@ -26,22 +36,34 @@ const viewerContainer = ref(null);
 const currentImage = ref('');
 const currentNodeData = ref({});
 const markersPlugin = ref(null);
+const visualMapCoords = ref({ x: 200, y: 250 });
+const pendingMapUpdate = ref(null);
 
 const YAW_MAP = [0, Math.PI / 2, Math.PI, -Math.PI / 2];
 const POSITION_LABELS = ['Frente', 'Derecha', 'Atrás', 'Izquierda'];
 
+const MAP_BASE_PATH = '/src/assets/images/';
+const customMapUrl = ref(campusMap);
+const customIconUrl = locationIconRaw;
+
 const defineData = async (nodeName) => {
   const nodes = await obtainMockNodes();
-
   const node = nodes.find(n => n.name === nodeName);
   if (!node) {
     console.warn('Nodo no encontrado:', nodeName);
     return;
   }
 
+  let newMapUrl = campusMap;
+  let newCoords = { x: 200, y: 250 };
+  if (node.minimap) {
+    newMapUrl = MAP_BASE_PATH + node.minimap.image;
+    newCoords = { x: node.minimap.x, y: node.minimap.y };
+  }
+
   currentImage.value = node.url_image;
   currentNodeData.value = node;
-  console.log('Nodo actualizado:', node);
+  pendingMapUpdate.value = { url: newMapUrl, coords: newCoords };
 };
 
 onMounted(async () => {
@@ -59,7 +81,6 @@ onMounted(async () => {
   markers.addEventListener('select-marker', ({ marker }) => {
     try {
       const markerData = JSON.parse(marker.data);
-      console.log('Marcador clickeado - Datos:', markerData);
       defineData(markerData.target);
     } catch (error) {
       console.error('Error al procesar marcador:', error);
@@ -68,7 +89,16 @@ onMounted(async () => {
 
   await defineData('001');
 
-  viewer.addEventListener('panorama-loaded', addMarkersFromCurrentNode);
+  viewer.addEventListener('panorama-loaded', async () => {
+    await addMarkersFromCurrentNode();
+    if (pendingMapUpdate.value) {
+      if (customMapUrl.value !== pendingMapUpdate.value.url) {
+        customMapUrl.value = pendingMapUpdate.value.url;
+      }
+      visualMapCoords.value = pendingMapUpdate.value.coords;
+      pendingMapUpdate.value = null;
+    }
+  });
 });
 
 const addMarkersFromCurrentNode = async () => {

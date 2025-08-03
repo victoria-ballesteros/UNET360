@@ -13,6 +13,10 @@ class NodeCreateDTO(BaseModel):
         default_factory=dict,
         description="Dictionary of tags with values"
     )
+    minimap: Optional[dict] = Field(
+        default=None,
+        description="Información del minimapa, ejemplo: {'image': 'ruta.jpg', 'x': 200, 'y': 250}"
+    )
 
 class NodeUpdateDTO(BaseModel):
     name: Optional[str] = None
@@ -20,6 +24,10 @@ class NodeUpdateDTO(BaseModel):
     url_image: Optional[str] = None
     adjacent_nodes: Optional[list[Optional[Dict[str, float]]]] = None
     tags: Optional[Dict[str, list[str]]] = None
+    minimap: Optional[dict] = Field(
+        default=None,
+        description="Información del minimapa, ejemplo: {'image': 'ruta.jpg', 'x': 200, 'y': 250}"
+    )
 
 class NodeOutDTO(BaseModel):
     name: str
@@ -27,3 +35,7 @@ class NodeOutDTO(BaseModel):
     url_image: str
     adjacent_nodes: list[Optional[Dict[str, float]]]
     tags: Dict[str, list[str]]
+    minimap: Optional[dict] = Field(
+        default=None,
+        description="Información del minimapa, ejemplo: {'image': 'ruta.jpg', 'x': 200, 'y': 250}"
+    )

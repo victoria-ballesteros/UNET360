@@ -1,10 +1,18 @@
-version: "3.8"
-
 services:
-  vue-app:
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
-    restart: always
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - app_network
+    environment:
+      - HOST=0.0.0.0
+
+networks:
+  app_network:
+    driver: bridge
