@@ -34,5 +34,5 @@ class NodeOutDTO(BaseModel):
     url_image: str
     adjacent_nodes: list[Optional[Dict[str, float]]]
     # --- CAMPO AÑADIDO ---
-    path_weights: List[float]
+    path_weights: Optional[List[float]] = None
     tags: Dict[str, list[str]]

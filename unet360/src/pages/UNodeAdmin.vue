@@ -1,0 +1,163 @@
+<template>
+  <div class="node-admin-container">
+    <div class="text-section">
+      <h2>ADMINISTRAR NODOS</h2>
+    </div>
+    <div class ="button-section">
+      <UButton
+        text="Crear Nuevo Nodo"
+        type="contrast-2"
+        @click="router.push({ name: 'NodeCreate' })"
+      />
+    </div>
+    <div class="nodes-list-section">
+      <div v-if="nodes.length === 0" class="empty-message">
+        No hay nodos registrados.
+      </div>
+      <div v-else>
+        <div v-for="node in nodes" :key="node.name" class="node-item">
+          <div class="node-main" @click="toggleNode(node.name)">
+            <div class="node-info">
+              <span class="node-status" :style="{ background: getStatusColor(node.status) }"></span>
+              <span class="node-name">{{ node.name }}</span>
+            </div>
+            <div class="node-actions">
+              <button class="icon-btn" @click.stop="viewImages(node)">
+                <UIcon name="icons/image" class="node-action-icon" size="100%"/>
+              </button>
+              <button class="icon-btn" @click.stop="editNode(node)">
+                <UIcon name="icons/edit" class="node-action-icon" size="100%"/>
+              </button>
+            </div>
+          </div>
+          <div v-if="expandedNode === node.name" class="node-details">
+            <!-- Primary Info -->
+            <div class="primary-info">
+              <div class="adyacent-info">
+                <div class="adyacent-title">{{ adyacentTitle }}</div>
+                <div class="adyacent-nodes">
+                  <div v-for="group in adyacentGroups" :key="group.name" :class="group.class">
+                    <span v-for="adj in group.items" :key="adj.key" class="adyacent-label">
+                      {{ adj.label }}:
+                      <span class="adyacent-value-blue">{{ getAdyacentValue(node, adj.key) }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- Location Info -->
+              <div class="location-info">
+                <span class="location-label">{{ locationLabel }}</span>
+                <span class="location-value">{{ node.location }}</span>
+              </div>
+            </div>
+            <!-- Tags -->
+            <div class="tags-info">
+              <span class="tags-label">{{ tagsLabel }}</span>
+              <div class="tags-list">
+                <span v-if="node.tags && Object.keys(node.tags).length" v-for="(values, tag) in node.tags" :key="tag" class="tag-item">{{ tag }}: {{ Array.isArray(values) ? values.join(', ') : values }}</span>
+                <span v-else class="tag-item">{{ tagsEmpty }}</span>
+              </div>
+            </div>
+            <!-- Delete Button -->
+            <div class="delete-section">
+              <button class="delete-node-btn" @click.stop="deleteNode(node.name)">
+                <UIcon name="icons/trash" size="10" class="delete-icon" />
+                {{ deleteLabel }}
+              </button>
+            </div>
+          </div>
+          <div class="node-separator"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { onMounted, ref } from 'vue';
+import { useNodeStore } from '@/service/stores/nodes.js';
+import UIcon from '@/components/UIcon.vue';
+import UButton from '@/components/UButton.vue';
+export default {
+  name: 'UNodeAdmin',
+  components: { UIcon, UButton },
+  setup() {
+    const { nodes, isLoading, error, fetchNodes } = useNodeStore();
+    const expandedNode = ref(null);
+    const adyacentTitle = 'Adyacentes';
+    const adyacentNA = 'N/A';
+    const adyacentGroups = [
+      {
+        name: 'group1',
+        class: 'adyacent-node-group-1',
+        items: [
+          { label: 'Fre', key: 'frente' },
+          { label: 'Atr', key: 'atras' },
+        ],
+      },
+      {
+        name: 'group2',
+        class: 'adyacent-node-group-2',
+        items: [
+          { label: 'Izq', key: 'izquierda' },
+          { label: 'Der', key: 'derecha' },
+        ],
+      },
+    ];
+    const locationLabel = 'Ubicación:';
+    const tagsLabel = 'Tags:';
+    const tagsEmpty = 'Sin tags';
+    const deleteLabel = 'Eliminar nodo';
+
+    onMounted(fetchNodes);
+
+    const getStatusColor = status =>
+      status === 'online' ? 'var(--status-green, #4caf50)' :
+      status === 'offline' ? 'var(--status-red, #e53935)' :
+      'var(--status-gray, #bdbdbd)';
+
+    const toggleNode = name => {
+      expandedNode.value = expandedNode.value === name ? null : name;
+    };
+    const viewImages = node => alert('Ver imágenes de: ' + node.name);
+    const editNode = node => alert('Editar nodo: ' + node.name);
+    const deleteNode = name => alert('Eliminar nodo con nombre: ' + name);
+    const getAdyacentValue = (node, key) => {
+      const keyMap = { frente: 0, atras: 1, izquierda: 2, derecha: 3 };
+      if (Array.isArray(node.adjacent_nodes)) {
+        const idx = keyMap[key];
+        const adj = node.adjacent_nodes[idx];
+        if (adj && typeof adj === 'object') {
+          return Object.keys(adj)[0] || adyacentNA;
+        }
+        return adyacentNA;
+      }
+      return node.adjacent_nodes?.[key] || adyacentNA;
+    };
+
+    return {
+      nodes,
+      isLoading,
+      error,
+      expandedNode,
+      adyacentTitle,
+      adyacentNA,
+      adyacentGroups,
+      locationLabel,
+      tagsLabel,
+      tagsEmpty,
+      deleteLabel,
+      getStatusColor,
+      toggleNode,
+      viewImages,
+      editNode,
+      deleteNode,
+      getAdyacentValue,
+    };
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/pages/_node_admin.scss';
+</style>

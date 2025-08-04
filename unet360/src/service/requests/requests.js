@@ -1,11 +1,18 @@
 import api from "@/axios";
+import { useAuthStore } from "@/service/stores/auth.js";
 
 // NODES
 export async function getNodes() {
   try {
-    const response = await api.get("nodes/");
+    const authStore = useAuthStore();
+    const token = authStore.token;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    //
+    const response = await api.get("nodes/", { headers });
+    //
     return response.data;
   } catch (error) {
+    //
     return null;
   }
 }
