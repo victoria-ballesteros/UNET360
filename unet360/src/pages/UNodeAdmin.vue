@@ -3,7 +3,7 @@
     <div class="text-section">
       <h2>ADMINISTRAR NODOS</h2>
     </div>
-    <div class ="button-section">
+    <div class="button-section">
       <UButton
         text="Crear Nuevo Nodo"
         type="contrast-2"
@@ -22,7 +22,7 @@
               <span class="node-name">{{ node.name }}</span>
             </div>
             <div class="node-actions">
-              <button class="icon-btn" @click.stop="viewImages(node)">
+              <button class="icon-btn" @click.stop="openImageModal(node)">
                 <UIcon name="icons/image" class="node-action-icon" size="100%"/>
               </button>
               <button class="icon-btn" @click.stop="editNode(node)">
@@ -70,6 +70,16 @@
         </div>
       </div>
     </div>
+    <!-- Modal de imagen -->
+    <div v-if="showImageModal" class="image-modal-overlay" @click.self="closeImageModal">
+      <div class="image-modal-content">
+        <div class="image-modal-header">
+          <span class="image-modal-title">Nodo: {{ modalNodeName }}</span>
+          <button class="image-modal-close" @click="closeImageModal">✕</button>
+        </div>
+        <img :src="modalImageUrl" alt="Imagen del nodo" class="image-modal-img" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -84,6 +94,8 @@ export default {
   setup() {
     const { nodes, isLoading, error, fetchNodes } = useNodeStore();
     const expandedNode = ref(null);
+    const showImageModal = ref(false);
+    const modalImageUrl = ref('');
     const adyacentTitle = 'Adyacentes';
     const adyacentNA = 'N/A';
     const adyacentGroups = [
@@ -119,7 +131,17 @@ export default {
     const toggleNode = name => {
       expandedNode.value = expandedNode.value === name ? null : name;
     };
-    const viewImages = node => alert('Ver imágenes de: ' + node.name);
+    const modalNodeName = ref('');
+    const openImageModal = node => {
+      modalImageUrl.value = node.url_image;
+      modalNodeName.value = node.name;
+      showImageModal.value = true;
+    };
+    const closeImageModal = () => {
+      showImageModal.value = false;
+      modalImageUrl.value = '';
+    };
+    const viewImages = node => openImageModal(node);
     const editNode = node => alert('Editar nodo: ' + node.name);
     const deleteNode = name => alert('Eliminar nodo con nombre: ' + name);
     const getAdyacentValue = (node, key) => {
@@ -153,6 +175,11 @@ export default {
       editNode,
       deleteNode,
       getAdyacentValue,
+      showImageModal,
+      modalImageUrl,
+      openImageModal,
+      closeImageModal,
+      modalNodeName,
     };
   },
 };
