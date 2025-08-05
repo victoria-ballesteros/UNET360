@@ -9,6 +9,20 @@
   height: 100%;
 }
 
+.top-controls {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 20;
+  width: 90%;
+  max-width: 400px;
+}
+
 .floating-icon {
   position: absolute;
   top: 20px;

@@ -2,9 +2,18 @@
   <div class="viewer-wrapper">
     <div class="viewer-container" ref="viewerContainer"></div>
 
-    <RouterLink :to="{ name: 'Home' }" class="floating-icon">
-      <UIcon name="icons/logo" size="18" />
-    </RouterLink>
+    <div class="top-controls">
+      <UInputCard
+        v-model="searchInput"
+        styleType="map"
+        placeholder="Ej. Edificio A"
+        icon="icons/arrow-up"
+      />
+
+      <!-- <RouterLink :to="{ name: 'Home' }" class="floating-icon">
+        <UIcon name="icons/logo" size="18" />
+      </RouterLink> -->
+    </div>
 
     <div class="map-2d-box">
       <UCustomMap
@@ -23,12 +32,16 @@ import { onMounted, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import UIcon from '@/components/UIcon.vue';
 import UCustomMap from '@/components/UCustomMap.vue';
+import UInputCard from '@/components/UInputCard.vue';
 import { obtainMockNodes } from '@/service/shared/utils';
 import arrowImg from '../assets/images/arrow-up.png';
 import campusMap from '@/assets/images/campus-map.jpg';
 import locationIconRaw from '@/assets/icons/location.svg?url';
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+
+
+const searchInput = ref('')
 
 let viewer;
 const viewerContainer = ref(null);

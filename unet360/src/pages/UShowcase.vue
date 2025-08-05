@@ -6,7 +6,7 @@
         <div class="showcase-subcontainer">
             <p class="showcase-subcontainer-header"> UI buttons</p>
             <UButton text='Primary' @click="handleButtonClick" type="primary" />
-            <UButton text='Secondary' @click="handleButtonClick" type="secondary" icon="cloud-upload" />
+            <UButton text='Secondary' @click="handleButtonClick" type="secondary" icon="icons/cloud-upload" />
             <UButton text='Tertiary' @click="handleButtonClick" type="tertiary" />
             <UButton text='Deactivated' @click="handleButtonClick" type="deactivated" />
         </div>
@@ -16,7 +16,7 @@
                 v-model="textInput"
                 type="default"
                 placeholder="Input"
-                icon="arrow-up"
+                icon="icons/arrow-up"
             />
             <UInput
                 v-model="textInputNoIcon"
@@ -27,26 +27,26 @@
         <div class="showcase-subcontainer">
             <p class="showcase-subcontainer-header"> UI imagotypes</p>
             <div class="showcase-group">
-                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" />
-                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" :rotation="90" />
-                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" :rotation="180" />
-                <UIcon name="arrow-up" size="32" color="var(--strong-gray)" :rotation="-90" />
+                <UIcon name="icons/arrow-up" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/arrow-up" size="32" color="var(--strong-gray)" :rotation="90" />
+                <UIcon name="icons/arrow-up" size="32" color="var(--strong-gray)" :rotation="180" />
+                <UIcon name="icons/arrow-up" size="32" color="var(--strong-gray)" :rotation="-90" />
             </div>
             <div class="showcase-group">
-                <UIcon name="cloud-upload" size="32" color="var(--strong-gray)" />
-                <UIcon name="pc-display" size="32" color="var(--strong-gray)" />
-                <UIcon name="person-standing" size="32" color="var(--strong-gray)" />
-                <UIcon name="person-standing-dress" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/cloud-upload" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/pc-display" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/person-standing" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/person-standing-dress" size="32" color="var(--strong-gray)" />
             </div>
             <div class="showcase-group">
-                <UIcon name="journal-text" size="32" color="var(--strong-gray)" />
-                <UIcon name="arrow-bar-up" size="32" color="var(--strong-gray)" />
-                <UIcon name="caret-up-fill" size="32" color="var(--strong-gray)" />
-                <UIcon name="chevron-down" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/journal-text" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/arrow-bar-up" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/caret-up-fill" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/chevron-down" size="32" color="var(--strong-gray)" />
             </div>
             <div class="showcase-group">
-                <UIcon name="geo-alt-fill" size="32" color="var(--strong-gray)" />
-                <UIcon name="x-lg" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/geo-alt-fill" size="32" color="var(--strong-gray)" />
+                <UIcon name="icons/x-lg" size="32" color="var(--strong-gray)" />
             </div>
         </div>
     </div>
