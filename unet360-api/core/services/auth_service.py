@@ -24,7 +24,16 @@ class AuthService:
                 detail="Registration allowed only for '@unet.edu.ve' email addresses."
             )
         
+        tenant_name = user_data.email.split('@')[0]
+        existing_tenant = await self.tenant_service.repository.get_by_name(tenant_name)
+        if existing_tenant:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Usuario ya registrado"
+            )
+
         try:
+            # 2. Si el tenant no existe en Mongo, procedemos a registrar en Supabase.
             response_supabase = self.supabase_client.auth.sign_up(
                 {
                     "email": user_data.email,
@@ -40,10 +49,11 @@ class AuthService:
             
             supabase_user_id = response_supabase.user.id
 
+            # 3. Solo si el registro en Supabase es exitoso, creamos nuestro tenant.
             tenant_create_dto_instance = TenantCreateDTO(
-                name=user_data.email.split('@')[0],
+                name=tenant_name,
                 supabase_user_id=supabase_user_id,
-                role="viewer" # Asignar un rol por defecto
+                role="viewer"
             )
             
             await self.tenant_service.create_tenant(tenant_create_dto_instance)
@@ -52,6 +62,14 @@ class AuthService:
 
         except AuthApiError as e:
             logger.error(f"AuthApiError during signup: {e.message}")
+            # 4. Como segunda capa de defensa, si Supabase detecta el duplicado,
+            #    también devolvemos el error correcto.
+            if "User already registered" in str(e.message):
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Usuario ya registrado"
+                )
+            
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=e.message
@@ -65,6 +83,7 @@ class AuthService:
                 detail=f"An unexpected error occurred: {str(e)}"
             )
 
+    # --- El resto de los métodos no necesitan cambios ---
     async def login_user(self, user_data: UserLoginDTO) -> AuthResponseDTO:
         try:
             response_supabase = self.supabase_client.auth.sign_in_with_password(
@@ -149,21 +168,15 @@ class AuthService:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred.")
 
     async def reset_password(self, dto: ResetPasswordDTO) -> dict:
-        """
-        Updates the user's password using a valid access token and refresh token from a recovery link.
-        """
         try:
             logger.info(f"Attempting to reset password...")
             
-            # 1. Establecemos la sesión del usuario temporalmente con ambos tokens.
             self.supabase_client.auth.set_session(dto.access_token, dto.refresh_token)
             
-            # 2. Actualizamos la contraseña. Ahora el cliente sabe a quién actualizar.
             user_response = self.supabase_client.auth.update_user(
                 {"password": dto.new_password}
             )
             
-            # 3. Cerramos la sesión temporal para no dejarla abierta (buena práctica).
             self.supabase_client.auth.sign_out()
 
             if not user_response.user:
