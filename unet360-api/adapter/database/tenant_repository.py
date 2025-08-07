@@ -6,6 +6,9 @@ class TenantRepository:
     async def create(self, new_tenant: Tenant) -> Tenant | None:
         return await new_tenant.insert()
 
+    async def get_by_name(self, name: str) -> Tenant | None:
+        return await Tenant.find_one(Tenant.name == name)
+
     async def get_by_supabase_user_id(self, supabase_user_id: str) -> Tenant | None:
         return await Tenant.find_one(Tenant.supabase_user_id == supabase_user_id)
 
