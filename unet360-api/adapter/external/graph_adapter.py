@@ -27,16 +27,49 @@ class NetworkXGraphService(GraphServicePort):
         return GraphNode(name=node.name, adjacent_nodes=adjacent_nodes)
     
     async def refresh_graph(self) -> None:
-        """Refresca el grafo cargando los nodos y aristas desde la base de datos."""
+        """Refresca el grafo cargando aristas solo si hay adyacencia recíproca con igual peso.
+
+        - Carga los nodos desde BD.
+        - Construye aristas únicamente cuando A->B y B->A existen y el peso coincide.
+        - Excluye del grafo los nodos que no participan en ninguna arista válida.
+        """
         db_nodes = await self.node_repository.get_all()
         self.graph.clear()
-        
-        for db_node in db_nodes:
-            graph_node = await self._convert_to_graph_node(db_node)
-            self.graph.add_node(graph_node.name)
-            
-            for adj_name, weight in graph_node.adjacent_nodes.items():
-                self.graph.add_edge(graph_node.name, adj_name, weight=weight)
+
+        # Índice para consultas rápidas
+        name_to_node = {n.name: n for n in db_nodes}
+
+        # Recolectar aristas válidas (evitar duplicados con ordenación de extremos)
+        valid_edges: set[tuple[str, str, float]] = set()
+
+        for node in db_nodes:
+            # Cada entrada de adjacent_nodes puede ser None o un dict {name: weight}
+            for adj in (getattr(node, 'adjacent_nodes', None) or []):
+                if not isinstance(adj, dict) or len(adj) != 1:
+                    continue
+                (neighbor_name, weight), = adj.items()
+                if neighbor_name not in name_to_node:
+                    continue
+                # Validar reciprocity con igual peso
+                neighbor = name_to_node[neighbor_name]
+                reciprocal_ok = False
+                for back in (getattr(neighbor, 'adjacent_nodes', None) or []):
+                    if isinstance(back, dict) and node.name in back:
+                        back_weight = back[node.name]
+                        if back_weight is not None and weight is not None and back_weight == weight:
+                            reciprocal_ok = True
+                        break
+                if not reciprocal_ok:
+                    continue
+                # Edge válida
+                u, v = sorted((node.name, neighbor_name))
+                valid_edges.add((u, v, float(weight)))
+
+        # Crear aristas válidas; esto añade los nodos de forma implícita
+        for u, v, w in valid_edges:
+            self.graph.add_edge(u, v, weight=w)
+
+        # No añadimos nodos aislados: sólo quedan los que participan en aristas
     
     async def get_shortest_path(self, source: str, target: str) -> Optional[GraphPath]:
         """Calcula el camino más corto entre dos nodos."""
