@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="upper-container">
-      <UHeader @isPanelOpen="isPanelOpen = !isPanelOpen"></UHeader>
+      <UHeader v-if="route.name != 'Map'" @isPanelOpen="isPanelOpen = !isPanelOpen" class="provisional-header-container"></UHeader>
       <main class="content-container">
         <router-view />
       </main>
@@ -34,23 +34,21 @@
 <script setup>
 import USidebar from "./components/USidebar.vue";
 import UHeader from "./components/UHeader.vue";
-import { ref, onMounted, computed, watch } from "vue";
-import { useNodeStore } from "./service/stores/nodes.js";
-import { useTagStore } from "./service/stores/tags.js";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getSidebarOptions } from "./service/global_dialogs";
 import { useAuthStore } from "@/service/stores/auth";
+import { obtainData } from "./service/shared/utils";
 
 const route = useRoute();
 const router = useRouter();
 
-const nodeStore = useNodeStore();
-const tagStore = useTagStore();
 const authStore = useAuthStore();
 
 const headerHeight = ref(0);
 const isPanelOpen = ref(false);
 const sidebarOptions = computed(() => getSidebarOptions(authStore.isAuthenticated, authStore.user?.role));
+const showHeader = ref(true)
 
 function handleLogout() {
   console.log("Logout clicked");
@@ -59,20 +57,10 @@ function handleLogout() {
   router.push({ name: 'Login' });
 }
 
-async function obtainData() {
-  if (authStore.isAuthenticated) {
-    if (!nodeStore.nodes) {
-      await nodeStore.fetchNodes();
-    }
-
-    if (!tagStore.tags) {
-      await tagStore.fetchTags();
-    }
-  }
-}
-
 onMounted(async() => {
-  await obtainData();
+  router.isReady().then(async () => {
+    await obtainData();
+  });
 
   const headerEl = document.querySelector(".header-container");
   if (headerEl) {

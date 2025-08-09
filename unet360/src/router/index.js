@@ -87,7 +87,7 @@ const routes = [
       },
     ],
   },
-    {
+  {
     path: "/360-map",
     name: "Map",
     component: Map,
