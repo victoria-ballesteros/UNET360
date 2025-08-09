@@ -8,12 +8,14 @@ from adapter.database.tag_repository import TagRepository
 from core.dtos.responses_dto import GeneralResponse 
 from core.services.node_service import NodeService
 from core.dtos.node_dto import NodeCreateDTO, NodeOutDTO, NodeUpdateDTO, NodeStatusDTO
+from adapter.external.graph_adapter import NetworkXGraphService
 
 from core.dependencies.auth_dependencies import get_current_admin_user
 
 router = APIRouter(prefix="/nodes", tags=["Nodes"])
 
-service = NodeService(NodeRepository(), LocationRepository(), TagRepository()) 
+graph_adapter = NetworkXGraphService(NodeRepository())
+service = NodeService(NodeRepository(), LocationRepository(), TagRepository(), graph_adapter) 
 
 @router.get("/statuses", response_model=GeneralResponse)
 async def get_nodes_statuses():

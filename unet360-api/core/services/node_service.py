@@ -7,6 +7,7 @@ from adapter.database.tag_repository import TagRepository
 from adapter.database.location_repository import LocationRepository
 
 from core.dtos.node_dto import NodeCreateDTO, NodeUpdateDTO, NodeOutDTO, NodeStatusDTO
+from core.ports.graph_service_port import GraphServicePort
 from core.entities.node_model import Node
 
 from core.mappers.node_mappers import (transform_node_to_node_out_dto, update_db_obj)
@@ -21,10 +22,12 @@ class NodeService:
 
     def __init__(self, repository: NodeRepository,
                  location_repo: LocationRepository,
-                 tag_repo: TagRepository):
+                 tag_repo: TagRepository,
+                 graph_adapter: GraphServicePort | None = None):
         self.repository = repository
         self.location_repo = location_repo
         self.tag_repo = tag_repo
+        self.graph_adapter = graph_adapter
 
     @property
     def node_repo(self):
@@ -70,6 +73,12 @@ class NodeService:
 
         if not new_node_db_obj.id:
             raise HTTPException(status_code=500, detail=CREATE_ERROR_MESSAGE)
+
+        if self.graph_adapter is not None:
+            try:
+                await self.graph_adapter.refresh_graph()
+            except Exception:
+                pass
         
         return NodeCreateDTO(
             name=new_node_db_obj.name,
@@ -99,7 +108,6 @@ class NodeService:
 
     async def update_node(self, name: str, dto: NodeUpdateDTO) -> NodeOutDTO:
         node = await self.repository.get_by_name(name)
-
         if not node:
             raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
         
@@ -121,9 +129,15 @@ class NodeService:
             update_data['adjacent_nodes'] = adjacent_nodes
 
         node = await update_db_obj(node_db_obj=node, new_data=update_data)
-        
         updated = await self.repository.update(node)
-        
+
+        # Refrescar grafo si está disponible
+        if self.graph_adapter is not None:
+            try:
+                await self.graph_adapter.refresh_graph()
+            except Exception:
+                pass
+
         return await transform_node_to_node_out_dto(updated) if updated else None
     
 
@@ -132,11 +146,27 @@ class NodeService:
         if not node:
             raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
         await self.repository.delete(node)
+        # Refrescar grafo si está disponible
+        if self.graph_adapter is not None:
+            try:
+                await self.graph_adapter.refresh_graph()
+            except Exception:
+                pass
         return {"message": "Node deleted"}
 
     async def get_nodes_statuses(self) -> list[NodeStatusDTO]:
         nodes = await self.repository.get_all()
         name_to_node = {n.name: n for n in nodes}
+
+        # Obtener nombres presentes en el grafo construido (si está disponible)
+        graph_names: set[str] = set()
+        if hasattr(self, 'graph_adapter') and self.graph_adapter is not None:
+            try:
+                await self.graph_adapter.refresh_graph()
+                graph_nodes = await self.graph_adapter.get_all_nodes()
+                graph_names = {gn.name for gn in graph_nodes}
+            except Exception:
+                graph_names = set()
 
         def compute_status(n: Node) -> NodeStatusDTO:
             reasons: list[str] = []
@@ -186,6 +216,9 @@ class NodeService:
                                     break
                             if not has_back:
                                 reasons.append(f"La adyacencia con '{adj_name}' no es recíproca.")
+
+            if graph_names and n.name not in graph_names:
+                reasons.append("El nodo no está presente en el grafo construido.")
 
             status = "OK"
             if any(r for r in reasons if r in ("Falta la imagen (url_image).", "Debe haber al menos un nodo adyacente.")):
