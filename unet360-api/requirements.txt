@@ -7,3 +7,4 @@ pymongo>=4.3.3
 beanie>=1.20.0
 supabase
 networkx>=3.5
+python-multipart
