@@ -7,13 +7,35 @@ from adapter.database.tag_repository import TagRepository
 
 from core.dtos.responses_dto import GeneralResponse 
 from core.services.node_service import NodeService
-from core.dtos.node_dto import NodeCreateDTO, NodeOutDTO, NodeUpdateDTO
+from core.dtos.node_dto import NodeCreateDTO, NodeOutDTO, NodeUpdateDTO, NodeStatusDTO
 
 from core.dependencies.auth_dependencies import get_current_admin_user
 
 router = APIRouter(prefix="/nodes", tags=["Nodes"])
 
 service = NodeService(NodeRepository(), LocationRepository(), TagRepository()) 
+
+@router.get("/statuses", response_model=GeneralResponse)
+async def get_nodes_statuses():
+    try:
+        statuses = await service.get_nodes_statuses()
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj=[s.model_dump() for s in statuses]
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )
 
 @router.post("/", response_model=GeneralResponse)
 async def create_node(dto: NodeCreateDTO, 
@@ -72,6 +94,28 @@ async def get_all_nodes():
             http_code=status.HTTP_200_OK,
             status=True,
             response_obj=nodes_data_list
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )
+@router.get("/{name}", response_model=GeneralResponse)
+async def get_node(name: str):
+    try:
+        node_out_dto = await service.get_node_by_name(name)
+        
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj=node_out_dto.model_dump() if node_out_dto else None
         )
     except HTTPException as e:
         return GeneralResponse(
