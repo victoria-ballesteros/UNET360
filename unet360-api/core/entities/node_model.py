@@ -1,13 +1,14 @@
 from beanie import Document, Link, Indexed
 from pydantic import Field
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Annotated, Union
 import math
 
 from .location_model import Location
 from .tag_model import Tag
 
+
 class Node(Document):
-    name: Indexed(str, unique=True) = Field(
+    name: Annotated[str, Indexed(unique=True)] = Field(
         ...,
         min_length=3,
         max_length=30,
@@ -23,16 +24,24 @@ class Node(Document):
         description="Lista de 4 posiciones [frente, atrás, izquierda, derecha] con {node_id: peso}",
         example=[{"003": 1.5}, None, {"001": 0.5}, None]
     )
-    
-    path_weights: List[float] = Field(
+
+    arrow_angles: List[Optional[float]] = Field(
         default=[0, math.pi / 2, math.pi, -math.pi / 2],
-        description="Lista de pesos (floats) para cada nodo adyacente."
+        description="Angles to position arrows on the 360 image; allow nulls for missing arrows"
     )
-    
-    tags: Optional[Dict[str, List[str]]] = Field(
-        description="Clave = nombre del tag, Valores = lista"
+
+    forward_heading: float = Field(default=0.0, description="Heading of the image front")
+
+    tags: Optional[Dict[str, Union[Dict[str, float], List[str]]]] = Field(
+        default=None,
+        description="Clave = nombre del tag, Valor = { nombreDelValor: heading }"
     )
-    minimap: Optional[dict] = Field(default=None, description="Información del minimapa, ejemplo: {'image': 'ruta.jpg', 'x': 200, 'y': 250}")
+
+
+    minimap: Optional[dict] = Field(
+        default={"image": "missing.png", "x": 0, "y": 0},
+        description="Información del minimapa, ejemplo: {'image': 'ruta.jpg', 'x': 200, 'y': 250}"
+    )
 
     class Settings:
         name = "node"
