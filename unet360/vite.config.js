@@ -16,7 +16,11 @@ export default defineConfig({
       scss: {
         additionalData: `@use "@/assets/styles/typography" as *;`
       }
-    }
+    },
+    devSourcemap: true,
+  },
+  optimizeDeps: {
+    include: ['@photo-sphere-viewer/core', '@photo-sphere-viewer/markers-plugin']
   },
   resolve: {
     alias: {
