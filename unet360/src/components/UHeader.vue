@@ -5,7 +5,6 @@
         name="icons/logo"
         size="43"
         class="cursor-pointer"
-        @click="emit('isPanelOpen', event)"
       />
     </RouterLink>
     <UIcon
@@ -30,6 +29,6 @@ const emit = defineEmits(["isPanelOpen"]);
   align-items: center;
   justify-content: space-between;
   z-index: 10;
-  padding: 0px 0px 0px 0px;
+  padding: 0rem 1.125rem;
 }
 </style>

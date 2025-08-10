@@ -11,8 +11,9 @@
         </div>
         <div v-if="menuVisible" class="dropdown-menu-wrapper">
             <div v-if="!routeSearcherActive" class="dropdown-menu">
-                <div v-for="[label, icon] in Object.entries(menuOptions)" :key="label" class="menu-item">
-                    <UIcon :name="'icons/' + icon" size="20" color="var(--fill-white)" @click="toggleMenu" />
+                <div v-for="[label, icon] in Object.entries(menuOptions)" :key="label" class="menu-item"
+                    @click="toggleMenu(label)">
+                    <UIcon :name="'icons/' + icon" size="20" color="var(--fill-white)" />
                     <span>{{ label }}</span>
                 </div>
             </div>
@@ -39,6 +40,11 @@
 <script setup>
 import { ref } from 'vue'
 import UIcon from './UIcon.vue'
+import { useRouter } from 'vue-router';
+import { useAuthStore } from "@/service/stores/auth";
+
+const router = useRouter();
+const authStore = useAuthStore();
 
 const menuVisible = ref(false)
 const searchText = ref('')
@@ -53,11 +59,30 @@ const menuOptions = {
     "Cerrar sesión": "close-session"
 }
 
-function toggleMenu() {
+const menuRouter = {
+    "Ruta": "route-arrow",
+    "Inicio": "Home",
+    "Acerca de": "About",
+    "Cerrar sesión": "About"
+}
+
+function toggleMenu(label = null) {
     menuVisible.value = !menuVisible.value
     listIconRotation.value = menuVisible.value ? '90' : '0'
     routeSearcherActive.value = false
     searcherInputPlaceholder.value = "Ej. Edificio A"
+
+    if (label === "Ruta") {
+        toggleRouteSearcher();
+    } else if (label === "Cerrar sesión") {
+        authStore.logout();
+        router.push({ name: 'Login' });
+    } else {
+        const route = menuRouter?.[label];
+        if (route != undefined) {
+            router.push({ name: route });
+        }
+    }
 }
 
 function toggleRouteSearcher() {

@@ -39,7 +39,7 @@ function closePanel() {
   background: var(--strong-gray);
   width: 100vw;
   height: 100vh;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 0rem;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
   overflow-y: auto;
   position: relative;
@@ -63,6 +63,7 @@ function closePanel() {
     gap: 1.738rem;
     justify-content: center;
     flex: 1 1 auto;
+    padding: 0rem 1rem;
 
     .nav-item {
       @include section-title;

@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper">
     <div class="upper-container">
-      <UHeader v-if="route.name != 'Map'" @isPanelOpen="isPanelOpen = !isPanelOpen" class="provisional-header-container"></UHeader>
+      <UHeader v-if="route.name != 'Map'" @isPanelOpen="isPanelOpen = !isPanelOpen"
+        class="provisional-header-container"></UHeader>
       <main class="content-container">
         <router-view />
       </main>
@@ -12,19 +13,10 @@
   </div>
   <USidebar :isOpen="isPanelOpen" @close="isPanelOpen = false">
     <template v-for="(option, index) in sidebarOptions" :key="index">
-      <RouterLink
-        v-if="option.to && !option.action"
-        :to="option.to"
-        class="nav-item"
-        @click="isPanelOpen = false"
-      >
+      <RouterLink v-if="option.to && !option.action" :to="option.to" class="nav-item" @click="isPanelOpen = false">
         {{ option.label }}
       </RouterLink>
-      <button
-        v-else-if="option.action === 'logout'"
-        class="nav-item"
-        @click="handleLogout"
-      >
+      <button v-else-if="option.action === 'logout'" class="nav-item" @click="handleLogout">
         {{ option.label }}
       </button>
     </template>
@@ -48,7 +40,6 @@ const authStore = useAuthStore();
 const headerHeight = ref(0);
 const isPanelOpen = ref(false);
 const sidebarOptions = computed(() => getSidebarOptions(authStore.isAuthenticated, authStore.user?.role));
-const showHeader = ref(true)
 
 function handleLogout() {
   console.log("Logout clicked");
@@ -57,7 +48,7 @@ function handleLogout() {
   router.push({ name: 'Login' });
 }
 
-onMounted(async() => {
+onMounted(async () => {
   router.isReady().then(async () => {
     await obtainData();
   });
