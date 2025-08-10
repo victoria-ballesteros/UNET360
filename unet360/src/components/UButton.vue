@@ -104,4 +104,15 @@ const handleClick = (event) => {
   pointer-events: none;
   box-shadow: none;
 }
+
+/* New variants for project colors */
+.button-blue {
+  background: var(--main-blue);
+  color: var(--fill-white);
+}
+
+.button-danger {
+  background: var(--main-red);
+  color: var(--fill-white);
+}
 </style>

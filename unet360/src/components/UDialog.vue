@@ -1,10 +1,10 @@
 <template>
     <transition name="fade">
-        <div v-if="modelValue" class="dialog-backdrop" @click.self="close">
+    <div v-if="modelValue" class="dialog-backdrop" @click.self="close">
             <div class="dialog-content">
-                <div class="dialog-header">
+                <div class="dialog-header" v-if="headerTitle">
                     <p class="header-title">{{ headerTitle }}</p>
-                    <UIcon @click="close" name="x-lg" size="16" color="var(--strong-gray)" />
+            <UIcon @click="close" name="x-lg" size="16" color="var(--strong-gray)" />
                 </div>
                 <slot />
             </div>

@@ -220,3 +220,29 @@
     flex-direction: column;
     gap: 0.625rem;
 }
+
+// ═══════════════ ✦ Result dialog (success/error) ✦ ═══════════════
+.result-dialog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px 4px;
+}
+
+.result-icon {
+    margin-bottom: 12px;
+}
+
+.result-text {
+    .upper-paragraph {
+        font-weight: 700;
+        color: var(--strong-gray);
+        margin: 0 0 6px;
+    }
+    .lower-paragraph {
+        color: var(--strong-gray);
+        opacity: 0.9;
+        margin: 0;
+    }
+}
