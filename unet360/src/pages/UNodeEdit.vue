@@ -332,7 +332,7 @@ async function submit() {
       router.push({ name: 'NodeAdmin' });
     }
   } catch (e) {
-    // noop
+    console.log(e);
   }
 }
 

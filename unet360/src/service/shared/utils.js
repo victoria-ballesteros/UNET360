@@ -8,14 +8,11 @@ export async function obtainData() {
     const tagStore = useTagStore();
 
     if (authStore.isAuthenticated) {
-        console.log("Está autenticado")
         if (!nodeStore.nodes) {
-            console.log("Busca nodos")
             await nodeStore.fetchNodes();
             console.log(nodeStore.nodes)
         }
         if (!tagStore.tags) {
-            console.log("Busca tags")
             await tagStore.fetchTags();
         }
     }
