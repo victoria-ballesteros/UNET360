@@ -1,32 +1,76 @@
+// ═══════════════ ✦ Loader ✦ ═══════════════
+.loading-bar-container {
+  width: 80vw;
+  height: 156px;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  position: relative;
+}
+
+.loading-bar {
+  position: absolute;
+  width: 80%;
+  height: 4px;
+  background: linear-gradient(to right,
+      transparent 0%,
+      #007bff 25%,
+      #0056b3 50%,
+      #007bff 75%,
+      transparent 100%);
+  background-size: 200% 100%;
+  animation: loading 1.2s infinite ease-in-out;
+  border-radius: 2px;
+}
+
+@keyframes loading {
+    0% {
+        background-position: -100% 0;
+    }
+
+    100% {
+        background-position: 100% 0;
+    }
+}
+
 // Modal de imagen
 .image-modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .image-modal-content {
   background: var(--strong-gray);
   border-radius: 0.75rem;
   padding: 1rem;
-  box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+
 .image-modal-header {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
+
 .image-modal-title {
   color: var(--full-white);
   font-size: 1.1rem;
   font-weight: 600;
 }
+
 .image-modal-close {
   background: transparent;
   border: none;
@@ -34,12 +78,14 @@
   color: var(--full-white);
   cursor: pointer;
 }
+
 .image-modal-img {
   max-width: 80vw;
   max-height: 70vh;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
+
 .icon-btn {
   background: none;
   border: none;
@@ -49,6 +95,7 @@
   display: flex;
   align-items: center;
 }
+
 .node-actions {
   display: flex;
   gap: 0.6rem;
@@ -64,9 +111,11 @@
   opacity: 1;
   transition: opacity 0.2s;
 }
+
 .node-action-icon:hover {
   opacity: 1;
 }
+
 .node-info {
   display: flex;
   align-items: center;
@@ -77,14 +126,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom:0.2rem;
+  margin-bottom: 0.2rem;
 }
+
 .node-admin-container {
   display: flex;
   flex-direction: column;
   padding: 2.25rem !important;
   gap: 1rem;
-    
+
   .nodes-list-section {
     display: flex;
     flex-direction: column;
@@ -92,7 +142,7 @@
     border: 0.16rem solid var(--main-yellow);
     border-radius: 1rem;
     overflow: hidden;
-    }
+  }
 
 }
 
@@ -103,22 +153,26 @@
   padding: 2.25rem !important;
   gap: 1rem;
 }
+
 .text-section {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   h2 {
     margin: 0;
     color: var(--full-white);
     @include paragraph-h1;
   }
 }
+
 .button-section {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 0.2rem;
 }
+
 .nodes-list-section {
   display: flex;
   flex-direction: column;
@@ -127,32 +181,38 @@
   border-radius: 1rem;
   overflow: hidden;
 }
+
 .node-item {
   display: flex;
   flex-direction: column;
   cursor: pointer;
 }
+
 .node-main {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0.6rem;
 }
+
 .node-status {
   width: 0.8rem;
   height: 0.8rem;
   border-radius: 50%;
   background: var(--status-green, #b0e5b1);
 }
+
 .node-name {
   font-weight: 600;
   color: var(--full-white);
   @include paragraph-medium;
 }
+
 .node-actions {
   display: flex;
   gap: 0.75rem;
 }
+
 .node-action-icon {
   width: 1.2rem;
   height: 1.2rem;
@@ -161,15 +221,18 @@
   opacity: 1;
   transition: opacity 0.2s;
 }
+
 .node-action-icon:hover {
   opacity: 1;
 }
+
 .node-separator {
   width: 100%;
   height: 2px;
   background: #fff;
   border-radius: 1px;
 }
+
 .node-details {
   display: flex;
   flex-direction: column;
@@ -179,9 +242,17 @@
   padding: 0.5rem 0.6rem;
   gap: 0.5rem;
 }
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 // Primary info section
@@ -193,31 +264,37 @@
   color: var(--full-white);
   width: 100%;
 }
+
 .adyacent-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+
 .adyacent-title {
   color: var(--full-white);
   @include paragraph-small;
 }
+
 .adyacent-nodes {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+
 .adyacent-node-group-1,
 .adyacent-node-group-2 {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
+
 .adyacent-label {
   color: var(--border-gray);
   @include paragraph-extra-small;
 }
+
 .adyacent-value-blue {
   color: var(--main-blue, #1976d2);
 }
@@ -235,6 +312,7 @@
   font-weight: 600;
   @include paragraph-small;
 }
+
 .location-value {
   color: var(--border-gray);
   @include paragraph-extra-small;
@@ -248,17 +326,20 @@
   align-items: center;
   gap: 0.5rem;
 }
+
 .tags-label {
   color: var(--full-white);
   font-weight: 600;
   @include paragraph-small;
   margin-right: 0.5rem;
 }
+
 .tags-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
 }
+
 .tag-item {
   background: var(--main-blue);
   color: var(--full-white);
@@ -276,6 +357,7 @@
   display: flex;
   justify-content: flex-end;
 }
+
 .delete-node-btn {
   display: flex;
   align-items: center;
@@ -287,21 +369,31 @@
   border-radius: 0.8rem;
   padding: 0.3rem 0.5rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: background 0.2s, box-shadow 0.2s;
 }
+
 .delete-node-btn:hover {
   background: var(--main-red);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
+
 .delete-icon {
   margin-right: 0.2rem;
 }
 
 .empty-message {
-    color: var(--full-white);
-    text-align: center;
-    padding: 1rem;
-    font-size: 1.2rem;
-    @include paragraph-medium;
+  color: var(--full-white);
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.2rem;
+  @include paragraph-medium;
+}
+
+.delete-dialog-actions {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1.2rem 0rem 0rem 0rem;
 }
