@@ -65,7 +65,7 @@
             </div>
             <!-- Status reasons -->
             <div class="reasons" v-if="node.reasons && node.reasons.length">
-              <div class="reasons-title">Motivos:</div>
+              <div class="reasons-title">Advertencias:</div>
               <ul class="reasons-list">
                 <li v-for="(r, i) in node.reasons" :key="i">{{ r }}</li>
               </ul>
