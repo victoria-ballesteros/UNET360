@@ -47,9 +47,17 @@ const visualMapCoords = ref({ x: 200, y: 250 });
 const pendingMapUpdate = ref(null);
 
 const POSITION_LABELS = ['Frente', 'Derecha', 'Atrás', 'Izquierda'];
+const directionOffsets = {
+  Frente: 0,
+  Derecha: Math.PI / 2,
+  Atrás: Math.PI,
+  Izquierda: -Math.PI / 2
+};
 
 const customMapUrl = ref(campusMap);
 const customIconUrl = locationIconRaw;
+
+const lastDirection = ref('')
 
 const defineData = async () => {
   let newMapUrl = campusMap;
@@ -87,7 +95,7 @@ onMounted(async () => {
   setVh();
   window.addEventListener('resize', setVh);
 
-  setNode('003');
+  setNode('021');
 
   viewer = new Viewer({
     container: viewerContainer.value,
@@ -101,8 +109,10 @@ onMounted(async () => {
   const markers = viewer.getPlugin(MarkersPlugin);
 
   markers.addEventListener('select-marker', ({ marker }) => {
+    lastDirection.value = marker.config.tooltip.content;
     try {
       const markerData = JSON.parse(marker.data);
+      setNode(markerData.target);
       defineData(markerData.target);
     } catch (error) {
       console.error('Error al procesar marcador:', error);
@@ -113,6 +123,7 @@ onMounted(async () => {
 
   viewer.addEventListener('panorama-loaded', async () => {
     await addMarkersFromCurrentNode();
+
     if (pendingMapUpdate.value) {
       if (customMapUrl.value !== pendingMapUpdate.value.url) {
         customMapUrl.value = pendingMapUpdate.value.url;
@@ -135,6 +146,8 @@ const addMarkersFromCurrentNode = async () => {
   const node = currentNodeData.value;
   const nodes = nodeStore.nodes;
   const markers = viewer.getPlugin(MarkersPlugin);
+
+  console.log("NODE: ", node)
 
   markers.clearMarkers();
 
@@ -198,17 +211,26 @@ const addMarkersFromCurrentNode = async () => {
   }
 };
 
+const adjustAngle = (anguloBase) => {
+  const offset = directionOffsets[lastDirection.value] ?? 0;
+  let nuevoAngulo = anguloBase + offset;
+
+  if (nuevoAngulo > Math.PI) nuevoAngulo -= 2 * Math.PI;
+  if (nuevoAngulo < -Math.PI) nuevoAngulo += 2 * Math.PI;
+
+  return nuevoAngulo;
+}
+
 watch(currentImage, async (newImage) => {
   if (viewer && newImage) {
-    console.log('Actualizando imagen:', newImage);
-
     markersPlugin.value?.clearMarkers();
 
-    await viewer.setPanorama(newImage);
-
-    viewer.addEventListener('panorama-loaded', async () => {
-      console.log('Imagen cargada, agregando marcadores...');
-      await addMarkersFromCurrentNode();
+    await viewer.setPanorama(newImage, {
+      position: { yaw: adjustAngle(currentNodeData.value.forward_heading), pitch: 0 },
+      transition: {
+        rotation: false,
+        effect: 'fade',
+      },
     });
   }
 });
