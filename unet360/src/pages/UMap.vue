@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import UIcon from '@/components/UIcon.vue';
 import UCustomMap from '@/components/UCustomMap.vue';
@@ -39,7 +39,9 @@ import campusMap from '@/assets/images/campus-map.jpg';
 import locationIconRaw from '@/assets/icons/location.svg?url';
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+import { useNodeStore } from '@/service/stores/nodes';
 
+const nodeStore = useNodeStore();
 
 const searchInput = ref('')
 
@@ -59,7 +61,7 @@ const customMapUrl = ref(campusMap);
 const customIconUrl = locationIconRaw;
 
 const defineData = async (nodeName) => {
-  const nodes = await obtainMockNodes();
+  const nodes = nodeStore.nodes;
   const node = nodes.find(n => n.name === nodeName);
   if (!node) {
     console.warn('Nodo no encontrado:', nodeName);
@@ -78,7 +80,19 @@ const defineData = async (nodeName) => {
   pendingMapUpdate.value = { url: newMapUrl, coords: newCoords };
 };
 
+const setVh = () => {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', setVh);
+});
+
 onMounted(async () => {
+  setVh();
+  window.addEventListener('resize', setVh);
+
   viewer = new Viewer({
     container: viewerContainer.value,
     panorama: '',

@@ -7,7 +7,7 @@
         <router-view />
       </main>
     </div>
-    <footer v-if="route.name != 'NodeCreate'" class="footer-container">
+    <footer v-if="route.name != 'NodeCreate' && route.name != 'Map'" class="footer-container">
       <p class="footer-description">© 2025 UNET360. All Rights Reserved.</p>
     </footer>
   </div>
