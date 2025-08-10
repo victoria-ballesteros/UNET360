@@ -13,6 +13,7 @@ import Showcase from "@/pages/UShowcase.vue";
 import Auth from "@/pages/UAuth.vue";
 import AuthSuccess from "@/pages/UAuthSuccess.vue";
 import Map from "@/pages/UMap.vue";
+import About from "@/pages/UAbout.vue";
 
 const routes = [
   {
@@ -29,7 +30,7 @@ const routes = [
   {
     path: "/about",
     name: "About",
-    component: Home,
+    component: About,
   },
   {
     path: "/nodes",
