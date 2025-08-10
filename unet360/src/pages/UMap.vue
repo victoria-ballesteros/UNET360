@@ -55,7 +55,6 @@ const pendingMapUpdate = ref(null);
 const YAW_MAP = [0, Math.PI / 2, Math.PI, -Math.PI / 2];
 const POSITION_LABELS = ['Frente', 'Derecha', 'Atrás', 'Izquierda'];
 
-const MAP_BASE_PATH = '/src/assets/images/';
 const customMapUrl = ref(campusMap);
 const customIconUrl = locationIconRaw;
 
@@ -70,7 +69,7 @@ const defineData = async (nodeName) => {
   let newMapUrl = campusMap;
   let newCoords = { x: 200, y: 250 };
   if (node.minimap) {
-    newMapUrl = MAP_BASE_PATH + node.minimap.image;
+    newMapUrl = new URL(`../assets/images/${node.minimap.image}`, import.meta.url).href;
     newCoords = { x: node.minimap.x, y: node.minimap.y };
   }
 
