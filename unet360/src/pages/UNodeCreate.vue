@@ -60,6 +60,23 @@
       <UButton style="align-self: flex-end" text="Aceptar" @click="handleTagCustomization" :type="dialogButtonType" />
     </div>
   </UDialog>
+
+  <!-- Resultado de creación -->
+  <UDialog v-model="showResultDialog" :headerTitle="''">
+    <div class="result-dialog">
+      <div class="result-icon">
+        <UIcon :name="resultSuccess ? 'icons/check-square-fill' : 'icons/close-session'" size="48" :color="resultSuccess ? 'var(--status-green, #4caf50)' : 'var(--status-red, #e53935)'" />
+      </div>
+      <div class="result-text">
+        <p class="upper-paragraph">{{ resultTitle }}</p>
+        <p class="lower-paragraph">{{ resultMessage }}</p>
+      </div>
+      <div class="button-container" style="margin-top: 12px; display: flex; gap: 12px; justify-content: flex-end;">
+        <UButton text="Ver nodos" type="contrast-2" @click="navigateToNodes" />
+        <UButton text="Crear Nuevo Nodo" type="contrast-2" @click="startNewNode" />
+      </div>
+    </div>
+  </UDialog>
 </template>
 
 <script setup>
@@ -103,13 +120,19 @@ const scrollContainer = ref(null);
 const actualTagSelected = ref("");
 const dialogButtonType = ref("deactivated");
 
+// Resultado creación
+const showResultDialog = ref(false);
+const resultSuccess = ref(false);
+const resultTitle = ref("");
+const resultMessage = ref("");
+
 
 // ═══════════════  Reload page state  ═══════════════
 
 const isUploading = ref(false);
 
 function resetForm() {
-  window.location.reload();
+  isUploading.value = false;
 }
 
 // ═══════════════  360 viewer  ═══════════════
@@ -231,7 +254,9 @@ function handleCloseViewer() {
 
 // ═══════════════  Form buttons  ═══════════════
 
-function handleCancelEvent() { }
+function handleCancelEvent() {
+  router.push({ name: 'NodeAdmin' });
+}
 
 async function handlePrimaryClick() {
   if (actionButton.value == "Continuar") {
@@ -270,8 +295,18 @@ async function handleFormExpansion() {
   watch(
     () => inputModels["Identificación"],
     (newVal) => {
-      const exists = nodes.value.some((node) => node.name === newVal?.trim());
-      inputErrors["Identificación"] = exists ? "El nodo ya existe" : "";
+      const trimmed = newVal?.trim();
+      let err = "";
+      if (!trimmed) {
+        err = "La identificación es obligatoria";
+      } else if (trimmed.length < 3) {
+        err = "La identificación debe tener al menos 3 caracteres";
+      } else if (!/^\d+(-[a-zA-Z0-9]+)*$/.test(trimmed)) {
+        err = "Formato inválido. Ej: 003-HallA";
+      } else if (nodes.value.some((node) => node.name === trimmed)) {
+        err = "El nodo ya existe";
+      }
+      inputErrors["Identificación"] = err;
       checkIfReadyToSubmit();
     }
   );
@@ -279,9 +314,22 @@ async function handleFormExpansion() {
 
 async function handleFormSubmit() {
   isUploading.value = true;
-  const uploadImageResponse = await uploadImageToServer(imageFile.value);
-  if (!uploadImageResponse || !uploadImageResponse?.status){
+  if (!imageFile.value) {
     isUploading.value = false;
+    return;
+  }
+  let uploadImageResponse = null;
+  try {
+    uploadImageResponse = await uploadImageToServer(imageFile.value);
+  } catch (e) {
+  // ignored
+  }
+  if (!uploadImageResponse || !uploadImageResponse?.status){
+  isUploading.value = false;
+    resultSuccess.value = false;
+    resultTitle.value = 'Error al subir imagen';
+    resultMessage.value = uploadImageResponse?.response_obj?.message || 'No se pudo subir la imagen.';
+    showResultDialog.value = true;
     resetForm();
     return;
   }
@@ -294,7 +342,7 @@ async function handleFormSubmit() {
     const nodeName = inputModels[label];
     const rawWeight = inputWeightModels[label];
 
-    const parsedWeight = parseInt(rawWeight);
+  const parsedWeight = parseFloat(rawWeight);
     const weight = isNaN(parsedWeight) ? null : parsedWeight;
 
     if (nodeName) {
@@ -317,10 +365,26 @@ async function handleFormSubmit() {
     adjacent_nodes: adjacentNodes,
     tags: tagDict
   }
-
-  await createNode(nodeData);
-  
-  resetForm();
+  try {
+    const createResp = await createNode(nodeData);
+    isUploading.value = false;
+    if (createResp?.status) {
+      resultSuccess.value = true;
+      resultTitle.value = '¡Nodo creado con éxito!';
+      resultMessage.value = `Se creó el nodo "${nodeData.name}" correctamente.`;
+    } else {
+      resultSuccess.value = false;
+      resultTitle.value = 'Error al crear nodo';
+      resultMessage.value = createResp?.response_obj?.message || 'No se pudo crear el nodo.';
+    }
+    showResultDialog.value = true;
+  } catch (e) {
+    isUploading.value = false;
+    resultSuccess.value = false;
+    resultTitle.value = 'Error inesperado';
+    resultMessage.value = String(e);
+    showResultDialog.value = true;
+  }
 }
 
 
@@ -402,6 +466,18 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   handleCloseViewer();
 });
+
+// Navegación de resultado
+function navigateToNodes() {
+  showResultDialog.value = false;
+  router.push({ name: 'NodeAdmin' });
+}
+
+function startNewNode() {
+  showResultDialog.value = false;
+  // Reinicia la ruta para limpiar estado del formulario
+  router.replace({ name: 'NodeCreate' });
+}
 </script>
 
 <style scoped lang="scss">

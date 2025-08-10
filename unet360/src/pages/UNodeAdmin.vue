@@ -58,9 +58,16 @@
                 <span v-else class="tag-item">{{ tagsEmpty }}</span>
               </div>
             </div>
+            <!-- Status reasons -->
+            <div class="reasons" v-if="node.reasons && node.reasons.length">
+              <div class="reasons-title">Motivos:</div>
+              <ul class="reasons-list">
+                <li v-for="(r, i) in node.reasons" :key="i">{{ r }}</li>
+              </ul>
+            </div>
             <!-- Delete Button -->
             <div class="delete-section">
-              <button class="delete-node-btn" @click.stop="deleteNode(node.name)">
+              <button class="delete-node-btn" @click.stop="openDeleteConfirm(node.name)">
                 <UIcon name="icons/trash" size="10" class="delete-icon" />
                 {{ deleteLabel }}
               </button>
@@ -81,6 +88,15 @@
       </div>
     </div>
   </div>
+  <UDialog v-model="showDeleteDialog" :headerTitle="''">
+    <div class="delete-dialog-content">
+      <div class="delete-dialog-header">¿Desea eliminar el nodo {{ nodeToDelete }}?</div>
+      <div class="delete-dialog-actions">
+        <UButton text="Cancelar" type="tertiary" @click="showDeleteDialog = false" />
+        <UButton text="Continuar" type="danger" @click="confirmDelete" />
+      </div>
+    </div>
+  </UDialog>
 </template>
 
 <script>
@@ -88,10 +104,14 @@ import { onMounted, ref } from 'vue';
 import { useNodeStore } from '@/service/stores/nodes.js';
 import UIcon from '@/components/UIcon.vue';
 import UButton from '@/components/UButton.vue';
+import UDialog from '@/components/UDialog.vue';
+import { useRouter } from 'vue-router';
+import { deleteNode as deleteNodeRequest } from '@/service/requests/requests.js';
 export default {
   name: 'UNodeAdmin',
-  components: { UIcon, UButton },
+  components: { UIcon, UButton, UDialog },
   setup() {
+    const router = useRouter();
     const { nodes, isLoading, error, fetchNodes } = useNodeStore();
     const expandedNode = ref(null);
     const showImageModal = ref(false);
@@ -120,13 +140,19 @@ export default {
     const tagsLabel = 'Tags:';
     const tagsEmpty = 'Sin tags';
     const deleteLabel = 'Eliminar nodo';
+  const showDeleteDialog = ref(false);
+  const nodeToDelete = ref('');
 
     onMounted(fetchNodes);
 
-    const getStatusColor = status =>
-      status === 'online' ? 'var(--status-green, #4caf50)' :
-      status === 'offline' ? 'var(--status-red, #e53935)' :
-      'var(--status-gray, #bdbdbd)';
+    const getStatusColor = status => {
+      switch (status) {
+        case 'OK': return 'var(--status-green, #4caf50)';
+        case 'WARNING': return 'var(--status-yellow, #ffb300)';
+        case 'ERROR': return 'var(--status-red, #e53935)';
+        default: return 'var(--status-gray, #bdbdbd)';
+      }
+    };
 
     const toggleNode = name => {
       expandedNode.value = expandedNode.value === name ? null : name;
@@ -142,8 +168,20 @@ export default {
       modalImageUrl.value = '';
     };
     const viewImages = node => openImageModal(node);
-    const editNode = node => alert('Editar nodo: ' + node.name);
-    const deleteNode = name => alert('Eliminar nodo con nombre: ' + name);
+    const editNode = node => router.push({ name: 'NodeEdit', params: { name: node.name } });
+    const openDeleteConfirm = (name) => {
+      nodeToDelete.value = name;
+      showDeleteDialog.value = true;
+    };
+    const confirmDelete = async () => {
+      if (!nodeToDelete.value) return;
+      const resp = await deleteNodeRequest(nodeToDelete.value);
+      if (resp?.status) {
+        showDeleteDialog.value = false;
+        nodeToDelete.value = '';
+        await fetchNodes();
+      }
+    };
     const getAdyacentValue = (node, key) => {
       const keyMap = { frente: 0, atras: 1, izquierda: 2, derecha: 3 };
       if (Array.isArray(node.adjacent_nodes)) {
@@ -158,6 +196,7 @@ export default {
     };
 
     return {
+      router,
       nodes,
       isLoading,
       error,
@@ -169,11 +208,14 @@ export default {
       tagsLabel,
       tagsEmpty,
       deleteLabel,
+      showDeleteDialog,
+      nodeToDelete,
       getStatusColor,
       toggleNode,
       viewImages,
       editNode,
-      deleteNode,
+      openDeleteConfirm,
+      confirmDelete,
       getAdyacentValue,
       showImageModal,
       modalImageUrl,

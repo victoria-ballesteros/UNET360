@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import { getNodes } from "../requests/requests.js";
+import { getNodes, getNodeStatuses } from "../requests/requests.js";
 import { useAuthStore } from "@/service/stores/auth.js";
 
 export const useNodeStore = defineStore("node", () => {
@@ -26,7 +26,26 @@ export const useNodeStore = defineStore("node", () => {
         //
         return;
       }
-      nodes.value = [...(response?.response_obj ?? [])];
+      const baseNodes = [...(response?.response_obj ?? [])];
+      // Try to fetch statuses and merge
+      try {
+        const statusesResp = await getNodeStatuses();
+        if (statusesResp?.status) {
+          const statusMap = new Map((statusesResp.response_obj || []).map(s => [s.name, s]));
+          nodes.value = baseNodes.map(n => {
+            const statusEntry = statusMap.get(n.name);
+            return {
+              ...n,
+              status: statusEntry?.status || null,
+              reasons: statusEntry?.reasons || null,
+            };
+          });
+        } else {
+          nodes.value = baseNodes;
+        }
+      } catch (_) {
+        nodes.value = baseNodes;
+      }
       error.value = null;
     } catch (err) {
       error.value = err;
