@@ -17,8 +17,8 @@ class UploadService:
 
     async def upload_image(self, file_content: bytes, file_name: str, file_content_type: str, user_id: str) -> dict:
         try:
-            file_path_in_bucket = f"{file_name}" 
-            
+            file_path_in_bucket = f"{file_name}"
+
             response_storage = self.supabase_client.storage.from_(self.supabase_bucket_name).upload(
                 file_path_in_bucket,
                 file_content,
@@ -33,7 +33,6 @@ class UploadService:
                 "file_path": uploaded_file_path_from_supabase,
                 "signed_url": public_url_response
             }
-
         except StorageApiError as e:
             logger.error(f"Supabase Storage API error during image upload: {e}", exc_info=True)
             error_detail = e.message if hasattr(e, 'message') else str(e)

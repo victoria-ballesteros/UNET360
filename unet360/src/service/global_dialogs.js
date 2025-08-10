@@ -11,7 +11,7 @@ export const getSidebarOptions = (authState, isAdmin = null) => {
 
   if (isAdmin == "admin") {
     return [
-      { label: "Administrar nodos", to: { name: "NodeCreate" } },
+      { label: "Administrar nodos", to: { name: "NodeAdmin" } },
       { label: "Acerca de", to: { name: "About" } },
       { label: "Cerrar sesión", action: "logout" },
     ];
