@@ -325,6 +325,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .tags-label {
@@ -348,8 +349,23 @@
   font-size: 1.08rem;
   font-weight: 600;
   @include paragraph-extra-small;
+  line-height: 0.8rem !important;
   transition: background 0.2s;
-  cursor: default;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere; 
+}
+
+.reasons-title {
+  font-weight: 600;
+  @include paragraph-small;
+}
+
+.reasons-list {
+  @include paragraph-extra-small;
+  line-height: 0.8rem !important;
+  margin: 0.5rem 0rem;
+  color: var(--main-red);
 }
 
 // Delete button section

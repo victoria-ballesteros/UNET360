@@ -51,7 +51,15 @@
               <span class="tags-label">{{ tagsLabel }}</span>
               <div class="tags-list">
                 <span v-if="node.tags && Object.keys(node.tags).length" v-for="(values, tag) in node.tags" :key="tag"
-                  class="tag-item">{{ tag }}: {{ Array.isArray(values) ? values.join(', ') : values }}</span>
+                  class="tag-item">
+                  {{ tag }}:
+                  <template v-if="Array.isArray(values)">
+                    {{ values.join(', ') }}
+                  </template>
+                  <template v-else>
+                    {{ Object.entries(values)[0][0] }}
+                  </template>
+                </span>
                 <span v-else class="tag-item">{{ tagsEmpty }}</span>
               </div>
             </div>
@@ -81,7 +89,7 @@
           <span class="image-modal-title">Nodo: {{ modalNodeName }}</span>
           <button class="image-modal-close" @click="closeImageModal">✕</button>
         </div>
-        <div v-if="isImageLoading"  class="loading-bar-container">
+        <div v-if="isImageLoading" class="loading-bar-container">
           <div class="loading-bar"></div>
         </div>
         <img v-show="!isImageLoading" :src="modalImageUrl" alt="Imagen del nodo" class="image-modal-img"
@@ -213,8 +221,8 @@ const getAdyacentValue = (node, key) => {
   return node.adjacent_nodes?.[key] || adyacentNA;
 };
 
-onMounted(() => {
-  nodeStore.fetchNodes;
+onMounted(async () => {
+  await nodeStore.fetchNodes();
 });
 
 </script>

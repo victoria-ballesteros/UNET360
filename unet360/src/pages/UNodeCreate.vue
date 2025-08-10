@@ -41,8 +41,8 @@
           <p class="input-label">Datos opcionales</p>
           <div class="tag-container">
             <UIcon v-for="(tag, index) in tags" :key="index" :name="'icons/' + tag.icon_name" size="34" :color="tagSelection[tag.name]
-                ? 'var(--main-blue)'
-                : 'var(--border-gray)'
+              ? 'var(--main-blue)'
+              : 'var(--border-gray)'
               " @click="handleTagClick(tag.name)" />
           </div>
         </div>
@@ -65,7 +65,8 @@
   <UDialog v-model="showResultDialog" :headerTitle="''">
     <div class="result-dialog">
       <div class="result-icon">
-        <UIcon :name="resultSuccess ? 'icons/check-square-fill' : 'icons/close-session'" size="48" :color="resultSuccess ? 'var(--status-green, #4caf50)' : 'var(--status-red, #e53935)'" />
+        <UIcon :name="resultSuccess ? 'icons/check-square-fill' : 'icons/close-session'" size="48"
+          :color="resultSuccess ? 'var(--status-green, #4caf50)' : 'var(--status-red, #e53935)'" />
       </div>
       <div class="result-text">
         <p class="upper-paragraph">{{ resultTitle }}</p>
@@ -322,10 +323,10 @@ async function handleFormSubmit() {
   try {
     uploadImageResponse = await uploadImageToServer(imageFile.value);
   } catch (e) {
-  // ignored
+    // ignored
   }
-  if (!uploadImageResponse || !uploadImageResponse?.status){
-  isUploading.value = false;
+  if (!uploadImageResponse || !uploadImageResponse?.status) {
+    isUploading.value = false;
     resultSuccess.value = false;
     resultTitle.value = 'Error al subir imagen';
     resultMessage.value = uploadImageResponse?.response_obj?.message || 'No se pudo subir la imagen.';
@@ -342,7 +343,7 @@ async function handleFormSubmit() {
     const nodeName = inputModels[label];
     const rawWeight = inputWeightModels[label];
 
-  const parsedWeight = parseFloat(rawWeight);
+    const parsedWeight = parseFloat(rawWeight);
     const weight = isNaN(parsedWeight) ? null : parsedWeight;
 
     if (nodeName) {
@@ -353,11 +354,13 @@ async function handleFormSubmit() {
   }
 
   for (const tag of tagStore.tags) {
-    if (tagSelection[tag.name]){
-      tagDict[tag.name] = [tagCustomName[tag.name]];
+    if (tagSelection[tag.name]) {
+      tagDict[tag.name] = {
+        [tagCustomName[tag.name]]: 0.0
+      };
     }
   }
-    
+
   const nodeData = {
     name: inputModels["Identificación"],
     location: null,

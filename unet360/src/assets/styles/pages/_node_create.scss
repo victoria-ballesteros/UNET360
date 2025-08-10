@@ -175,6 +175,7 @@
                 .input-error-label {
                     width: 100%;
                     color: var(--main-red);
+                    margin-top: 1rem; 
 
                     @include paragraph-extra-small;
                 }

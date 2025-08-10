@@ -18,10 +18,8 @@ export async function getNodes() {
 }
 
 export async function createNode(data) {
-  console.log("Entra")
   try {
   const response = await api.post("nodes/", data);
-    console.log(response.data)
     return response.data;
   } catch (error) {
     return null;
