@@ -5,6 +5,10 @@
     </div>
     <div class="button-section">
       <UButton text="Crear Nuevo Nodo" type="contrast-2" @click="router.push({ name: 'NodeCreate' })" />
+      <div class="admin-entities-buttons">
+      <UButton text="Administrar Tags" type="secondary" @click="router.push({ name: 'AdminEntities', params: { entity: 'tags' } })" />
+      <UButton text="Administrar Locations" type="secondary" @click="router.push({ name: 'AdminEntities', params: { entity: 'locations' } })" />
+      </div>
     </div>
     <div class="nodes-list-section">
       <div v-if="nodes.length === 0" class="empty-message">
