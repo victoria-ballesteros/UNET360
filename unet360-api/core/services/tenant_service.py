@@ -1,28 +1,33 @@
 from typing import Optional
-from fastapi import HTTPException
+from fastapi import HTTPException, status
+import logging
+from supabase import Client as SupabaseClient
+from gotrue.errors import AuthApiError
 
 from adapter.database.tenant_repository import TenantRepository
 from core.dtos.tenant_dto import TenantCreateDTO, TenantUpdateDTO, TenantOutDTO
 from core.entities.tenant_model import Tenant
 from core.messages.error_messages import CREATE_ERROR_MESSAGE, OBJECT_NOT_FOUND_ERROR_MESSAGE
 
+logger = logging.getLogger(__name__)
+
 
 class TenantService:
     _instance: Optional["TenantService"] = None
     _repository_instance: Optional[TenantRepository] = None
 
-    def __init__(self, repository: TenantRepository):
+    def __init__(self, repository: TenantRepository, supabase_client: Optional[SupabaseClient] = None):
         self.repository = repository
+        self.supabase_client = supabase_client
 
-    async def create_tenant(self, new_tenant: TenantCreateDTO) -> TenantOutDTO: 
+    async def create_tenant(self, new_tenant: TenantCreateDTO) -> TenantOutDTO:
         tenant_db_obj = Tenant(**new_tenant.model_dump())
         new_tenant_db_obj = await self.repository.create(new_tenant=tenant_db_obj)
 
-        if not new_tenant_db_obj.id: 
+        if not new_tenant_db_obj.id:
             raise HTTPException(status_code=500, detail=CREATE_ERROR_MESSAGE)
 
-        
-        return TenantOutDTO(**new_tenant_db_obj.model_dump()) 
+        return TenantOutDTO(**new_tenant_db_obj.model_dump())
 
     async def get_tenant_by_supabase_user_id(self, supabase_user_id: str) -> TenantOutDTO | None:
         tenant_db_obj = await self.repository.get_by_supabase_user_id(supabase_user_id=supabase_user_id)
@@ -52,5 +57,23 @@ class TenantService:
         tenant = await self.repository.get_by_supabase_user_id(supabase_user_id)
         if not tenant:
             raise HTTPException(status_code=404, detail=OBJECT_NOT_FOUND_ERROR_MESSAGE)
+
+        if self.supabase_client:
+            try:
+                # Llamada a la función de base de datos en lugar del SDK de admin
+                response = self.supabase_client.rpc(
+                    'delete_auth_user',
+                    {'user_id': tenant.supabase_user_id}
+                ).execute()
+
+                if "Error" in response.data:
+                    raise Exception(response.data)
+
+                logger.info(f"User {tenant.supabase_user_id} deleted via RPC.")
+
+            except Exception as e:
+                logger.error(f"Error calling RPC to delete user from Supabase: {e}", exc_info=True)
+                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not delete user via RPC.")
+
         await self.repository.delete(tenant)
-        return {"message": "Tenant deleted"}
+        return {"message": "Tenant and associated user deleted"}
