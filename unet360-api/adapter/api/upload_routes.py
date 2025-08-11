@@ -1,6 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException, status, Request, Depends
 from typing import Optional, Any
 import logging
+import traceback
 
 from core.dtos.responses_dto import GeneralResponse
 
@@ -53,3 +54,34 @@ async def upload_image(
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
 
+@router.delete("/image", response_model=GeneralResponse)
+async def delete_image(
+    request: Request,
+    file_url: str,  # Recibimos la URL completa como un query parameter
+    current_user_id: str = Depends(get_current_admin_user),
+    upload_service: UploadService = Depends(get_upload_service)
+):
+    try:
+        delete_result = await upload_service.delete_image(
+            file_name=file_url,
+            user_id=current_user_id
+        )
+        
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj=delete_result
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during image deletion in route: {e}", exc_info=True)
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )

@@ -4,6 +4,7 @@ import logging
 from fastapi import HTTPException, status
 from supabase import Client as SupabaseClient
 from storage3.exceptions import StorageApiError
+from urllib.parse import urlparse
 
 from core.dtos.responses_dto import GeneralResponse
 
@@ -26,12 +27,13 @@ class UploadService:
             )
 
             public_url_response = self.supabase_client.storage.from_(self.supabase_bucket_name).get_public_url(file_path_in_bucket)
-            uploaded_file_path_from_supabase = response_storage.full_path
-
+            
+            # La librería puede no devolver 'full_path' directamente en la respuesta principal, 
+            # así que construimos una respuesta consistente.
             return {
-                "message": "Image uploaded successfully to private bucket.",
-                "file_path": uploaded_file_path_from_supabase,
-                "signed_url": public_url_response
+                "message": "Image uploaded successfully.",
+                "file_path": f"{self.supabase_bucket_name}/{file_path_in_bucket}",
+                "public_url": public_url_response
             }
         except StorageApiError as e:
             logger.error(f"Supabase Storage API error during image upload: {e}", exc_info=True)
@@ -43,6 +45,32 @@ class UploadService:
             )
         except Exception as e:
             logger.error(f"An unexpected error occurred during image upload: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"An unexpected error occurred: {str(e)}"
+            )
+
+    async def delete_image(self, file_name: str, user_id: str) -> dict:
+        try:
+            # Extrae el nombre del archivo de la URL pública
+            file_path_in_bucket = file_name.split(f"{self.supabase_bucket_name}/")[-1]
+
+            response = self.supabase_client.storage.from_(self.supabase_bucket_name).remove([file_path_in_bucket])
+
+            # La respuesta de Supabase puede variar, así que la logueamos para depurar
+            logger.info(f"Supabase delete response for user {user_id}: {response}")
+
+            return {"message": "Image deleted successfully."}
+        except StorageApiError as e:
+            logger.error(f"Supabase Storage API error during image deletion: {e}", exc_info=True)
+            error_detail = e.message if hasattr(e, 'message') else str(e)
+            status_code_from_api = e.status_code if hasattr(e, 'status_code') else status.HTTP_500_INTERNAL_SERVER_ERROR
+            raise HTTPException(
+                status_code=status_code_from_api,
+                detail=f"Supabase Storage deletion failed: {error_detail}"
+            )
+        except Exception as e:
+            logger.error(f"An unexpected error occurred during image deletion: {e}", exc_info=True)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"An unexpected error occurred: {str(e)}"
