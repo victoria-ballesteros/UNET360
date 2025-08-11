@@ -72,3 +72,32 @@ export async function uploadImageToServer(file) {
     return null;
   }
 }
+
+// DELETE IMAGE
+export async function deleteImageFromServer(fileUrl) {
+  try {
+    const authStore = useAuthStore();
+    const token = authStore.token;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+    const cleanUrl = (val) => {
+      if (typeof val === 'string') {
+        const base = val.split('?')[0];
+        return base.endsWith('?') ? base.slice(0, -1) : base;
+      } else {
+        return '';
+      }
+    };
+
+    const cleaned = cleanUrl(fileUrl);
+
+    const resp2 = await api.delete("upload/image", {
+      params: { file_url: cleaned },
+      headers,
+    });
+    return resp2.data;
+
+  } catch (error) {
+    return null;
+  }
+}

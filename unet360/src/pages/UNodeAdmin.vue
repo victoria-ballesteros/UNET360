@@ -118,7 +118,7 @@ import UIcon from '@/components/UIcon.vue';
 import UButton from '@/components/UButton.vue';
 import UDialog from '@/components/UDialog.vue';
 
-import { deleteNode as deleteNodeRequest } from '@/service/requests/requests.js';
+import { deleteNode as deleteNodeRequest, deleteImageFromServer } from '@/service/requests/requests.js';
 
 const router = useRouter();
 const nodeStore = useNodeStore();
@@ -198,11 +198,17 @@ const openDeleteConfirm = name => {
 
 const confirmDelete = async () => {
   if (!nodeToDelete.value) return;
+  const currentNode = nodes.value.find(obj => obj.name === nodeToDelete.value);
+
   const resp = await deleteNodeRequest(nodeToDelete.value);
   if (resp?.status) {
     const index = nodes.value.findIndex(obj => obj.name === nodeToDelete.value);
     if (index !== -1) {
       nodes.value.splice(index, 1);
+    }
+
+    if (currentNode?.url_image) {
+      await deleteImageFromServer(currentNode.url_image);
     }
   }
   showDeleteDialog.value = false;

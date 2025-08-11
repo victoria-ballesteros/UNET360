@@ -385,11 +385,13 @@ async function handleFormSubmit() {
     const rawWeight = inputWeightModels[label];
 
     const parsedWeight = parseFloat(rawWeight);
-    const weight = isNaN(parsedWeight) ? null : parsedWeight;
+    const hasWeight = !isNaN(parsedWeight);
+    const weight = hasWeight ? parsedWeight : null;
 
-    if (nodeName) {
+    if (nodeName && hasWeight) {
       adjacentNodes.push({ [nodeName]: weight });
     } else {
+      // Si falta el peso o el nombre, marcamos como sin adyacente para evitar 422
       adjacentNodes.push(null);
     }
   }
@@ -405,7 +407,8 @@ async function handleFormSubmit() {
   const nodeData = {
     name: inputModels["Identificación"],
     location: null,
-    url_image: uploadImageResponse?.response_obj.signed_url,
+    // El backend retorna 'public_url' en la respuesta de subida
+    url_image: uploadImageResponse?.response_obj?.public_url,
     adjacent_nodes: adjacentNodes,
     tags: tagDict
   }
