@@ -7,8 +7,8 @@
   </transition>
   <div v-if="!isUploading" class="outer-container">
     <div v-if="!imageFile" class="upper-container">
-      <UButton text="Subir imagen" @click="openUploadFileDialog" type="secondary" icon="cloud-upload" />
-      <input type="file" ref="fileInput" style="display: none" @change="handleFileChange" />
+  <UButton text="Subir imagen" @click="openUploadFileDialog" type="secondary" icon="cloud-upload" />
+  <input type="file" accept="image/*" ref="fileInput" style="display: none" @change="handleFileChange" />
       <div class="icons-container">
         <div class="pair-container">
           <UIcon name="icons/star" size="22" color="var(--strong-gray)" :rotation="15" />
@@ -142,6 +142,8 @@ const viewerContainer = ref(null);
 const isImageLoaded = ref(false);
 const imageFile = ref(false);
 let viewer = null;
+// Mantener URL de vista previa para liberarla luego
+const previewUrl = ref(null);
 
 // ═══════════════  360 stores  ═══════════════
 
@@ -228,7 +230,26 @@ async function handleFileChange(event) {
   const file = event.target.files[0];
   if (file && file.type.startsWith("image/")) {
     imageFile.value = file;
-    const url = URL.createObjectURL(file);
+    // Limpia URL previa si existe
+    if (previewUrl.value) {
+      URL.revokeObjectURL(previewUrl.value);
+      previewUrl.value = null;
+    }
+    // Generar una vista previa reducida para el visor (mejor rendimiento)
+    let previewBlob = null;
+    try {
+      previewBlob = await compressImage(file, {
+        maxWidth: 3072,
+        maxHeight: 1536,
+        quality: 1.0,
+        mimeType: "image/webp",
+      });
+    } catch (e) {
+      // fallback a original si falla la compresión de preview
+      previewBlob = file;
+    }
+    const url = URL.createObjectURL(previewBlob);
+    previewUrl.value = url;
     viewer.setPanorama(url).then(() => {
       viewer.animate({
         yaw: Math.PI / 2,
@@ -249,6 +270,10 @@ function handleCloseViewer() {
     if (viewer) {
       viewer.destroy();
       viewer = null;
+    }
+    if (previewUrl.value) {
+      URL.revokeObjectURL(previewUrl.value);
+      previewUrl.value = null;
     }
   }, 800);
 }
@@ -319,9 +344,25 @@ async function handleFormSubmit() {
     isUploading.value = false;
     return;
   }
+  // Comprimir/redimensionar imagen en el cliente antes de subir
+  let fileToUpload = imageFile.value;
+  try {
+    const compressedBlob = await compressImage(imageFile.value, {
+      maxWidth: 4096,
+      maxHeight: 2048,
+      quality: 0.9,
+      mimeType: "image/webp",
+    });
+    if (compressedBlob && compressedBlob.size > 0) {
+      const newName = (imageFile.value.name || "image").replace(/\.[^.]+$/, "") + (compressedBlob.type.includes("webp") ? ".webp" : ".jpg");
+      fileToUpload = new File([compressedBlob], newName, { type: compressedBlob.type });
+    }
+  } catch (e) {
+    // Si falla la compresión, seguimos con el archivo original
+  }
   let uploadImageResponse = null;
   try {
-    uploadImageResponse = await uploadImageToServer(imageFile.value);
+    uploadImageResponse = await uploadImageToServer(fileToUpload);
   } catch (e) {
     // ignored
   }
@@ -480,6 +521,55 @@ function startNewNode() {
   showResultDialog.value = false;
   // Reinicia la ruta para limpiar estado del formulario
   router.replace({ name: 'NodeCreate' });
+}
+
+// ═══════════════  Utilidades de compresión de imagen  ═══════════════
+
+/**
+ * Comprime/redimensiona una imagen usando canvas.
+ * Opciones: maxWidth, maxHeight, quality (0-1), mimeType (image/webp por defecto)
+ * Devuelve un Blob más pequeño o el Blob original si no mejora.
+ */
+async function compressImage(file, opts = {}) {
+  const {
+    maxWidth = 1600,
+    maxHeight = 1600,
+    quality = 0.82,
+    mimeType = "image/webp",
+  } = opts;
+
+  // Leer como DataURL
+  const dataUrl = await new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result);
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
+
+  const img = await new Promise((resolve, reject) => {
+    const i = new Image();
+    i.onload = () => resolve(i);
+    i.onerror = reject;
+    i.src = dataUrl;
+  });
+
+  const ratio = Math.min(1, maxWidth / img.width, maxHeight / img.height);
+  const w = Math.round(img.width * ratio);
+  const h = Math.round(img.height * ratio);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, 0, 0, w, h);
+
+  const outBlob = await new Promise((resolve) => canvas.toBlob(resolve, mimeType, quality));
+  if (!outBlob) return file;
+
+  // Si no mejora el tamaño, devuelve el original
+  return outBlob.size < file.size ? outBlob : file;
 }
 </script>
 

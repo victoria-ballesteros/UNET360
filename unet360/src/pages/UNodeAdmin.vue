@@ -209,7 +209,7 @@ const confirmDelete = async () => {
 };
 
 const getAdyacentValue = (node, key) => {
-  const keyMap = { frente: 0, atras: 1, izquierda: 2, derecha: 3 };
+  const keyMap = { frente: 0, atras: 2, izquierda: 3, derecha: 1 };
   if (Array.isArray(node.adjacent_nodes)) {
     const idx = keyMap[key];
     const adj = node.adjacent_nodes[idx];
