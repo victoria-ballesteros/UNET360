@@ -181,7 +181,7 @@ onMounted(async () => {
   setVh();
   window.addEventListener('resize', setVh);
 
-  setNode('021');
+  setNode('003');
 
   viewer = new Viewer({
     container: viewerContainer.value,

@@ -107,5 +107,5 @@ export function adjustAngle(anguloBase, lastDirection) {
 }
 
 export function getImagePath(fileName) {
-    return new URL(`../assets/images/icons-images/${fileName}.png`, import.meta.url).href;
+    return new URL(`../../assets/images/icons-images/${fileName}.png`, import.meta.url).href;
 }
