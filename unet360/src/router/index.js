@@ -39,19 +39,19 @@ const routes = [
         path: "create",
         name: "NodeCreate",
         component: NodeCreate,
-        meta: { requiresAuth: true },
+  meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "admin",
         name: "NodeAdmin",
         component: NodeAdmin,
-        meta: { requiresAuth: true },
+  meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "edit/:name",
         name: "NodeEdit",
         component: NodeEdit,
-        meta: { requiresAuth: true },
+  meta: { requiresAuth: true, requiresAdmin: true },
         props: true,
       },
     ],
@@ -141,6 +141,18 @@ router.beforeEach(async (to, from, next) => {
 
     if (to.meta.requiresAuth && !isAuthenticated) {
       return next({ name: "Login", query: { redirect: to.fullPath } });
+    }
+
+    // Rutas que requieren rol de administrador
+    if (to.meta.requiresAdmin) {
+      // Si no está autenticado ya fue manejado arriba; aquí confirmamos y verificamos rol
+      if (!isAuthenticated) {
+        return next({ name: "Login", query: { redirect: to.fullPath } });
+      }
+      const isAdmin = auth.user?.role === "admin";
+      if (!isAdmin) {
+        return next({ name: "Home" });
+      }
     }
 
     next();
