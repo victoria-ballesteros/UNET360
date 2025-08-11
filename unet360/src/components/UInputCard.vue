@@ -28,8 +28,10 @@
                     <UIcon name="icons/point-sign" size="20" />
                 </div>
                 <div class="route-inputs-container">
-                    <input v-model="searchText" type="text" class="route-input" placeholder="Ingresa el origen" />
-                    <input v-model="searchText" type="text" class="route-input" placeholder="Ingresa el destino" />
+                    <input :value="searchSource" type="text" class="route-input" placeholder="Ingresa el origen"
+                        @input="handleSource" />
+                    <input :value="searchTarget" type="text" class="route-input" placeholder="Ingresa el destino"
+                        @input="handleTarget" />
                 </div>
                 <UIcon name="icons/arrows-crossed" size="23" />
             </div>
@@ -43,14 +45,35 @@ import UIcon from './UIcon.vue'
 import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/service/stores/auth";
 
+const props = defineProps({
+    searchSource: {
+        type: String,
+        required: true
+    },
+    searchTarget: {
+        type: String,
+        required: true
+    }
+});
+
+const emit = defineEmits(['update:searchSource', 'update:searchTarget'])
+
+const handleSource = (event) => {
+    emit('update:searchSource', event.target.value)
+}
+
+const handleTarget = (event) => {
+    emit('update:searchTarget', event.target.value)
+}
+
 const router = useRouter();
 const authStore = useAuthStore();
 
 const menuVisible = ref(false)
 const searchText = ref('')
-const listIconRotation = ref('0')
+const listIconRotation = ref(0)
 const routeSearcherActive = ref(false)
-const searcherInputPlaceholder = ref("Ej. Edificio A")
+const searcherInputPlaceholder = ref("Ej. Edificio A");
 
 const menuOptions = {
     "Ruta": "route-arrow",
@@ -68,7 +91,7 @@ const menuRouter = {
 
 function toggleMenu(label = null) {
     menuVisible.value = !menuVisible.value
-    listIconRotation.value = menuVisible.value ? '90' : '0'
+    listIconRotation.value = menuVisible.value ? 90 : 0
     routeSearcherActive.value = false
     searcherInputPlaceholder.value = "Ej. Edificio A"
 

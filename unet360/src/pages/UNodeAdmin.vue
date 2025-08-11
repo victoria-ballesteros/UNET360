@@ -119,7 +119,6 @@ import UButton from '@/components/UButton.vue';
 import UDialog from '@/components/UDialog.vue';
 
 import { deleteNode as deleteNodeRequest } from '@/service/requests/requests.js';
-import { KeyframeTrack } from 'three';
 
 const router = useRouter();
 const nodeStore = useNodeStore();
