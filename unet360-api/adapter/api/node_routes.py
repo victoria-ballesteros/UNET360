@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from typing import List, Optional, Any
 
 from adapter.database.node_repository import NodeRepository
@@ -62,6 +62,40 @@ async def create_node(dto: NodeCreateDTO,
             status=False,
             response_obj={"message": f"An unexpected error occurred: {str(e)}"}
         )
+    
+@router.get("/search", response_model=GeneralResponse)
+async def search_nodes_by_keywords(
+    q: Optional[str] = Query(None, min_length=3, description="Space-separated search keywords")
+):
+    if not q:
+        return GeneralResponse(
+            http_code=status.HTTP_400_BAD_REQUEST,
+            status=False,
+            response_obj={"message": "Query parameter 'q' is required and must have at least 3 characters."}
+        )
+    try:
+        # Separa el string de búsqueda en palabras clave individuales
+        keywords = q.strip().split()
+        
+        # Llama al nuevo método del servicio
+        nodes_out_dtos = await service.search_nodes(keywords)
+        
+        nodes_data_list = [node_dto.model_dump() for node_dto in nodes_out_dtos]
+        
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj=nodes_data_list
+        )
+    except HTTPException as e:
+        return GeneralResponse(http_code=e.status_code, status=False, response_obj={"message": e.detail})
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )
+
 
 @router.get("/{name}", response_model=GeneralResponse)
 async def get_node(name: str):

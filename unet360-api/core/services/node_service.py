@@ -106,6 +106,35 @@ class NodeService:
         return [await transform_node_to_node_out_dto(node) for node in nodes]
     
 
+    async def search_nodes(self, keywords: list[str]) -> list[NodeOutDTO]:
+        all_nodes = await self.repository.get_all()
+        lower_keywords = [k.lower() for k in keywords]
+        
+        matching_nodes = []
+
+        for node in all_nodes:
+            searchable_text = []
+            
+            searchable_text.append(node.name.lower())
+
+            if node.location:
+                location_doc = await node.location.fetch()
+                if location_doc:
+                    searchable_text.append(location_doc.name.lower())
+            if node.tags:
+                for tag_key, tag_value in node.tags.items():
+                    searchable_text.append(tag_key.lower())
+                    if isinstance(tag_value, list):
+                        searchable_text.extend([str(v).lower() for v in tag_value])
+                    elif isinstance(tag_value, dict):
+                        searchable_text.extend([str(k).lower() for k in tag_value.keys()])
+
+            full_searchable_text = " ".join(searchable_text)
+            
+            if all(keyword in full_searchable_text for keyword in lower_keywords):
+                matching_nodes.append(node)
+        return [await transform_node_to_node_out_dto(node) for node in matching_nodes]
+
     async def update_node(self, name: str, dto: NodeUpdateDTO) -> NodeOutDTO:
         node = await self.repository.get_by_name(name)
         if not node:
