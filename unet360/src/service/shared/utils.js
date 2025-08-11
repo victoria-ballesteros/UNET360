@@ -88,3 +88,24 @@ export async function obtainMockNodes() {
         },
     ]
 }
+
+export function adjustAngle(anguloBase, lastDirection) {
+    const directionOffsets = {
+        Frente: 0,
+        Derecha: Math.PI / 2,
+        Atrás: Math.PI,
+        Izquierda: -Math.PI / 2
+    };
+
+    const offset = directionOffsets[lastDirection] ?? 0;
+    let nuevoAngulo = anguloBase + offset;
+
+    if (nuevoAngulo > Math.PI) nuevoAngulo -= 2 * Math.PI;
+    if (nuevoAngulo < -Math.PI) nuevoAngulo += 2 * Math.PI;
+
+    return nuevoAngulo;
+}
+
+export function getImagePath(fileName) {
+    return new URL(`../assets/images/icons-images/${fileName}.png`, import.meta.url).href;
+}
