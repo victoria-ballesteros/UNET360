@@ -14,6 +14,8 @@ import Auth from "@/pages/UAuth.vue";
 import AuthSuccess from "@/pages/UAuthSuccess.vue";
 import Map from "@/pages/UMap.vue";
 import About from "@/pages/UAbout.vue";
+import UEntityEdit from "@/pages/UEntityEdit.vue";
+import UAdminEntities from "@/pages/UAdminEntities.vue";
 
 const routes = [
   {
@@ -39,38 +41,42 @@ const routes = [
         path: "create",
         name: "NodeCreate",
         component: NodeCreate,
-  meta: { requiresAuth: true, requiresAdmin: true },
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "admin",
         name: "NodeAdmin",
         component: NodeAdmin,
-  meta: { requiresAuth: true, requiresAdmin: true },
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "edit/:name",
         name: "NodeEdit",
         component: NodeEdit,
-  meta: { requiresAuth: true, requiresAdmin: true },
-        props: true,
-      },
-      // Administración genérica de tags y locations
-      {
-        path: "manage/:entity(tags|locations)",
-        name: "AdminEntities",
-        component: () => import("@/pages/UAdminEntities.vue"),
         meta: { requiresAuth: true, requiresAdmin: true },
         props: true,
       },
-      // Crear / editar tag o location
+      {
+        path: "manage/:entity(tags|locations)",
+        name: "AdminEntities",
+        component: UAdminEntities,
+        meta: { requiresAuth: true, requiresAdmin: true },
+        props: true,
+      },
       {
         path: "manage/:entity(tags|locations)/edit/:name?",
         name: "EntityEdit",
-        component: () => import("@/pages/UEntityEdit.vue"),
+        component: UEntityEdit,
         meta: { requiresAuth: true, requiresAdmin: true },
         props: true,
       },
     ],
+  },
+  {
+    path: "/admin/tenants",
+    name: "AdminTenants",
+    component: UAdminEntities,
+    meta: { requiresAuth: true, requiresAdmin: true, entity: "tenants" },
   },
   {
     path: "/user",

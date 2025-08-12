@@ -7,10 +7,11 @@ class TenantCreateDTO(BaseModel):
     role: str
 
 class TenantUpdateDTO(BaseModel):
-    name: Optional[str]
-    role: Optional[str]
+    name: Optional[str] = None
+    role: Optional[str] = None
 
 class TenantOutDTO(BaseModel):
+    supabase_user_id: str
     name: str
     role: str
 
