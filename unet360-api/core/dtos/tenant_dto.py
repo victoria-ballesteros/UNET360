@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Literal
 
 class TenantCreateDTO(BaseModel):
     name: str
@@ -13,3 +13,7 @@ class TenantUpdateDTO(BaseModel):
 class TenantOutDTO(BaseModel):
     name: str
     role: str
+
+class TenantStatusDTO(BaseModel):
+    name: str
+    status: Literal["OK", "WARNING", "ERROR"]

@@ -1,3 +1,5 @@
+# unet360-api/adapter/api/tenant_routes.py
+
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from typing import List, Optional, Any
 from supabase import Client as SupabaseClient
@@ -6,7 +8,8 @@ from core.dtos.responses_dto import GeneralResponse
 
 from core.services.tenant_service import TenantService
 from adapter.database.tenant_repository import TenantRepository
-from core.dtos.tenant_dto import TenantCreateDTO, TenantOutDTO, TenantUpdateDTO
+from core.dtos.tenant_dto import TenantCreateDTO, TenantOutDTO, TenantUpdateDTO, TenantStatusDTO
+from core.dependencies.auth_dependencies import get_current_admin_user
 
 
 router = APIRouter(prefix="/tenants", tags=["Tenants"])
@@ -15,6 +18,38 @@ def get_tenant_service(request: Request) -> TenantService:
     supabase_client: SupabaseClient = request.app.state.supabase
     return TenantService(TenantRepository(), supabase_client)
 
+@router.get("/statuses", response_model=GeneralResponse)
+async def get_tenant_statuses(
+    current_user_id: str = Depends(get_current_admin_user),
+    service: TenantService = Depends(get_tenant_service)
+):
+    """
+    Obtiene el estado de todos los usuarios.
+    - OK: Correo confirmado.
+    - WARNING: Correo no confirmado.
+    - ERROR: Inconsistencia o error al obtener datos.
+    """
+    try:
+        statuses_dtos = await service.get_users_statuses()
+        
+        statuses_data_list = [status_dto.model_dump() for status_dto in statuses_dtos]
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj=statuses_data_list
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code,
+            status=False,
+            response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"}
+        )
 
 @router.post("/", response_model=GeneralResponse)
 async def create_tenant(dto: TenantCreateDTO, service: TenantService = Depends(get_tenant_service)):
