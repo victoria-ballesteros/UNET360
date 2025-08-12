@@ -1,0 +1,121 @@
+.entity-admin-container {
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2.25rem;
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  }
+  .loading, .empty { font-size: 0.95rem; opacity: .7; }
+  .items-list { display: flex; flex-direction: column; gap: .75rem; }
+  .delete-dialog-content { display: flex; flex-direction: column; gap: 1rem; }
+  .delete-dialog-header { font-weight: 600; }
+  .delete-dialog-actions { display: flex; gap: .75rem; justify-content: flex-end; }
+}
+
+.text-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  h2 {
+    margin: 0;
+    color: var(--full-white);
+    @include paragraph-h1;
+  }
+}
+
+.admin-entities-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.empty-message {
+  color: var(--full-white);
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.2rem;
+  @include paragraph-medium;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.item-primary {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.6rem;
+}
+
+.item-left-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  min-width: 1.2rem;
+  min-height: 1.2rem;
+  color: var(--status-green, #4caf50);
+}
+
+
+.item-list-section {
+  display: flex;
+  flex-direction: column;
+  border: 0.16rem solid var(--main-yellow);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.item-name {
+  font-weight: 600;
+  color: var(--full-white);
+  @include paragraph-medium;
+}
+
+.item-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.entity-action-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  min-width: 1.2rem;
+  min-height: 1.2rem;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.entity-action-icon:hover {
+  opacity: 1;
+}
+
+.separator {
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+}

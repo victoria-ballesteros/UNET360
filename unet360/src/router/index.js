@@ -54,6 +54,22 @@ const routes = [
   meta: { requiresAuth: true, requiresAdmin: true },
         props: true,
       },
+      // Administración genérica de tags y locations
+      {
+        path: "manage/:entity(tags|locations)",
+        name: "AdminEntities",
+        component: () => import("@/pages/UAdminEntities.vue"),
+        meta: { requiresAuth: true, requiresAdmin: true },
+        props: true,
+      },
+      // Crear / editar tag o location
+      {
+        path: "manage/:entity(tags|locations)/edit/:name?",
+        name: "EntityEdit",
+        component: () => import("@/pages/UEntityEdit.vue"),
+        meta: { requiresAuth: true, requiresAdmin: true },
+        props: true,
+      },
     ],
   },
   {

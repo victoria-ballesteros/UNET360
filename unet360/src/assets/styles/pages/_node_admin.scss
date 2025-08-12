@@ -96,12 +96,6 @@
   align-items: center;
 }
 
-.node-actions {
-  display: flex;
-  gap: 0.6rem;
-  align-items: stretch;
-  height: 100%;
-}
 
 .node-action-icon {
   width: 1.2rem;
@@ -168,9 +162,17 @@
 
 .button-section {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 0.2rem;
+  gap: 1rem;
+}
+
+.admin-entities-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 .nodes-list-section {
