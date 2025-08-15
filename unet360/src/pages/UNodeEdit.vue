@@ -128,7 +128,7 @@ const form = reactive({
   minimap: { image: '', x: '', y: '' },
 });
 
-const adjacentLabels = ['Frente', 'Atrás', 'Izquierda', 'Derecha'];
+const adjacentLabels = ['Frente', 'Derecha', 'Atras', 'Izquierda'];
 const adjacentInputs = reactive([
   { name: '', weight: '' },
   { name: '', weight: '' },
