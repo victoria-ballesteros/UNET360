@@ -15,7 +15,7 @@
         No hay nodos registrados.
       </div>
       <div v-else>
-        <div v-for="(node, index) in nodes" :key="node.name" class="node-item">
+        <div v-for="(node, index) in nodes.slice().reverse()" :key="node.name" class="node-item">
           <div class="node-main" @click="toggleNode(node.name)">
             <div class="node-info">
               <span class="node-status" :style="{ background: getStatusColor(node.status) }"></span>

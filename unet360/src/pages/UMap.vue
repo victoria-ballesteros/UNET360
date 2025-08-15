@@ -45,7 +45,7 @@ const viewerContainer = ref(null);
 const currentImage = ref('');
 const currentNodeData = ref({});
 const markersPlugin = ref(null);
-const visualMapCoords = ref({ x: 200, y: 250 });
+const visualMapCoords = ref({ x: 0, y: 0 });
 const pendingMapUpdate = ref(null);
 
 // Constantes de posicionamiento y direcciones
@@ -78,7 +78,7 @@ const setNode = (nodeName) => {
 
 const defineData = async () => {
   let newMapUrl = campusMap;
-  let newCoords = { x: 200, y: 250 };
+  let newCoords = { x: 0, y: 0 };
   if (currentNodeData.value.minimap) {
     newMapUrl = new URL(`../assets/images/${currentNodeData.value.minimap.image}`, import.meta.url).href;
     newCoords = { x: currentNodeData.value.minimap.x, y: currentNodeData.value.minimap.y };
@@ -132,27 +132,29 @@ const addMarkersFromCurrentNode = async () => {
     }
   });
 
-  // MARCADORES PARA PUNTOS DE ENCUENTRO
-  const ptsEncuentro = node.tags?.["Punto de encuentro"]
-  for (const key in ptsEncuentro) {
-    const keyNormalizada = key.toLowerCase().replace(/\s+/g, '');
-    const markerId = `arrow-${keyNormalizada.toLowerCase()}-${ptsEncuentro[key]}`;
-    const iconName = tagStore.tags.find(item => item.name === "Punto de encuentro")?.icon_name;
+  // MARCADORES PARA TODOS LOS TAGS
+  for (const tagName in node.tags) {
+    const tagData = node.tags[tagName];
+    for (const key in tagData) {
+      const keyNormalizada = key.toLowerCase().replace(/\s+/g, '');
+      const markerId = `arrow-${keyNormalizada.toLowerCase()}-${tagData[key]}`;
+      const iconName = getIconNameForTag(tagName); // Fetch icon dynamically based on tagName
 
-    setTimeout(() => {
-      markers.addMarker({
-        id: markerId,
-        position: { yaw: ptsEncuentro[key], pitch: 0 },
-        html: `<img src="${getImagePath(iconName)}" class="arrow-marker-img" />`,
-        width: 32,
-        height: 32,
-        tooltip: {
-          content: key,
-          position: 'right center'
-        },
-        anchor: 'bottom center',
-      });
-    }, 100);
+      setTimeout(() => {
+        markers.addMarker({
+          id: markerId,
+          position: { yaw: tagData[key], pitch: 0 },
+          html: `<img src="${getImagePath(iconName)}" class="arrow-marker-img" />`,
+          width: 32,
+          height: 32,
+          tooltip: {
+            content: key,
+            position: 'right center'
+          },
+          anchor: 'bottom center',
+        });
+      }, 100);
+    }
   }
 };
 
@@ -181,7 +183,7 @@ onMounted(async () => {
   setVh();
   window.addEventListener('resize', setVh);
 
-  setNode('003');
+  setNode('025');
 
   viewer = new Viewer({
     container: viewerContainer.value,
@@ -220,12 +222,17 @@ onMounted(async () => {
   });
 
   // viewer.addEventListener('click', ({ data }) => {
-  //   console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`);
+  // console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`); 
   // });
 
   // const response = await fetchShortestPath('002', '004');
   // console.log("Response: ", response)
 });
+
+const getIconNameForTag = (tagName) => {
+  const tag = tagStore.tags.find(item => item.name === tagName);
+  return tag?.icon_name || 'default-icon'; // Fallback to 'default-icon' if not found
+};
 
 </script>
 
