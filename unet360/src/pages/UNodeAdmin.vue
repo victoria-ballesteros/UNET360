@@ -11,11 +11,19 @@
       </div>
     </div>
     <div class="nodes-list-section">
-      <div v-if="nodes.length === 0" class="empty-message">
+      <div class="nodes-list-toolbar">
+        <input
+          v-model="searchQuery"
+          type="text"
+          class="nodes-search-input"
+          placeholder="Buscar por nombre o ubicación..."
+        />
+      </div>
+      <div v-if="filteredNodes.length === 0" class="empty-message">
         No hay nodos registrados.
       </div>
       <div v-else>
-        <div v-for="(node, index) in nodes.slice().reverse()" :key="node.name" class="node-item">
+        <div v-for="(node, index) in paginatedNodes" :key="node.name" class="node-item">
           <div class="node-main" @click="toggleNode(node.name)">
             <div class="node-info">
               <span class="node-status" :style="{ background: getStatusColor(node.status) }"></span>
@@ -82,7 +90,13 @@
               </button>
             </div>
           </div>
-          <div v-if="index !== nodes.length - 1" class="node-separator"></div>
+          <div v-if="index !== paginatedNodes.length - 1" class="node-separator"></div>
+        </div>
+        <!-- Controles de paginación -->
+        <div class="pagination" v-if="totalPages > 1">
+          <button class="page-btn" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">Anterior</button>
+          <span class="page-info">Página {{ currentPage }} / {{ totalPages }}</span>
+          <button class="page-btn" :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">Siguiente</button>
         </div>
       </div>
     </div>
@@ -113,7 +127,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useNodeStore } from '@/service/stores/nodes.js';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
@@ -127,6 +141,58 @@ import { deleteNode as deleteNodeRequest, deleteImageFromServer } from '@/servic
 const router = useRouter();
 const nodeStore = useNodeStore();
 const { nodes } = storeToRefs(nodeStore);
+// Paginación, ordenamiento y búsqueda
+const pageSize = 10;
+const currentPage = ref(1);
+const searchQuery = ref('');
+
+// Orden: Primero status ERROR, luego WARNING, luego OK (u otros), y dentro de cada grupo por "reciente".
+// No hay timestamp, así que usamos el orden original asumido que llega como insertion order, invertido para "más reciente primero".
+// Si se añade un campo de fecha en el futuro (ej: created_at), reemplazar la parte de fallback con esa fecha.
+const statusPriority = { 'ERROR': 0, 'WARNING': 1, 'OK': 2 };
+
+const sortedNodes = computed(() => {
+  // Copia para no mutar
+  const arr = [...nodes.value];
+  // Asumimos que el array ya viene en orden de creación (antiguo -> nuevo); para reciente primero invertimos.
+  arr.reverse();
+  return arr.sort((a, b) => {
+    const pa = statusPriority[a.status] ?? 3;
+    const pb = statusPriority[b.status] ?? 3;
+    if (pa !== pb) return pa - pb;
+    // Como segundo criterio dejamos el orden (ya invertido) sin más cambios.
+    return 0;
+  });
+});
+
+const filteredNodes = computed(() => {
+  if (!searchQuery.value.trim()) return sortedNodes.value;
+  const q = searchQuery.value.trim().toLowerCase();
+  return sortedNodes.value.filter(n => {
+    const nameMatch = n.name?.toLowerCase().includes(q);
+    const locMatch = n.location?.toLowerCase().includes(q);
+    return nameMatch || locMatch;
+  });
+});
+
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredNodes.value.length / pageSize)));
+const paginatedNodes = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return filteredNodes.value.slice(start, start + pageSize);
+});
+
+watch(sortedNodes, () => {
+  // Si al cambiar los datos la página actual queda fuera de rango, reajustar
+  if (currentPage.value > totalPages.value) currentPage.value = totalPages.value;
+});
+
+watch(searchQuery, () => {
+  currentPage.value = 1; // Reiniciar al buscar
+});
+
+function goToPage(p) {
+  if (p >= 1 && p <= totalPages.value) currentPage.value = p;
+}
 const isImageLoading = ref(true);
 
 const expandedNode = ref(null);
