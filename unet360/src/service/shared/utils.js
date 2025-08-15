@@ -109,3 +109,36 @@ export function adjustAngle(anguloBase, lastDirection) {
 export function getImagePath(fileName) {
     return new URL(`../../assets/images/icons-images/${fileName}.png`, import.meta.url).href;
 }
+
+export function searchNodeByKeyword(keyword) {
+    const nodeStore = useNodeStore();
+
+    const keywords = keyword.trim().split(/\s+/);
+    const lowerKeywords = keywords.map(k => k.toLowerCase());
+    const searchableText = {};
+
+    for (const node of nodeStore.nodes) {
+        const nameText = node.name.toLowerCase();
+        const locationText = node.location ? String(node.location).toLowerCase() : '';
+
+        const matchesKeyword = lowerKeywords.some(kw => nameText.includes(kw) || locationText.includes(kw));
+
+        if (matchesKeyword) {
+            searchableText[node.location] = node.name ?? '';
+        }
+
+        if (Object.keys(node.tags).length > 0) {
+            for (const [_, value] of Object.entries(node.tags)) {
+                for (const [tagKey, _] of Object.entries(value)) {
+                    const tagMatches = lowerKeywords.some(kw => tagKey.toLowerCase().includes(kw));
+
+                    if (tagMatches) {
+                        searchableText[tagKey] = node.name ?? '';
+                    }
+                }
+            }
+        }
+    }
+
+    return searchableText;
+}

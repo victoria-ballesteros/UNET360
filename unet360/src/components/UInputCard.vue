@@ -2,15 +2,23 @@
     <div class="menu-wrapper">
         <div class="search-wrapper">
             <UIcon v-if="!routeSearcherActive" name="icons/list" size="32" color="var(--fill-white)"
-                :rotation=listIconRotation @click="toggleMenu" class="menu-toggle-icon" />
-            <input v-model="searchText" type="text" class="search-input" :placeholder="searcherInputPlaceholder" />
+                :rotation="listIconRotation" @click="toggleMenu" class="menu-toggle-icon" />
+            <input :value="searchBar" type="text" class="search-input" :placeholder="searcherInputPlaceholder"
+                @input="handleSearchBar" />
             <UIcon v-if="!menuVisible" name="icons/route-arrow" size="32" color="var(--fill-white)"
                 @click="toggleRouteSearcher" />
             <UIcon v-if="routeSearcherActive" name="icons/x-lg" size="26" color="var(--fill-white)"
                 @click="toggleMenu" />
         </div>
+
         <div v-if="menuVisible" class="dropdown-menu-wrapper">
-            <div v-if="!routeSearcherActive" class="dropdown-menu">
+            <div v-if="Object.keys(searchResults ?? {}).length > 0" class="dropdown-menu">
+                <div v-for="[key, value] in Object.entries(searchResults)" :key="label" class="menu-item"
+                    @click="handleSearchClick(value)">
+                    <span>{{ key }}</span>
+                </div>
+            </div>
+            <div v-else-if="!routeSearcherActive" class="dropdown-menu">
                 <div v-for="[label, icon] in Object.entries(menuOptions)" :key="label" class="menu-item"
                     @click="toggleMenu(label)">
                     <UIcon :name="'icons/' + icon" size="20" color="var(--fill-white)" />
@@ -27,23 +35,41 @@
                     </div>
                     <UIcon name="icons/point-sign" size="20" />
                 </div>
+
                 <div class="route-inputs-container">
                     <input :value="searchSource" type="text" class="route-input" placeholder="Ingresa el origen"
-                        @input="handleSource" />
+                        @input="handleSource" list="source-suggestions" />
+
+                    <datalist id="source-suggestions">
+                        <option v-for="(value, key) in routeSearcherResult" :key="key" :value="key">
+                            {{ value }}
+                        </option>
+                    </datalist>
+
                     <input :value="searchTarget" type="text" class="route-input" placeholder="Ingresa el destino"
-                        @input="handleTarget" />
+                        @input="handleTarget" list="source-suggestions-2" />
+
+                    <datalist id="source-suggestions-2">
+                        <option v-for="(value, key) in routeSearcherTargetResult" :key="key" :value="key">
+                            {{ value }}
+                        </option>
+                    </datalist>
                 </div>
-                <UIcon name="icons/arrows-crossed" size="23" />
+                <UIcon name="icons/arrows-crossed" size="23" @click="searchPath" />
             </div>
         </div>
     </div>
+    <UToast ref="toastRef" />
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import UIcon from './UIcon.vue'
+import UToast from './UToast.vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/service/stores/auth";
+import { searchNodeByKeyword } from '@/service/shared/utils';
+import { fetchShortestPath } from '@/service/requests/graph';
 
 const props = defineProps({
     searchSource: {
@@ -53,27 +79,60 @@ const props = defineProps({
     searchTarget: {
         type: String,
         required: true
+    },
+    searchBar: {
+        type: String,
+        required: true
+    },
+    searchResults: {
+        type: Object,
+        required: false,
+        default: () => ({})
     }
 });
 
-const emit = defineEmits(['update:searchSource', 'update:searchTarget'])
+const emit = defineEmits(['update:searchSource', 'update:searchTarget', 'update:searchBar', 'update:searchedNode'])
 
 const handleSource = (event) => {
-    emit('update:searchSource', event.target.value)
+    emit('update:searchSource', event.target.value);
+    routeSearcherResult.value = searchNodeByKeyword(event.target.value);
+    sourceValue.value = event.target.value;
 }
 
 const handleTarget = (event) => {
     emit('update:searchTarget', event.target.value)
+    routeSearcherTargetResult.value = searchNodeByKeyword(event.target.value);
+    targetValue.value = event.target.value;
+}
+
+const handleSearchBar = (event) => {
+    emit('update:searchBar', event.target.value)
+}
+
+const handleSearchClick = (value) => {
+    emit('update:searchedNode', value)
 }
 
 const router = useRouter();
 const authStore = useAuthStore();
 
 const menuVisible = ref(false)
-const searchText = ref('')
 const listIconRotation = ref(0)
 const routeSearcherActive = ref(false)
 const searcherInputPlaceholder = ref("Ej. Edificio A");
+
+const routeSearcherResult = ref({});
+const routeSearcherTargetResult = ref({});
+
+const sourceValue = ref(null);
+const targetValue = ref(null);
+
+const route = ref([]);
+const toastRef = ref(null);
+
+function notify() {
+  toastRef.value.showToast("¡Error!: por favor asegúrate de que los puntos entre los que te vas a trasladar existan.");
+}
 
 const menuOptions = {
     "Ruta": "route-arrow",
@@ -113,6 +172,43 @@ function toggleRouteSearcher() {
     routeSearcherActive.value = !routeSearcherActive.value
     searcherInputPlaceholder.value = "Ruta"
 }
+
+const searchPath = async () => {
+    route.value = await fetchShortestPath(routeSearcherResult.value?.[sourceValue.value], routeSearcherTargetResult.value?.[targetValue.value])
+    if (route.value.status == true){
+        console.log("ROUTE: ", route.value.response_obj.path)
+        console.log("WEIGHT: ", parseFloat(route.value.response_obj.total_weight)*10)
+    } else {
+        notify();
+    }
+}
+
+watch(
+    () => props.searchResults,
+    (newVal, oldVal) => {
+        if (newVal == null || newVal == {}) {
+            menuVisible.value = false;
+            return;
+        } else if (Object.keys(newVal).length > 0) {
+            menuVisible.value = true;
+            return;
+        }
+
+        menuVisible.value = false;
+    },
+    { deep: true }
+);
+
+watch(
+    () => props.searchBar,
+    (newVal, oldVal) => {
+        if (newVal.trim() !== '') {
+            return;
+        } else {
+            menuVisible.value = false;
+        }
+    }
+);
 
 </script>
 
@@ -245,5 +341,30 @@ input::placeholder {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.autocomplete-list {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    z-index: 1000;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.autocomplete-list li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.autocomplete-list li:hover {
+    background-color: #eee;
 }
 </style>

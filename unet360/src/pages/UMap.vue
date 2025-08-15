@@ -3,8 +3,14 @@
     <div class="viewer-container" ref="viewerContainer"></div>
 
     <div class="top-controls">
-      <UInputCard v-model="searchInput" styleType="map" placeholder="Ej. Edificio A" icon="icons/arrow-up"
-        :searchSource="searchSource" :searchTarget="searchTarget" />
+      <UInputCard 
+        v-model:searchBar="searchInput"
+        v-model:searchSource="searchSource"
+        v-model:searchTarget="searchTarget"
+        v-model:searchedNode="searchedNode"
+        :searchResults="searchResults"
+        :key="varAux"
+    />
     </div>
 
     <div class="map-2d-box">
@@ -25,8 +31,7 @@ import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import { useNodeStore } from '@/service/stores/nodes';
 import { useTagStore } from '@/service/stores/tags';
-import { fetchShortestPath } from '@/service/requests/graph';
-import { adjustAngle, getImagePath } from '@/service/shared/utils';
+import { adjustAngle, getImagePath, searchNodeByKeyword } from '@/service/shared/utils';
 
 // Stores
 const nodeStore = useNodeStore();
@@ -36,6 +41,9 @@ const tagStore = useTagStore();
 const searchInput = ref('');
 const searchSource = ref('');
 const searchTarget = ref('');
+const varAux = ref(0);
+
+const searchResults = ref(null);
 
 // Viewer y contenedor
 let viewer;
@@ -57,6 +65,7 @@ const customIconUrl = locationIconRaw;
 
 // Estado adicional
 const lastDirection = ref('');
+const searchedNode = ref('');
 
 // Funciones auxiliares (que no pertenecen a UTILS)
 const setVh = () => {
@@ -72,7 +81,6 @@ const setNode = (nodeName) => {
     console.warn('Nodo no encontrado:', nodeName);
     return;
   }
-
   currentNodeData.value = node;
 };
 
@@ -171,6 +179,32 @@ watch(currentImage, async (newImage) => {
   }
 });
 
+// FUNCIONES DE INPUTS
+watch(searchInput, (newValue) => {
+    if (newValue.trim() === '') {
+        searchResults.value = new Map();
+        return;
+    }
+
+    const result = searchNodeByKeyword(newValue);
+    searchResults.value = result;
+});
+
+watch(
+    searchedNode,
+    (newVal, oldVal) => {
+        if (newVal.trim() !== '') {
+            setNode(newVal);
+            defineData(newVal);
+            searchResults.value = null;
+            searchInput.value = '';
+            varAux.value++;
+        } 
+    }
+);
+
+
+
 // VUE LIFETIME FUNCTIONS
 
 onBeforeUnmount(() => {
@@ -218,6 +252,8 @@ onMounted(async () => {
       pendingMapUpdate.value = null;
     }
   });
+
+  console.log("NODOS: ", nodeStore.nodes)
 
   // viewer.addEventListener('click', ({ data }) => {
   //   console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`);
