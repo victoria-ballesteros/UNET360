@@ -239,9 +239,9 @@ async function handleFileChange(event) {
     let previewBlob = null;
     try {
       previewBlob = await compressImage(file, {
-        maxWidth: 3072,
-        maxHeight: 1536,
-        quality: 1.0,
+        maxWidth: 4352, // Half of the original width
+        maxHeight: 2176,
+        quality: 0.9,
         mimeType: "image/webp",
       });
     } catch (e) {
@@ -535,9 +535,9 @@ function startNewNode() {
  */
 async function compressImage(file, opts = {}) {
   const {
-    maxWidth = 1600,
-    maxHeight = 1600,
-    quality = 0.82,
+    maxWidth = 4352, // Half of the original width
+    maxHeight = 2176, // Half of the original height
+    quality = 0.9, // Improved quality
     mimeType = "image/webp",
   } = opts;
 
@@ -560,19 +560,15 @@ async function compressImage(file, opts = {}) {
   const w = Math.round(img.width * ratio);
   const h = Math.round(img.height * ratio);
 
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
-  const ctx = canvas.getContext('2d');
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingQuality = "high";
   ctx.drawImage(img, 0, 0, w, h);
 
   const outBlob = await new Promise((resolve) => canvas.toBlob(resolve, mimeType, quality));
-  if (!outBlob) return file;
-
-  // Si no mejora el tamaño, devuelve el original
-  return outBlob.size < file.size ? outBlob : file;
+  return outBlob || file; // Return original file if compression fails
 }
 </script>
 

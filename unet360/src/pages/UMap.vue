@@ -53,9 +53,14 @@ const currentNodeData = ref({});
 const markersPlugin = ref(null);
 const visualMapCoords = ref({ x: 0, y: 0 });
 const pendingMapUpdate = ref(null);
+const pendingMarkersTimeout = ref(null); 
+const isTransitioning = ref(false);
 
 // Constantes de posicionamiento y direcciones
 const POSITION_LABELS = ['Frente', 'Derecha', 'Atrás', 'Izquierda'];
+const ADJACENT_MARKER_PITCH = -0.15;
+const DEFAULT_START_NODE = '025';
+const MARKERS_APPEAR_DELAY_MS = 1500;
 
 // Recursos visuales
 const customMapUrl = ref(campusMap);
@@ -100,6 +105,7 @@ const defineData = async () => {
 
 // CREACIÓN DE MARCADORES DE LA IMAGEN
 const addMarkersFromCurrentNode = async () => {
+  if (isTransitioning.value) return;
   const node = currentNodeData.value;
   const nodes = nodeStore.nodes;
   const markers = viewer.getPlugin(MarkersPlugin);
@@ -147,7 +153,7 @@ const addMarkersFromCurrentNode = async () => {
       setTimeout(() => {
         markers.addMarker({
           id: markerId,
-          position: { yaw: node.arrow_angles[i], pitch: 0 },
+          position: { yaw: node.arrow_angles[i], pitch: ADJACENT_MARKER_PITCH },
           html: `<img src="${arrow}" class="arrow-marker-img" />`,
           width: 32,
           height: 32,
@@ -199,8 +205,13 @@ const addMarkersFromCurrentNode = async () => {
 // DISPARADOR DE CAMBIO DE NODO
 watch(currentImage, async (newImage) => {
   if (viewer && newImage) {
-    markersPlugin.value?.clearMarkers();
-
+    if (pendingMarkersTimeout.value) {
+      clearTimeout(pendingMarkersTimeout.value);
+      pendingMarkersTimeout.value = null;
+    }
+    const markers = viewer.getPlugin(MarkersPlugin);
+    markers.clearMarkers();
+    isTransitioning.value = true;
     await viewer.setPanorama(newImage, {
       position: { yaw: adjustAngle(currentNodeData.value.forward_heading, lastDirection.value), pitch: 0 },
       transition: {
@@ -272,8 +283,18 @@ onBeforeUnmount(() => {
 onMounted(async () => {
   setVh();
   window.addEventListener('resize', setVh);
+  if (!tagStore.tags) {
+    try { await tagStore.fetchTags(); } catch (_) {}
+  }
 
-  setNode('025');
+  const tryInitNode = () => {
+    if (nodeStore.nodes && nodeStore.nodes.length > 0 && !currentNodeData.value.name) {
+      setNode(DEFAULT_START_NODE);
+      defineData();
+    }
+  };
+  tryInitNode();
+  watch(() => nodeStore.nodes.length, () => tryInitNode());
 
   viewer = new Viewer({
     container: viewerContainer.value,
@@ -284,7 +305,8 @@ onMounted(async () => {
     defaultYaw: currentNodeData.value.forward_heading,
   });
 
-  const markers = viewer.getPlugin(MarkersPlugin);
+  markersPlugin.value = viewer.getPlugin(MarkersPlugin);
+  const markers = markersPlugin.value;
 
   markers.addEventListener('select-marker', ({ marker }) => {
     lastDirection.value = marker.config.tooltip.content;
@@ -300,8 +322,6 @@ onMounted(async () => {
   await defineData();
 
   viewer.addEventListener('panorama-loaded', async () => {
-    await addMarkersFromCurrentNode();
-
     if (pendingMapUpdate.value) {
       if (customMapUrl.value !== pendingMapUpdate.value.url) {
         customMapUrl.value = pendingMapUpdate.value.url;
@@ -309,11 +329,19 @@ onMounted(async () => {
       visualMapCoords.value = pendingMapUpdate.value.coords;
       pendingMapUpdate.value = null;
     }
+    if (pendingMarkersTimeout.value) {
+      clearTimeout(pendingMarkersTimeout.value);
+    }
+    pendingMarkersTimeout.value = setTimeout(() => {
+      isTransitioning.value = false;
+      addMarkersFromCurrentNode();
+      pendingMarkersTimeout.value = null;
+    }, MARKERS_APPEAR_DELAY_MS);
   });
 
-  // viewer.addEventListener('click', ({ data }) => {
-  // console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`); 
-  // });
+  viewer.addEventListener('click', ({ data }) => {
+  console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`); 
+  });
 
   // const response = await fetchShortestPath('002', '004');
   // console.log("Response: ", response)
