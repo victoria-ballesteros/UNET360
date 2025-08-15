@@ -3,14 +3,9 @@
     <div class="viewer-container" ref="viewerContainer"></div>
 
     <div class="top-controls">
-      <UInputCard 
-        v-model:searchBar="searchInput"
-        v-model:searchSource="searchSource"
-        v-model:searchTarget="searchTarget"
-        v-model:searchedNode="searchedNode"
-        :searchResults="searchResults"
-        :key="varAux"
-    />
+      <UInputCard v-model:searchBar="searchInput" v-model:searchSource="searchSource"
+        v-model:searchTarget="searchTarget" v-model:searchedNode="searchedNode" v-model:actualRoute="actualRoute"
+        :searchResults="searchResults" :actualNode="{ 'name': currentNodeData.name }" :key="varAux" />
     </div>
 
     <div class="map-2d-box">
@@ -18,13 +13,16 @@
         :iconUrl="customIconUrl" :node="visualMapCoords" />
     </div>
   </div>
+  <UToast ref="toastRefMap" />
 </template>
 
 <script setup>
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import UCustomMap from '@/components/UCustomMap.vue';
 import UInputCard from '@/components/UInputCard.vue';
+import UToast from '@/components/UToast.vue';
 import arrowImg from '../assets/images/arrow-up.png';
+import arrowHighlighted from '../assets/images/arrow-up-highlighted.png';
 import campusMap from '@/assets/images/campus-map.jpg';
 import locationIconRaw from '@/assets/icons/location.svg?url';
 import { Viewer } from '@photo-sphere-viewer/core';
@@ -66,6 +64,10 @@ const customIconUrl = locationIconRaw;
 // Estado adicional
 const lastDirection = ref('');
 const searchedNode = ref('');
+const actualRoute = ref({});
+const checkedRouteNodes = ref({});
+const isTravelling = ref(false);
+const toastRefMap = ref(null);
 
 // Funciones auxiliares (que no pertenecen a UTILS)
 const setVh = () => {
@@ -106,6 +108,8 @@ const addMarkersFromCurrentNode = async () => {
 
   await new Promise(resolve => setTimeout(resolve, 50));
 
+  let flag = false;
+
   // MARCADORES PARA LOS NODOS ADYACENTES
   node.adjacent_nodes.forEach((adyNode, i) => {
     if (adyNode && Object.keys(adyNode).length > 0) {
@@ -118,12 +122,33 @@ const addMarkersFromCurrentNode = async () => {
       }
 
       const markerId = `arrow-${POSITION_LABELS[i].toLowerCase()}-${neighbor.name}`;
+      let arrow = arrowImg;
+
+      if (isTravelling.value && actualRoute.value != null && actualRoute.value?.route != null) {
+        for (let node of actualRoute.value.route) {
+          if (node == neighborName) {
+            if (checkedRouteNodes.value?.[neighborName] !== true) {
+              arrow = arrowHighlighted;
+              flag = true;
+            }
+          }
+        }
+        // ESTO IMPLEMENTA UN VIAJE AUTOMÁTICO (NO SÉ POR QUÉ) (¿FUTURO FEATURE?) (YA SÉ POR QUÉ PERO TENGO SUEÑO)
+        // actualRoute.value.route = actualRoute.value.route.filter(thisNode => {
+        //   if (thisNode === node.name) {
+        //     return false;
+        //   }
+        //   return true;
+        // });
+      }
+
+      checkedRouteNodes.value[node.name] = true;
 
       setTimeout(() => {
         markers.addMarker({
           id: markerId,
           position: { yaw: node.arrow_angles[i], pitch: 0 },
-          html: `<img src="${arrowImg}" class="arrow-marker-img" />`,
+          html: `<img src="${arrow}" class="arrow-marker-img" />`,
           width: 32,
           height: 32,
           tooltip: {
@@ -139,6 +164,11 @@ const addMarkersFromCurrentNode = async () => {
       }, 100);
     }
   });
+
+  if (!flag && isTravelling.value == true) {
+    isTravelling.value = false;
+    notifyTravelEnd();
+  }
 
   // MARCADORES PARA PUNTOS DE ENCUENTRO
   const ptsEncuentro = node.tags?.["Punto de encuentro"]
@@ -181,29 +211,55 @@ watch(currentImage, async (newImage) => {
 
 // FUNCIONES DE INPUTS
 watch(searchInput, (newValue) => {
-    if (newValue.trim() === '') {
-        searchResults.value = new Map();
-        return;
-    }
+  if (newValue.trim() === '') {
+    searchResults.value = new Map();
+    return;
+  }
 
-    const result = searchNodeByKeyword(newValue);
-    searchResults.value = result;
+  const result = searchNodeByKeyword(newValue);
+  searchResults.value = result;
 });
 
 watch(
-    searchedNode,
-    (newVal, oldVal) => {
-        if (newVal.trim() !== '') {
-            setNode(newVal);
-            defineData(newVal);
-            searchResults.value = null;
-            searchInput.value = '';
-            varAux.value++;
-        } 
+  searchedNode,
+  (newVal, oldVal) => {
+    if (newVal.trim() !== '') {
+      setNode(newVal);
+      defineData(newVal);
+      searchResults.value = null;
+      searchInput.value = '';
+      varAux.value++;
     }
+  }
 );
 
+watch(
+  actualRoute,
+  (newVal, oldVal) => {
+    setNode(newVal.route[0]);
+    defineData(newVal.route[0]);
+    varAux.value++;
+    notifyTravel(newVal.weight);
+    isTravelling.value = true;
+  },
+  { deep: true }
+);
 
+// TOAST FUNCTIONS
+function walkingTimeCampus(distanceMeters, speedMps = 1.39) {
+  const timeSeconds = distanceMeters / speedMps;
+  const minutes = Math.round(timeSeconds / 60);
+  return minutes;
+}
+
+function notifyTravel(distancia) {
+  const aproxTime = walkingTimeCampus(distancia);
+  toastRefMap.value.showToast(`¡Tu viaje está por empezar, explora a tu alrededor y sigue las flechas!: la distancia promedio es de ${distancia.toFixed(2)} metros, y una duración promedio de ${aproxTime} minutos.`);
+}
+
+function notifyTravelEnd() {
+  toastRefMap.value.showToast("¡Tu viaje ha terminado!");
+}
 
 // VUE LIFETIME FUNCTIONS
 
@@ -252,8 +308,6 @@ onMounted(async () => {
       pendingMapUpdate.value = null;
     }
   });
-
-  console.log("NODOS: ", nodeStore.nodes)
 
   // viewer.addEventListener('click', ({ data }) => {
   //   console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`);

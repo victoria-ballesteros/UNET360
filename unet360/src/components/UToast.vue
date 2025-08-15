@@ -10,7 +10,7 @@ import { ref } from "vue";
 const visible = ref(false);
 const message = ref("");
 
-function showToast(text, duration = 3000) {
+function showToast(text, duration = 5000) {
   message.value = text;
   visible.value = true;
 
@@ -33,6 +33,7 @@ defineExpose({ showToast });
   border-radius: 6px;
   box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
   animation: fadeInOut 3s forwards;
+  z-index: 9999;
 }
 
 @keyframes fadeInOut {

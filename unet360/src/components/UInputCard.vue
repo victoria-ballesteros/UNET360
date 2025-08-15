@@ -88,14 +88,27 @@ const props = defineProps({
         type: Object,
         required: false,
         default: () => ({})
+    },
+    actualRoute: {
+        type: Object,
+        required: true,
+        default: () => ({})
+    },
+    actualNode: {
+        type: Object,
+        required: true,
+        default: () => ({})
     }
 });
 
-const emit = defineEmits(['update:searchSource', 'update:searchTarget', 'update:searchBar', 'update:searchedNode'])
+const emit = defineEmits(['update:searchSource', 'update:searchTarget', 'update:searchBar', 'update:searchedNode', 'update:actualRoute'])
 
 const handleSource = (event) => {
     emit('update:searchSource', event.target.value);
     routeSearcherResult.value = searchNodeByKeyword(event.target.value);
+    routeSearcherResult.value["Posición actual"] = props.actualNode.name;
+    routeSearcherResult.value = { ...routeSearcherResult.value };
+    console.log(routeSearcherResult.value)
     sourceValue.value = event.target.value;
 }
 
@@ -131,7 +144,7 @@ const route = ref([]);
 const toastRef = ref(null);
 
 function notify() {
-  toastRef.value.showToast("¡Error!: por favor asegúrate de que los puntos entre los que te vas a trasladar existan.");
+    toastRef.value.showToast("¡Error!: por favor asegúrate de que los puntos entre los que te vas a trasladar sean válidos.");
 }
 
 const menuOptions = {
@@ -175,9 +188,10 @@ function toggleRouteSearcher() {
 
 const searchPath = async () => {
     route.value = await fetchShortestPath(routeSearcherResult.value?.[sourceValue.value], routeSearcherTargetResult.value?.[targetValue.value])
-    if (route.value.status == true){
-        console.log("ROUTE: ", route.value.response_obj.path)
-        console.log("WEIGHT: ", parseFloat(route.value.response_obj.total_weight)*10)
+    if (route.value.status == true && route.value.response_obj.total_weight != 0) {
+        console.log("ROUTE: ", route.value.response_obj.path);
+        console.log("WEIGHT: ", parseFloat(route.value.response_obj.total_weight) * 10);
+        emit('update:actualRoute', { 'route': route.value.response_obj.path, 'weight': parseFloat(route.value.response_obj.total_weight) * 10 })
     } else {
         notify();
     }
@@ -209,6 +223,13 @@ watch(
         }
     }
 );
+
+watch(
+    () => props.actualNode,
+    (newVal, oldVal) => {
+        console.log("Name: ", props.actualNode.name);
+    }
+)
 
 </script>
 
