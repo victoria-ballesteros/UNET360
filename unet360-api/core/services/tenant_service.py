@@ -60,7 +60,7 @@ class TenantService:
         
         # --- CAMBIO AQUÍ ---
         # Se define el umbral para considerar una sesión "activa" en 1 minuto.
-        active_threshold = datetime.now(timezone.utc) - timedelta(minutes=1)
+        active_threshold = datetime.now(timezone.utc) - timedelta(minutes=7)
 
         for tenant in tenants:
             user_details = supabase_status_map.get(str(tenant.supabase_user_id))
