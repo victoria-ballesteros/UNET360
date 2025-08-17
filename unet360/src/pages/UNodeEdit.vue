@@ -43,7 +43,10 @@
       </div>
 
       <div class="input-container">
-        <p class="input-label">Dirección de las flechas</p>
+        <div class="label-row">
+          <p class="input-label">Dirección de las flechas</p>
+          <UButton text="Asignar" type="contrast-2" @click="openArrowDirectionAssignment" />
+        </div>
         <div class="angles-grid">
           <div v-for="(label, idx) in adjacentLabels" :key="'ang-'+idx" class="angle-row">
             <UInput v-model="arrowAngles[idx]" styleType="default" type="text" :inputMode="'numeric'" pattern="-?[0-9]*(\.[0-9]+)?" :placeholder="label + ' - dirección'" />
@@ -52,8 +55,11 @@
       </div>
 
       <div class="input-container">
-        <p class="input-label">Frente de la imagen</p>
-  <UInput v-model="form.forward_heading" styleType="default" type="text" :inputMode="'numeric'" pattern="-?[0-9]*(\.[0-9]+)?" />
+        <div class="label-row">
+          <p class="input-label">Frente de la imagen</p>
+          <UButton text="Asignar" type="contrast-2" @click="openFrontImageAssignment" />
+        </div>
+        <UInput v-model="form.forward_heading" styleType="default" type="text" :inputMode="'numeric'" pattern="-?[0-9]*(\.[0-9]+)?" />
       </div>
 
       <!-- Minimap 2D -->
@@ -108,14 +114,36 @@
       </div>
     </div>
   </div>
+
+  <!-- Dialogo para asignar direcciones / frente -->
+  <UDialog v-model="showDirectionDialog" :headerTitle="directionDialogTitle">
+    <div class="direction-dialog">
+      <p class="direction-instructions" v-if="directionMode === 'arrow'">
+        Clic para capturar orientación: <strong>{{ arrowOrder[currentArrowIndex] }}</strong> (orden: Frente, Derecha, Atras, Izquierda).
+      </p>
+      <p class="direction-instructions" v-else>
+        Clic para capturar yaw del Frente de la imagen.
+      </p>
+      <div ref="directionViewerContainer" class="direction-viewer"></div>
+      <div class="direction-footer">
+        <UButton text="Reiniciar" type="tertiary" @click="resetCurrentDirectionSequence" />
+        <UButton text="Cerrar" type="secondary" @click="closeDirectionDialog" />
+      </div>
+    </div>
+  </UDialog>
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick, defineProps } from 'vue';
+// Accept optional name prop (avoids extraneous attribute warning if parent passes it)
+defineProps({ name: { type: String, required: false } });
 import { useRoute, useRouter } from 'vue-router';
 import UInput from '@/components/UInput.vue';
 import UButton from '@/components/UButton.vue';
+import UDialog from '@/components/UDialog.vue';
 import api from '@/axios';
+import { Viewer } from '@photo-sphere-viewer/core';
+import '@photo-sphere-viewer/core/index.css';
 
 const route = useRoute();
 const router = useRouter();
@@ -136,6 +164,73 @@ const adjacentInputs = reactive([
   { name: '', weight: '' },
 ]);
 const arrowAngles = reactive(['', '', '', '']);
+
+// 360 direction assignment state
+const showDirectionDialog = ref(false);
+const directionMode = ref('arrow'); // 'arrow' | 'front'
+const arrowOrder = ['Frente', 'Derecha', 'Atras', 'Izquierda'];
+const currentArrowIndex = ref(0);
+const directionViewerContainer = ref(null);
+let directionViewer = null;
+const directionDialogTitle = computed(() => directionMode.value === 'arrow' ? 'Asignar direcciones de flecha' : 'Asignar frente de la imagen');
+
+async function openArrowDirectionAssignment() {
+  if (!form.url_image) return; // necesita imagen
+  directionMode.value = 'arrow';
+  currentArrowIndex.value = 0;
+  showDirectionDialog.value = true;
+  await nextTick();
+  initDirectionViewer();
+}
+async function openFrontImageAssignment() {
+  if (!form.url_image) return;
+  directionMode.value = 'front';
+  showDirectionDialog.value = true;
+  await nextTick();
+  initDirectionViewer();
+}
+function resetCurrentDirectionSequence() {
+  if (directionMode.value === 'arrow') {
+    for (let i = 0; i < 4; i++) arrowAngles[i] = '';
+    currentArrowIndex.value = 0;
+  } else {
+    form.forward_heading = '';
+  }
+}
+function closeDirectionDialog() { showDirectionDialog.value = false; }
+
+function initDirectionViewer() {
+  if (!directionViewerContainer.value) return; // aún no montado
+  if (directionViewer) { directionViewer.destroy(); directionViewer = null; }
+  try {
+    directionViewer = new Viewer({
+      container: directionViewerContainer.value,
+      panorama: form.url_image,
+      navbar: false,
+      mousewheel: false,
+      keyboard: false,
+    });
+    directionViewer.addEventListener('click', ({ data }) => {
+      if (!data) return;
+      const yaw = data.yaw; // radianes
+      if (directionMode.value === 'arrow') {
+        arrowAngles[currentArrowIndex.value] = yaw.toString();
+        if (currentArrowIndex.value < arrowOrder.length - 1) {
+          currentArrowIndex.value++;
+        } else {
+          closeDirectionDialog();
+        }
+      } else {
+        form.forward_heading = yaw.toString();
+        closeDirectionDialog();
+      }
+    });
+  } catch (e) {
+    // fallback: cerrar dialog si falla crear viewer
+    console.warn('No se pudo inicializar el visor 360:', e);
+    closeDirectionDialog();
+  }
+}
 
 // Tags como arreglo; cada tag tiene valores [{ text, angle }]
 const tags = reactive([]);
@@ -340,6 +435,21 @@ onMounted(async () => {
   await Promise.all([loadNode(), loadSuggestSources()]);
 });
 
+// Destruir viewer al cerrar el dialog
+watch(showDirectionDialog, (open) => {
+  if (!open && directionViewer) {
+    directionViewer.destroy();
+    directionViewer = null;
+  } else if (open) {
+    // en caso de que se abra por un cambio externo y la ref ya exista
+    nextTick().then(() => initDirectionViewer());
+  }
+});
+
+onBeforeUnmount(() => {
+  if (directionViewer) { directionViewer.destroy(); directionViewer = null; }
+});
+
 // Show/hide logic while typing
 watch(() => form.location, (v) => {
   if (suppressLocationOnce.value) {
@@ -367,4 +477,10 @@ watch(() => tags.map(t => t.name), (names) => {
 
 <style lang="scss">
 @import "@/assets/styles/pages/node_edit.scss";
+
+.label-row { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.direction-dialog { display:flex; flex-direction:column; gap:12px; max-width:760px; }
+.direction-viewer { width:100%; height:360px; border:1px solid var(--border-gray); border-radius:8px; overflow:hidden; }
+.direction-footer { display:flex; justify-content:flex-end; gap:12px; }
+.direction-instructions { font-size:14px; }
 </style>
