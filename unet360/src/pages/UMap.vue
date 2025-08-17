@@ -5,7 +5,7 @@
     <div class="top-controls">
       <UInputCard v-model:searchBar="searchInput" v-model:searchSource="searchSource"
         v-model:searchTarget="searchTarget" v-model:searchedNode="searchedNode" v-model:actualRoute="actualRoute"
-        :searchResults="searchResults" :actualNode="{ 'name': currentNodeData.name }" :key="varAux" />
+        :searchResults="searchResults" :actualNode="{ 'name': currentNodeData.name }" :searchedNode="searchedNode" :key="varAux" />
     </div>
 
     <div class="map-2d-box">
@@ -237,12 +237,13 @@ watch(
 
 watch(
   actualRoute,
-  (newVal, oldVal) => {
+  async (newVal, oldVal) => {
     setNode(newVal.route[0]);
     defineData(newVal.route[0]);
+    isTravelling.value = true;
+    await addMarkersFromCurrentNode();
     varAux.value++;
     notifyTravel(newVal.weight);
-    isTravelling.value = true;
   },
   { deep: true }
 );
@@ -312,7 +313,7 @@ onMounted(async () => {
   });
 
   // viewer.addEventListener('click', ({ data }) => {
-  // console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`); 
+  //   console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`); 
   // });
 
   // const response = await fetchShortestPath('002', '004');

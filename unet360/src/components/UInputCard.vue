@@ -71,6 +71,23 @@ import { useAuthStore } from "@/service/stores/auth";
 import { searchNodeByKeyword } from '@/service/shared/utils';
 import { fetchShortestPath } from '@/service/requests/graph';
 
+const router = useRouter();
+const authStore = useAuthStore();
+
+const menuVisible = ref(false)
+const listIconRotation = ref(0)
+const routeSearcherActive = ref(false)
+const searcherInputPlaceholder = ref("Ej. Edificio A");
+
+const routeSearcherResult = ref({});
+const routeSearcherTargetResult = ref({});
+
+const sourceValue = ref(null);
+const targetValue = ref(null);
+
+const route = ref([]);
+const toastRef = ref(null);
+
 const props = defineProps({
     searchSource: {
         type: String,
@@ -98,6 +115,10 @@ const props = defineProps({
         type: Object,
         required: true,
         default: () => ({})
+    },
+    searchedNode: {
+        type: String,
+        default: ""
     }
 });
 
@@ -108,7 +129,6 @@ const handleSource = (event) => {
     routeSearcherResult.value = searchNodeByKeyword(event.target.value);
     routeSearcherResult.value["Posición actual"] = props.actualNode.name;
     routeSearcherResult.value = { ...routeSearcherResult.value };
-    console.log(routeSearcherResult.value)
     sourceValue.value = event.target.value;
 }
 
@@ -125,23 +145,6 @@ const handleSearchBar = (event) => {
 const handleSearchClick = (value) => {
     emit('update:searchedNode', value)
 }
-
-const router = useRouter();
-const authStore = useAuthStore();
-
-const menuVisible = ref(false)
-const listIconRotation = ref(0)
-const routeSearcherActive = ref(false)
-const searcherInputPlaceholder = ref("Ej. Edificio A");
-
-const routeSearcherResult = ref({});
-const routeSearcherTargetResult = ref({});
-
-const sourceValue = ref(null);
-const targetValue = ref(null);
-
-const route = ref([]);
-const toastRef = ref(null);
 
 function notify() {
     toastRef.value.showToast("¡Error!: por favor asegúrate de que los puntos entre los que te vas a trasladar sean válidos.");
@@ -166,6 +169,10 @@ function toggleMenu(label = null) {
     listIconRotation.value = menuVisible.value ? 90 : 0
     routeSearcherActive.value = false
     searcherInputPlaceholder.value = "Ej. Edificio A"
+
+    if (label === null) {
+        return;
+    }
 
     if (label === "Ruta") {
         toggleRouteSearcher();
@@ -199,7 +206,7 @@ const searchPath = async () => {
 
 watch(
     () => props.searchResults,
-    (newVal, oldVal) => {
+    (newVal, _) => {
         if (newVal == null || newVal == {}) {
             menuVisible.value = false;
             return;
@@ -215,7 +222,7 @@ watch(
 
 watch(
     () => props.searchBar,
-    (newVal, oldVal) => {
+    (newVal, _) => {
         if (newVal.trim() !== '') {
             return;
         } else {
@@ -224,168 +231,8 @@ watch(
     }
 );
 
-watch(
-    () => props.actualNode,
-    (newVal, oldVal) => {
-        console.log("Name: ", props.actualNode.name);
-    }
-)
-
 </script>
 
 <style scoped lang="scss">
-.menu-wrapper {
-    position: relative;
-    background-color: var(--strong-gray);
-    border-radius: 0.75rem;
-    width: 100%;
-    color: var(--fill-white);
-    border-radius: 24px !important;
-}
-
-.search-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    margin: 14px 1rem 14px 1rem;
-}
-
-.menu-toggle {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 0.5rem;
-}
-
-.search-input {
-    all: unset;
-    width: 100%;
-    padding: 0.4rem 0.6rem;
-    background-color: var(--strong-gray);
-    @include paragraph-small();
-    color: var(--fill-white);
-}
-
-.dropdown-menu-wrapper {
-    border-top: 1px var(--main-blue) solid;
-}
-
-.dropdown-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    animation: fadeIn 0.3s ease-out forwards;
-    padding: 14px 62px 14px 62px;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.3rem 0.4rem;
-    border-radius: 0.4rem;
-    cursor: pointer;
-    transition: background 0.2s;
-
-    &:hover {
-        background-color: #374151;
-    }
-}
-
-.menu-toggle-icon {
-    transition: transform 0.3s ease;
-}
-
-.route-searcher {
-    display: flex;
-    padding: 14px 48px 14px 48px;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-}
-
-.route-icons-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: space-between;
-    flex-grow: 1;
-}
-
-.route-input {
-    all: unset;
-    width: 100%;
-    padding: 0.5rem;
-    background-color: var(--fill-gray);
-    @include paragraph-small();
-    border-radius: 12px;
-    color: var(--strong-gray);
-}
-
-input::placeholder {
-    color: var(--border-gray);
-}
-
-.route-inputs-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-}
-
-.three-dots-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0px;
-    font-size: 10px;
-    font-weight: 900;
-    line-height: 1;
-    padding: 3px 0px 3px 0px;
-}
-
-.three-dots-container span {
-    padding: 0;
-    margin: 0;
-    line-height: 1;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.autocomplete-list {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    max-height: 200px;
-    overflow-y: auto;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    z-index: 1000;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.autocomplete-list li {
-    padding: 8px;
-    cursor: pointer;
-}
-
-.autocomplete-list li:hover {
-    background-color: #eee;
-}
+@import "@/assets/styles/pages/_input_card.scss";
 </style>
