@@ -282,6 +282,8 @@ onMounted(async () => {
     plugins: [
       [MarkersPlugin, {}]
     ],
+    defaultZoomLvl: 50,
+    moveSpeed: 1.5,
     defaultYaw: currentNodeData.value.forward_heading,
   });
 

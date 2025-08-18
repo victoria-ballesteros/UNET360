@@ -113,7 +113,7 @@ export function getImagePath(fileName) {
 export function searchNodeByKeyword(keyword) {
     const nodeStore = useNodeStore();
 
-    const keywords = keyword.trim().split(/\s+/).filter(k => k.toLowerCase() !== 'de');
+    const keywords = keyword.trim().split(/\s+/).filter(k => k.toLowerCase() !== 'de' && k.toLowerCase() !== 'del');
     const lowerKeywords = keywords.map(k => k.toLowerCase());
 
     if (lowerKeywords.length === 0) {
