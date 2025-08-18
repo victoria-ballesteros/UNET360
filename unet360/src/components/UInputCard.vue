@@ -55,7 +55,7 @@
                         </option>
                     </datalist>
                 </div>
-                <UIcon name="icons/arrows-crossed" size="23" @click="searchPath" />
+                <UIcon name="icons/check-square-fill" size="23" @click="searchPath" />
             </div>
         </div>
     </div>
