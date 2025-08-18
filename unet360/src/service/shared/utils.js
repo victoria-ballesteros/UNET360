@@ -113,8 +113,13 @@ export function getImagePath(fileName) {
 export function searchNodeByKeyword(keyword) {
     const nodeStore = useNodeStore();
 
-    const keywords = keyword.trim().split(/\s+/);
+    const keywords = keyword.trim().split(/\s+/).filter(k => k.toLowerCase() !== 'de');
     const lowerKeywords = keywords.map(k => k.toLowerCase());
+
+    if (lowerKeywords.length === 0) {
+        return {};
+    }
+
     const searchableText = {};
 
     for (const node of nodeStore.nodes) {
@@ -141,4 +146,10 @@ export function searchNodeByKeyword(keyword) {
     }
 
     return searchableText;
+}
+
+export function generateRandomStartNode() {
+    const numero = Math.floor(Math.random() * 109) + 1;
+    const numeroFormateado = numero.toString().padStart(3, '0');
+    return numeroFormateado;
 }

@@ -29,7 +29,7 @@ import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import { useNodeStore } from '@/service/stores/nodes';
 import { useTagStore } from '@/service/stores/tags';
-import { adjustAngle, getImagePath, searchNodeByKeyword } from '@/service/shared/utils';
+import { adjustAngle, getImagePath, searchNodeByKeyword, generateRandomStartNode } from '@/service/shared/utils';
 
 // Stores
 const nodeStore = useNodeStore();
@@ -274,7 +274,7 @@ onMounted(async () => {
   setVh();
   window.addEventListener('resize', setVh);
 
-  setNode('025');
+  setNode(generateRandomStartNode());
 
   viewer = new Viewer({
     container: viewerContainer.value,
