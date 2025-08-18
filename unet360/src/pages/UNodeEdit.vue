@@ -95,7 +95,10 @@
               <div v-for="(val, valIdx) in tag.values" :key="valIdx" class="tag-value-row">
                 <div class="tag-value-grid">
                   <UInput v-model="tag.values[valIdx].text" styleType="default" placeholder="Valor" />
-                  <UInput v-model="tag.values[valIdx].angle" styleType="default" type="text" :inputMode="'numeric'" pattern="-?[0-9]*(\.[0-9]+)?" placeholder="Float" />
+                  <div class="angle-assign-wrapper">
+                    <UInput v-model="tag.values[valIdx].angle" styleType="default" type="text" :inputMode="'numeric'" pattern="-?[0-9]*(\.[0-9]+)?" placeholder="Yaw (rad)" />
+                    <UButton text="Asignar" type="contrast-2" @click="openTagValueAssignment(tagIdx, valIdx)" />
+                  </div>
                 </div>
                 <UButton text="-" type="danger" @click="removeTagValue(tagIdx, valIdx)" />
               </div>
@@ -167,12 +170,20 @@ const arrowAngles = reactive(['', '', '', '']);
 
 // 360 direction assignment state
 const showDirectionDialog = ref(false);
-const directionMode = ref('arrow'); // 'arrow' | 'front'
+const directionMode = ref('arrow'); // 'arrow' | 'front' | 'tagValue'
 const arrowOrder = ['Frente', 'Derecha', 'Atras', 'Izquierda'];
 const currentArrowIndex = ref(0);
 const directionViewerContainer = ref(null);
 let directionViewer = null;
-const directionDialogTitle = computed(() => directionMode.value === 'arrow' ? 'Asignar direcciones de flecha' : 'Asignar frente de la imagen');
+const directionDialogTitle = computed(() => {
+  if (directionMode.value === 'arrow') return 'Asignar direcciones de flecha';
+  if (directionMode.value === 'front') return 'Asignar frente de la imagen';
+  return 'Asignar ángulo de tag';
+});
+
+// Para tag value assignment
+const currentTagIndex = ref(null);
+const currentTagValueIndex = ref(null);
 
 async function openArrowDirectionAssignment() {
   if (!form.url_image) return; // necesita imagen
@@ -185,6 +196,15 @@ async function openArrowDirectionAssignment() {
 async function openFrontImageAssignment() {
   if (!form.url_image) return;
   directionMode.value = 'front';
+  showDirectionDialog.value = true;
+  await nextTick();
+  initDirectionViewer();
+}
+async function openTagValueAssignment(tagIdx, valIdx) {
+  if (!form.url_image) return;
+  currentTagIndex.value = tagIdx;
+  currentTagValueIndex.value = valIdx;
+  directionMode.value = 'tagValue';
   showDirectionDialog.value = true;
   await nextTick();
   initDirectionViewer();
@@ -220,8 +240,13 @@ function initDirectionViewer() {
         } else {
           closeDirectionDialog();
         }
-      } else {
+      } else if (directionMode.value === 'front') {
         form.forward_heading = yaw.toString();
+        closeDirectionDialog();
+      } else if (directionMode.value === 'tagValue') {
+        if (currentTagIndex.value != null && currentTagValueIndex.value != null && tags[currentTagIndex.value] && tags[currentTagIndex.value].values[currentTagValueIndex.value]) {
+          tags[currentTagIndex.value].values[currentTagValueIndex.value].angle = yaw.toString();
+        }
         closeDirectionDialog();
       }
     });
@@ -483,4 +508,5 @@ watch(() => tags.map(t => t.name), (names) => {
 .direction-viewer { width:100%; height:360px; border:1px solid var(--border-gray); border-radius:8px; overflow:hidden; }
 .direction-footer { display:flex; justify-content:flex-end; gap:12px; }
 .direction-instructions { font-size:14px; }
+.angle-assign-wrapper { display:flex; gap:8px; align-items:center; }
 </style>
