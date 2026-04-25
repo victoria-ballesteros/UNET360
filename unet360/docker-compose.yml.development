@@ -6,7 +6,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - .:/app
+      - .:/app:z
       - /app/node_modules
     networks:
       - app_network

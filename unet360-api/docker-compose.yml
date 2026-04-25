@@ -5,7 +5,7 @@ services:
       - "8000:8000"
       - "9023:9023"
     volumes:
-      - .:/app
+      - .:/app:z
     environment:
       - .env
     networks:
