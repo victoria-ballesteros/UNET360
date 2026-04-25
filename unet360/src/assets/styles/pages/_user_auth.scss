@@ -1,117 +1,165 @@
+// ═══════════════  Auth Page — Mobile first, two-column on desktop  ═══════════════
+
 .form-container {
   display: flex;
   flex-direction: column;
-  //min-height: 100vh;
-  padding: 2.25rem !important;
-  gap: 2rem;
-}
+  padding: 2.25rem;
+  gap: 2.5rem;
+  box-sizing: border-box;
+  // Let the parent .content-container (flex-grow: 1) handle the height.
+  // We just need to fill it and center the content vertically on desktop.
+  flex: 1;
 
-.text-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 3rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    // Fill the available space so centering works
+    align-self: stretch;
+  }
 
-    .upper-paragrah {
-    margin: 0;
-    color: var(--full-white);
-
-    @include paragraph-h1;
-    } 
-
-    .lower-paragraph {
-    margin: 0;
-    color: var(--full-white);
-
-    @include paragraph-small;
+  @media (min-width: 1200px) {
+    padding: 3rem 6rem;
+    max-width: 1300px;
   }
 }
 
-.form-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 1rem;
+// ═══════════════  Text section (left on desktop)  ═══════════════
 
-    .input-container{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 0.5rem;
-        padding: 0 0 1.25rem 0;
+.text-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
-    // Etiqueta del input
-    .input-label {
-        margin: 0;
-        color: var(--full-white);
-        @include paragraph-medium;
+  @media (min-width: 768px) {
+    flex: 1;
+    padding-right: 4rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  .upper-paragrah {
+    margin: 0;
+    color: var(--full-white);
+    @include paragraph-h1;
+
+    @media (min-width: 768px) {
+      font-size: clamp(2rem, 3vw, 3rem);
+      line-height: 1.1;
     }
+  }
 
-        .forgot-password-link{
-            cursor: pointer; 
-            color: var(--border-gray); 
-            margin: 0;
-            @include paragraph-small;
-            text-decoration: underline;
-        }
+  .lower-paragraph {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+    @include paragraph-small;
+
+    @media (min-width: 768px) {
+      font-size: 1rem;
+      line-height: 1.65;
+      max-width: 36ch;
     }
+  }
 
-    .button-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+  ul {
+    color: var(--full-white);
+    padding: 0;
+    list-style: disc inside;
+
+    li {
+      color: var(--full-white);
+      margin: 0 0 0.25rem;
     }
-
-    .text-container{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        
-        margin: 0;
-        color: var(--border-gray);
-        @include paragraph-small;
-
-        b {
-            cursor: pointer; 
-            color:var(--main-blue);
-            text-decoration: underline;
-            gap: 0rem;
-        }
-    }
-
-    // Mensaje de error
-    .input-error-label {
-        margin: 0;
-        color: var(--main-red);
-    }
-    
-
+  }
 }
 
+// ═══════════════  Form section (right on desktop)  ═══════════════
 
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
+  @media (min-width: 768px) {
+    flex: 0 0 420px;
+    padding-left: 4rem;
+  }
 
-// Estado de error: cambia color de label y mensaje
+  @media (min-width: 1200px) {
+    flex: 0 0 480px;
+  }
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-bottom: 1.25rem;
+
+    .input-label {
+      margin: 0;
+      color: var(--full-white);
+      @include paragraph-medium;
+    }
+
+    .forgot-password-link {
+      cursor: pointer;
+      color: var(--border-gray);
+      margin: 0;
+      @include paragraph-small;
+      text-decoration: underline;
+      transition: color 0.15s ease;
+
+      &:hover {
+        color: var(--full-white);
+      }
+    }
+  }
+
+  .input-error-label {
+    margin: 0;
+    color: var(--main-red);
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .text-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    color: var(--border-gray);
+    @include paragraph-small;
+
+    b {
+      cursor: pointer;
+      color: var(--main-blue);
+      text-decoration: underline;
+    }
+  }
+}
+
+// ═══  Error state  ═══
+
 .input-container.has-error {
   padding-bottom: 0;
+
   .input-label {
     color: var(--main-red);
     margin: 0;
   }
+
   .input-error-label {
     color: var(--main-red);
     margin: 0;
   }
-}
-
-// ═══════════════  Lista de detalles en pantallas de éxito  ═══════════════
-.text-section ul {
-  color: var(--full-white);
-  padding: 0;
-  list-style: disc inside;
-}
-.text-section ul li {
-  color: var(--full-white);
-  margin-bottom: 0.25rem;
-  margin:0;
 }

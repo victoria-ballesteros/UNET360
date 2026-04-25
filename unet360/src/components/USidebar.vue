@@ -1,14 +1,28 @@
 <template>
-  <transition name="slide">
-    <div v-if="isOpen" class="overlay" @click.self="closePanel">
-      <aside class="panel" @click.stop>
-        <UHeader @isPanelOpen="emit('close', event)"></UHeader>
+  <Teleport to="body">
+    <!-- Overlay: only fades -->
+    <transition name="overlay-fade">
+      <div
+        v-if="isOpen"
+        class="sidebar-overlay"
+        @click="closePanel"
+      />
+    </transition>
+
+    <!-- Panel: only slides -->
+    <transition name="panel-slide">
+      <aside
+        v-if="isOpen"
+        class="sidebar-panel"
+        @click.stop
+      >
+        <UHeader @isPanelOpen="emit('close', event)" />
         <nav class="menu">
           <slot />
         </nav>
       </aside>
-    </div>
-  </transition>
+    </transition>
+  </Teleport>
 </template>
 
 <script setup>
@@ -27,47 +41,46 @@ function closePanel() {
 </script>
 
 <style lang="scss">
-.overlay {
+.sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.45);
   z-index: 1000;
-  display: flex;
 }
 
-.panel {
+.sidebar-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1001;
   background: var(--strong-gray);
   width: 100vw;
-  height: 100vh;
-  padding: 1.5rem 0rem;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem 0 2rem;
+  box-shadow: -4px 0 32px rgba(0, 0, 0, 0.35);
+  overflow-x: hidden;
   overflow-y: auto;
-  position: relative;
   display: flex;
   flex-direction: column;
 
-  .close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+  @media (min-width: 768px) {
+    width: 25vw;
+    min-width: 280px;
+    max-width: 420px;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .menu {
     display: flex;
     flex-direction: column;
-    gap: 1.738rem;
-    justify-content: center;
+    gap: 0.25rem;
     flex: 1 1 auto;
-    padding: 0rem 1rem;
+    padding: 2rem 1.5rem;
+    justify-content: center;
 
     .nav-item {
       @include section-title;
-      color: var(--fill-white);
+      color: rgba(255, 255, 255, 0.65);
       text-transform: uppercase;
       text-decoration: none;
       background: none;
@@ -75,31 +88,43 @@ function closePanel() {
       cursor: pointer;
       width: 100%;
       text-align: left;
-      padding: 0;
+      padding: 0.75rem 1rem;
       display: block;
+      border-radius: 10px;
+      letter-spacing: 0.06em;
+      transition: color 0.18s ease, background 0.18s ease;
+
+      &:hover {
+        color: var(--fill-white);
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      &.router-link-active,
+      &.active {
+        color: var(--fill-white);
+        background: rgba(255, 255, 255, 0.1);
+      }
     }
   }
 }
 
-/* Slide transition */
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.3s ease;
+// Overlay — fade only
+.overlay-fade-enter-active,
+.overlay-fade-leave-active {
+  transition: opacity 0.3s ease;
 }
-.slide-enter-from {
-  transform: translateX(100%);
+.overlay-fade-enter-from,
+.overlay-fade-leave-to {
   opacity: 0;
 }
-.slide-enter-to {
-  transform: translateX(0);
-  opacity: 1;
+
+// Panel — slide only, no opacity involved
+.panel-slide-enter-active,
+.panel-slide-leave-active {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.slide-leave-from {
-  transform: translateX(0);
-  opacity: 1;
-}
-.slide-leave-to {
+.panel-slide-enter-from,
+.panel-slide-leave-to {
   transform: translateX(100%);
-  opacity: 0;
 }
 </style>

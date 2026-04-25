@@ -1,9 +1,30 @@
-.upper-container {
+// Typography mixins (keep in sync with your global mixins)
+// @include paragraph-h1
+// @include paragraph-medium-light
+
+// Home Page
+
+.home-upper-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 0.6rem 1.125rem !important;
+  padding: 0rem 1.25rem;
+  gap: 2.5rem;
+
+  @media (min-width: 768px) {
+    padding: 1.5rem 3rem;
+    gap: 4rem;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 2rem 5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
 }
+
+// Hero
 
 .hero-section {
   display: flex;
@@ -11,40 +32,177 @@
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  height: calc(100dvh - var(--header-height));
-  padding: 0 0 3.5rem;
+  min-height: calc(100dvh - var(--header-height));
+  padding: 2rem 0 3.5rem;
+  gap: 3rem;
 
-  .upper-paragrah {
-    margin: 0 0 1rem !important;
-    color: var(--full-white);
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem 0;
+    gap: 4rem;
+  }
+}
 
-    @include paragraph-h1;
+// Hero content (left column on desktop)
 
-    b {
-      color: var(--main-blue);
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+  animation: fadeUp 0.7s ease both;
+  z-index: 1000;
+
+  @media (min-width: 768px) {
+    align-items: flex-start;
+    text-align: left;
+    max-width: 520px;
+    flex: 1;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--main-blue-rgb, 59, 130, 246), 0.35);
+  background: rgba(var(--main-blue-rgb, 59, 130, 246), 0.08);
+  color: var(--main-blue);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.upper-paragraph {
+  margin: 0 !important;
+  color: var(--full-white);
+  line-height: 1.15;
+
+  @include paragraph-h1;
+
+  .highlight {
+    color: var(--main-blue);
+    position: relative;
+    display: inline-block;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--main-blue);
+      border-radius: 2px;
+      opacity: 0.45;
     }
   }
 
-  .lower-paragraph {
-    text-align: center;
-    color: var(--full-white);
-
-    @include paragraph-medium-light;
+  @media (min-width: 768px) {
+    font-size: clamp(2rem, 3.5vw, 3rem);
   }
 }
+
+.lower-paragraph {
+  margin: 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 38ch;
+
+  @include paragraph-medium-light;
+
+  @media (min-width: 768px) {
+    text-align: left;
+  }
+}
+
+// Hero visual (right column on desktop)
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: fadeIn 0.9s ease both 0.2s;
+
+  @media (min-width: 768px) {
+    flex: 0 0 auto;
+  }
+}
+
+.visual-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--main-blue-rgb, 59, 130, 246), 0.15);
+  pointer-events: none;
+  animation: pulse 4s ease-in-out infinite;
+
+  &.ring-1 { width: 310px; height: 310px; animation-delay: 0s; }
+  &.ring-2 { width: 390px; height: 390px; animation-delay: 0.6s; opacity: 0.65; }
+  &.ring-3 { width: 470px; height: 470px; animation-delay: 1.2s; opacity: 0.35; }
+}
+
+// Cards grid
 
 .card-wrapper {
   display: grid;
   gap: 1rem;
-  max-width: 100%;
+  width: 100%;
   grid-template-columns: repeat(2, 1fr);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 1200px) {
+    gap: 1.5rem;
+  }
 }
 
 .box {
   display: flex;
   flex-direction: column;
+  animation: fadeUp 0.5s ease both;
+
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) { animation-delay: #{$i * 0.08}s; }
+  }
+
+  &:nth-child(3) {
+    grid-column: span 2;
+
+    @media (min-width: 768px) {
+      grid-column: span 1;
+    }
+  }
 }
 
-.box:nth-child(3) {
-  grid-column: span 2;
+// Animations
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: inherit; }
+  50%       { transform: scale(1.04); opacity: calc(inherit * 0.6); }
+}
+
+// Utility
+
+.no-underline-link {
+  text-decoration: none;
 }

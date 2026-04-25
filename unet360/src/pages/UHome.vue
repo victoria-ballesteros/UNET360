@@ -1,21 +1,24 @@
 <template>
-  <div class="upper-container">
+  <div class="home-upper-container">
     <div class="hero-section" ref="heroRef">
-      <p class="upper-paragrah">
-        Tu guía inteligente para explorar la <b>UNET</b> con solo un clic.
-      </p>
-      <UIcon name="images/home-image" size="280" />
-      <p class="lower-paragraph">{{ generalInfo }}</p>
-      <RouterLink
-        :to="{ name: button.route }"
-        class="no-underline-link"
-      >
-        <UButton
-          :text="button.label"
-          type="contrast"
-        />
-      </RouterLink>
+      <div class="hero-content">
+        <div class="badge">Asistente Universitario</div>
+        <h1 class="upper-paragraph">
+          Tu guía inteligente para explorar la <span class="highlight">UNET</span> con un solo click.
+        </h1>
+        <p class="lower-paragraph">{{ generalInfo }}</p>
+        <RouterLink :to="{ name: button.route }" class="no-underline-link">
+          <UButton :text="button.label" type="contrast" />
+        </RouterLink>
+      </div>
+      <div class="hero-visual">
+        <div class="visual-ring ring-3"></div>
+        <div class="visual-ring ring-2"></div>
+        <div class="visual-ring ring-1"></div>
+        <UIcon name="images/home-image" size="280" />
+      </div>
     </div>
+
     <div class="card-wrapper">
       <div v-for="(item, index) in cardsInfo" :key="index" class="box">
         <UCard :text="item.text" :icon="item.icon" />
@@ -38,7 +41,6 @@ const cardsInfo = getCardsInfo();
 const generalInfo = getGeneralInfo();
 const isAuthenticated = ref(false);
 const button = ref(null);
-
 const heroRef = ref(null);
 
 onBeforeMount(() => {
@@ -48,14 +50,12 @@ onBeforeMount(() => {
 });
 
 onMounted(async () => {
-  const headerHeightVar = getComputedStyle(
-    document.documentElement
-  ).getPropertyValue("--header-height");
+  const headerHeightVar = getComputedStyle(document.documentElement).getPropertyValue("--header-height");
   const headerHeight = parseFloat(headerHeightVar) || 0;
   const fixedHeight = window.innerHeight - headerHeight;
 
   if (heroRef.value) {
-    heroRef.value.style.height = `${fixedHeight}px`;
+    heroRef.value.style.minHeight = `${fixedHeight}px`;
   }
 });
 </script>
