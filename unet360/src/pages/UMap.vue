@@ -286,7 +286,7 @@ function notifyTravelEnd() {
 
 // LÓGICA DE TESELAS
 const getTilesConfig = (nodeName) => {
-  const basePath = `/tiles/${nodeName}`;
+  const basePath = `${import.meta.env.VITE_API_BASE_URL}/tiles/${nodeName}`;
 
   return {
     width: 8192,

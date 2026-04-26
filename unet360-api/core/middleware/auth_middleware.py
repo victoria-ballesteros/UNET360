@@ -1,26 +1,25 @@
+import logging
 import traceback
 
-from fastapi import Request, HTTPException, status
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from starlette.responses import Response, JSONResponse
-from starlette.types import ASGIApp
-import logging
-
-from supabase import Client as SupabaseClient
-from adapter.external.supabase_adapter import get_user_with_retry
-
-from core.services.tenant_service import TenantService
 from adapter.database.tenant_repository import TenantRepository
-from core.dtos.responses_dto import GeneralResponse 
+from adapter.external.supabase_adapter import get_user_with_retry
+from core.dtos.responses_dto import GeneralResponse
+from core.services.tenant_service import TenantService
+from fastapi import Request, status
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
+from starlette.types import ASGIApp
+from supabase import Client as SupabaseClient
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
 
 class AuthMiddleware(BaseHTTPMiddleware):
     def __init__(self, app: ASGIApp):
         super().__init__(app)
         self.tenant_service = TenantService(TenantRepository())
-        
+
         self.excluded_paths = [
             "/",
             "/auth/signup",
@@ -28,29 +27,49 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/auth/forgot-password",
             "/auth/reset-password",
             "/docs",
-            "/redoc",       
+            "/redoc",
             "/openapi.json",
+        ]
+
+        self.excluded_routes = [
+            "/tiles",
         ]
 
     async def dispatch(self, request: Request, call_next):
         # Si la ruta está excluida, simplemente la pasa
         if request.url.path in self.excluded_paths:
             return await call_next(request)
+        
+        is_excluded = any(
+            request.url.path.startswith(path) for path in self.excluded_routes
+        )
+        
+        if is_excluded:
+            return await call_next(request) 
 
-        # El resto del código de tu middleware permanece igual
         if request.url.path == "/auth/status":
             try:
                 auth_header = request.headers.get("Authorization")
                 if auth_header and auth_header.startswith("Bearer "):
                     access_token = auth_header.split(" ", 1)[1]
                     supabase_client: SupabaseClient = request.app.state.supabase
-                    user_response = get_user_with_retry(request.app.state.supabase, access_token)
-                    
+                    user_response = get_user_with_retry(
+                        request.app.state.supabase, access_token
+                    )
+
                     if user_response.user is not None:
                         request.state.user_id = user_response.user.id
-                        tenant_profile = await self.tenant_service.get_tenant_by_supabase_user_id(request.state.user_id)
-                        request.state.user_role = tenant_profile.role if tenant_profile else None
-                        logger.info(f"Auth status check: User {request.state.user_id} authenticated.")
+                        tenant_profile = (
+                            await self.tenant_service.get_tenant_by_supabase_user_id(
+                                request.state.user_id
+                            )
+                        )
+                        request.state.user_role = (
+                            tenant_profile.role if tenant_profile else None
+                        )
+                        logger.info(
+                            f"Auth status check: User {request.state.user_id} authenticated."
+                        )
                 return await call_next(request)
             except Exception as e:
                 logger.warning(f"Auth status check failed to validate token: {e}")
@@ -63,8 +82,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 content=GeneralResponse(
                     http_code=status.HTTP_401_UNAUTHORIZED,
                     status=False,
-                    response_obj={"message": "Authorization header missing"}
-                ).model_dump()
+                    response_obj={"message": "Authorization header missing"},
+                ).model_dump(),
             )
 
         token_type, access_token = None, None
@@ -77,18 +96,20 @@ class AuthMiddleware(BaseHTTPMiddleware):
                     content=GeneralResponse(
                         http_code=status.HTTP_401_UNAUTHORIZED,
                         status=False,
-                        response_obj={"message": "Invalid Authorization header format. Expected 'Bearer <token>'."}
-                    ).model_dump()
+                        response_obj={
+                            "message": "Invalid Authorization header format. Expected 'Bearer <token>'."
+                        },
+                    ).model_dump(),
                 )
-        
+
         if token_type != "Bearer" or not access_token:
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content=GeneralResponse(
                     http_code=status.HTTP_401_UNAUTHORIZED,
                     status=False,
-                    response_obj={"message": "Invalid token type. Expected 'Bearer'."}
-                ).model_dump()
+                    response_obj={"message": "Invalid token type. Expected 'Bearer'."},
+                ).model_dump(),
             )
 
         supabase_client: SupabaseClient = request.app.state.supabase
@@ -97,31 +118,37 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
         try:
             user_response = get_user_with_retry(supabase_client, access_token)
-            
+
             if user_response.user is None:
                 return JSONResponse(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     content=GeneralResponse(
                         http_code=status.HTTP_401_UNAUTHORIZED,
                         status=False,
-                        response_obj={"message": "Invalid or expired token. User not found in Supabase."}
-                    ).model_dump()
+                        response_obj={
+                            "message": "Invalid or expired token. User not found in Supabase."
+                        },
+                    ).model_dump(),
                 )
-            
+
             user_id = user_response.user.id
 
-            tenant_profile = await self.tenant_service.get_tenant_by_supabase_user_id(user_id)
-            
+            tenant_profile = await self.tenant_service.get_tenant_by_supabase_user_id(
+                user_id
+            )
+
             if not tenant_profile:
                 return JSONResponse(
                     status_code=status.HTTP_403_FORBIDDEN,
                     content=GeneralResponse(
                         http_code=status.HTTP_403_FORBIDDEN,
                         status=False,
-                        response_obj={"message": "User profile not found in application database. Access denied."}
-                    ).model_dump()
+                        response_obj={
+                            "message": "User profile not found in application database. Access denied."
+                        },
+                    ).model_dump(),
                 )
-            
+
             user_role = tenant_profile.role
 
             request.state.user_id = user_id
@@ -136,8 +163,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 content=GeneralResponse(
                     http_code=status.HTTP_401_UNAUTHORIZED,
                     status=False,
-                    response_obj={"message": f"Authentication failed: {str(e)}"}
-                ).model_dump()
+                    response_obj={"message": f"Authentication failed: {str(e)}"},
+                ).model_dump(),
             )
 
         response = await call_next(request)
