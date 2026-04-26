@@ -10,7 +10,7 @@ def create_supabase_client() -> Client:
     supabase_key = os.getenv("SUPABASE_KEY")
     return create_client(supabase_uri, supabase_key)
 
-def get_user_with_retry(supabase: Client, access_token: str, max_retries: int = 3):
+def get_user_with_retry(supabase: Client, access_token: str, max_retries: int = 5):
     for attempt in range(max_retries):
         try:
             return supabase.auth.get_user(access_token)

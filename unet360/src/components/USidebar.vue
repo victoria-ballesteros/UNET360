@@ -79,7 +79,7 @@ function closePanel() {
     justify-content: center;
 
     .nav-item {
-      @include section-title;
+      @include paragraph-medium;
       color: rgba(255, 255, 255, 0.65);
       text-transform: uppercase;
       text-decoration: none;

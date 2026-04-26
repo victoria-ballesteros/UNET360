@@ -340,7 +340,7 @@ onMounted(async () => {
     adapter: [EquirectangularTilesAdapter, {}],
     panorama: getTilesConfig(currentNodeData.value.name),
     plugins: [[MarkersPlugin, {}]],
-    defaultZoomLvl: 50,
+    defaultZoomLvl: 0,
     moveSpeed: 1.75,
     defaultYaw: currentNodeData.value.forward_heading,
   });

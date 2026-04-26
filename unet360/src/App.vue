@@ -70,9 +70,11 @@ function handleLogout() {
 }
 
 onMounted(async () => {
-  router.isReady().then(async () => {
-    await obtainData();
-  });
+  // router.isReady().then(async () => {
+  //   await obtainData();
+  // });
+
+  await obtainData();
 
   const headerEl = document.querySelector(".header-container");
   if (headerEl) {

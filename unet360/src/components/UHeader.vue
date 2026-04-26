@@ -5,6 +5,7 @@
         name="icons/logo"
         size="43"
         class="cursor-pointer"
+        @click="emit('isPanelOpen', event)"
       />
     </RouterLink>
     <UIcon
