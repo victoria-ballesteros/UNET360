@@ -179,7 +179,7 @@ const handleLogout = () => {
 /* ─── BASE ─────────────────────────────────────────────── */
 .about-container {
   min-height: 100vh;
-  background: var(--strong-gray);
+  background: var(--strong-gray-dark);
   color: var(--full-white);
   padding-bottom: 4rem;
 }

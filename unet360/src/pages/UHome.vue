@@ -95,7 +95,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   flex: 1;
-  background: var(--strong-gray);
 }
 
 .no-underline-link {
