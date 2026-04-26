@@ -1,3 +1,5 @@
+import traceback
+
 from fastapi import Request, HTTPException, status
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response, JSONResponse
@@ -5,6 +7,7 @@ from starlette.types import ASGIApp
 import logging
 
 from supabase import Client as SupabaseClient
+from adapter.external.supabase_adapter import get_user_with_retry
 
 from core.services.tenant_service import TenantService
 from adapter.database.tenant_repository import TenantRepository
@@ -41,7 +44,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 if auth_header and auth_header.startswith("Bearer "):
                     access_token = auth_header.split(" ", 1)[1]
                     supabase_client: SupabaseClient = request.app.state.supabase
-                    user_response = supabase_client.auth.get_user(access_token)
+                    user_response = get_user_with_retry(request.app.state.supabase, access_token)
                     
                     if user_response.user is not None:
                         request.state.user_id = user_response.user.id
@@ -93,7 +96,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         user_role = None
 
         try:
-            user_response = supabase_client.auth.get_user(access_token) 
+            user_response = get_user_with_retry(supabase_client, access_token)
             
             if user_response.user is None:
                 return JSONResponse(
@@ -126,6 +129,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             logger.info(f"Authenticated user: {user_id} with role: {user_role}")
 
         except Exception as e:
+            traceback.print_exc()
             logger.error(f"Authentication failed: {e}")
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,

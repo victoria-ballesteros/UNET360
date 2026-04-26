@@ -10,6 +10,7 @@ from adapter.api.node_routes import router as node_router
 from adapter.api.tag_routes import router as tag_router
 from adapter.api.tenant_routes import router as tenant_router
 from adapter.api.upload_routes import router as upload_router
+from adapter.external.supabase_adapter import create_supabase_client
 from beanie import init_beanie
 from core.dtos.responses_dto import GeneralResponse
 from core.entities.location_model import Location
@@ -22,7 +23,6 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pymongo import AsyncMongoClient
-from supabase import create_client
 
 load_dotenv()
 logger = logging.getLogger("uvicorn.error")
@@ -34,8 +34,6 @@ async def lifespan(app: FastAPI):
     client = None
 
     try:
-        supabase_uri = os.getenv("SUPABASE_URL")
-        supabase_key = os.getenv("SUPABASE_KEY")
         mongo_db_name = os.getenv("MONGODB_DB")
         mongo_uri = os.getenv("MONGODB_URL")
 
@@ -46,7 +44,7 @@ async def lifespan(app: FastAPI):
             database=database, document_models=[Location, Tag, Node, Tenant]
         )
 
-        supabase = create_client(supabase_uri, supabase_key)
+        supabase = create_supabase_client()
         app.state.supabase = supabase
 
         yield

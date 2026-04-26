@@ -212,7 +212,7 @@ async function handleSubmit() {
     } else {
       // Si falla, muestra el error debajo de Contraseña y pone el input de email en rojo
       inputErrors.email = ' '; 
-      inputErrors.password = authStore.error || 'Error de autenticación';
+      inputErrors.password = 'Error de autenticación';
     }
     return;
   }
