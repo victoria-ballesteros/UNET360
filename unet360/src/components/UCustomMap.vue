@@ -10,7 +10,7 @@
     </div>
     <!-- Icono siempre centrado en el área visible -->
     <div v-if="iconUrl" class="location-icon-overlay" :style="iconOverlayStyle">
-      <img :src="iconUrl" alt="Ubicación" style="width: 40px; height: 40px; pointer-events: none;" />
+      <img :src="iconUrl" alt="Ubicación" style="width: 30px; height: 30px; pointer-events: none;" />
     </div>
   </div>
 </template>
