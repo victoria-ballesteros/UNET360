@@ -82,6 +82,6 @@ async function submit() {
 onMounted(loadItem);
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import '@/assets/styles/pages/_entity_edit.scss';
 </style>

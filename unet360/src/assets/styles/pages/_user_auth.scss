@@ -12,14 +12,13 @@
 
   @media (min-width: 768px) {
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     gap: 0;
     padding: 3rem 4rem;
     max-width: 1100px;
     margin: 0 auto;
     width: 100%;
-    // Fill the available space so centering works
     align-self: stretch;
   }
 
@@ -42,6 +41,9 @@
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     gap: 1.5rem;
     justify-content: center;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
   }
 
   .upper-paragrah {
@@ -89,6 +91,8 @@
   @media (min-width: 768px) {
     flex: 0 0 420px;
     padding-left: 4rem;
+    justify-content: center;
+    align-self: stretch;
   }
 
   @media (min-width: 1200px) {

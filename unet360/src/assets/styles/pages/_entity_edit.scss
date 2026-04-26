@@ -1,6 +1,10 @@
-@import "@/assets/styles/pages/node_edit.scss";
-
-
-.text-section { display: flex; flex-direction: column; gap: .5rem; }
-.upper-paragrah { font-size: 1.3rem; font-weight: 600; }
-.lower-paragraph { font-size: .9rem; opacity: .75; }
+@import "@/assets/styles/pages/_user_auth.scss";
+ 
+// Button container needs gap since it has two buttons (Cancelar + Crear/Guardar)
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem !important;
+}
+ 
