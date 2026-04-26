@@ -1,11 +1,14 @@
 <template>
   <div class="entity-admin-container">
-    <div class="text-section">
+
+    <div class="entity-admin-header">
+      <div class="text-section">
         <h2>{{ title }}</h2>
-    </div>
-  <div v-if="entity !== 'tenants'" class="admin-entities-buttons">
+      </div>
+      <div v-if="entity !== 'tenants'" class="admin-entities-buttons">
         <UButton :text="createButtonText" type="contrast-2" @click="goCreate" />
         <UButton text="Volver a nodos" type="tertiary" @click="router.push({ name: 'NodeAdmin' })" />
+      </div>
     </div>
 
     <div class="list-section">
@@ -14,40 +17,36 @@
         <div v-if="items.length === 0" class="empty-message">No hay {{ entityLabelPlural }}.</div>
         <div v-else>
           <div class="item-list-section">
-      <div v-for="(it,index) in items" :key="itemKey(it)" class="item">
+            <div v-for="(it, index) in items" :key="itemKey(it)" class="item">
               <div class="item-info">
                 <div class="item-primary">
-        <span v-if="entity === 'tenants'" class="status-dot" :class="statusClass(it)"></span>
-        <UIcon
-        v-else-if="entity === 'tags' && it.icon_name"
+                  <span v-if="entity === 'tenants'" class="status-dot" :class="statusClass(it)" />
+                  <UIcon
+                    v-else-if="entity === 'tags' && it.icon_name"
                     :name="`icons/${it.icon_name}`"
                     class="item-left-icon"
                     :color="'var(--status-green, #4caf50)'"
-                    />
-                    <span class="item-name">{{ it.name }}</span>
+                  />
+                  <span class="item-name">{{ it.name }}</span>
                 </div>
                 <div class="item-actions">
-                    <button v-if="entity === 'tags'" class="icon-btn" @click="editItem(it)">
+                  <button v-if="entity === 'tags'" class="icon-btn" @click="editItem(it)">
                     <UIcon name="icons/edit" class="entity-action-icon" />
-                    </button>
-        <button v-if="entity === 'tenants'" class="icon-btn" @click="openRoleDialog(it)">
-        <UIcon name="icons/journal-text" class="entity-action-icon" :color="'var(--full-white)'" />
-        </button>
-                    <button class="icon-btn" @click="confirmDelete(it)">
+                  </button>
+                  <button v-if="entity === 'tenants'" class="icon-btn" @click="openRoleDialog(it)">
+                    <UIcon name="icons/journal-text" class="entity-action-icon" :color="'var(--full-white)'" />
+                  </button>
+                  <button class="icon-btn" @click="confirmDelete(it)">
                     <UIcon name="icons/trash" class="entity-action-icon" />
-                    </button>
+                  </button>
                 </div>
               </div>
-              
-              <div v-if="index !== items.length - 1" class="separator"></div>
+              <div v-if="index !== items.length - 1" class="separator" />
             </div>
-            
           </div>
         </div>
       </div>
     </div>
-
-
 
     <UDialog v-model="showDeleteDialog" :headerTitle="''">
       <div class="delete-dialog-content">
@@ -58,16 +57,13 @@
         </div>
       </div>
     </UDialog>
+
     <UDialog v-model="showRoleDialog" :headerTitle="' '">
       <div class="delete-dialog-content">
         <div class="delete-dialog-header">Usuario: {{ userForRole?.name }}</div>
         <div style="display:flex; gap:.5rem; align-items:center;">
-          <label>
-            <input type="radio" value="viewer" v-model="selectedRole"> Viewer
-          </label>
-          <label>
-            <input type="radio" value="admin" v-model="selectedRole"> Admin
-          </label>
+          <label><input type="radio" value="viewer" v-model="selectedRole"> Viewer</label>
+          <label><input type="radio" value="admin" v-model="selectedRole"> Admin</label>
         </div>
         <div class="delete-dialog-actions">
           <UButton text="Cancelar" type="tertiary" @click="showRoleDialog = false" />
@@ -75,6 +71,7 @@
         </div>
       </div>
     </UDialog>
+
   </div>
 </template>
 
@@ -91,7 +88,7 @@ const router = useRouter();
 const entity = computed(() => {
   if (route.name === 'AdminTenants') return 'tenants';
   return route.params.entity || route.meta.entity;
-}); // 'tags' | 'locations' | 'tenants'
+});
 const items = ref([]);
 const isLoading = ref(false);
 const showDeleteDialog = ref(false);
@@ -108,10 +105,7 @@ async function fetchItems() {
     const { data } = await api.get(`${entity.value}/`);
     if (data?.status && Array.isArray(data.response_obj)) {
       items.value = data.response_obj;
-      // If tenants, also fetch their statuses from backend
-      if (entity.value === 'tenants') {
-        await fetchTenantStatuses();
-      }
+      if (entity.value === 'tenants') await fetchTenantStatuses();
     } else {
       items.value = [];
     }
@@ -135,10 +129,9 @@ function confirmDelete(it) {
   showDeleteDialog.value = true;
 }
 
-// Helpers para tenants
 function itemKey(it) { return entity.value === 'tenants' ? (it.supabase_user_id || it.name) : it.name; }
 function statusClass(user) {
-  const status = user.status; // 'OK' | 'WARNING' | 'ERROR' | undefined
+  const status = user.status;
   return { 'status-ok': status === 'OK', 'status-warn': status === 'WARNING', 'status-err': status === 'ERROR' };
 }
 
@@ -149,7 +142,7 @@ async function fetchTenantStatuses() {
       const map = new Map(data.response_obj.map((u) => [u.name, u.status]));
       items.value = items.value.map((u) => ({ ...u, status: map.get(u.name) }));
     }
-  } catch (_) { /* ignore */}
+  } catch (_) {}
 }
 
 const showRoleDialog = ref(false);

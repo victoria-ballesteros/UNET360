@@ -1,44 +1,70 @@
 <template>
   <div class="viewer-wrapper">
-    <div class="viewer-container" ref="viewerContainer" style="width: 100vw; height: 100vh; background: grey;"></div>
+    <!-- No tocar la property style, el visor no funciona sin ella -->
+    <div
+      class="viewer-container"
+      ref="viewerContainer"
+      style="width: 100vw; height: 100vh; background: grey"
+    ></div>
 
     <div class="top-controls">
-      <UInputCard v-model:searchBar="searchInput" v-model:searchSource="searchSource"
-        v-model:searchTarget="searchTarget" v-model:searchedNode="searchedNode" v-model:actualRoute="actualRoute"
-        :searchResults="searchResults" :actualNode="{ 'name': currentNodeData.name }" :searchedNode="searchedNode" :key="varAux" />
+      <UInputCard
+        v-model:searchBar="searchInput"
+        v-model:searchSource="searchSource"
+        v-model:searchTarget="searchTarget"
+        v-model:searchedNode="searchedNode"
+        v-model:actualRoute="actualRoute"
+        :searchResults="searchResults"
+        :actualNode="{ name: currentNodeData.name }"
+        :searchedNode="searchedNode"
+        :key="varAux"
+      />
     </div>
 
     <div class="map-2d-box">
-      <UCustomMap v-if="currentNodeData && visualMapCoords" :key="customMapUrl" :mapUrl="customMapUrl"
-        :iconUrl="customIconUrl" :node="visualMapCoords" />
+      <UCustomMap
+        v-if="currentNodeData && visualMapCoords"
+        :key="customMapUrl"
+        :mapUrl="customMapUrl"
+        :iconUrl="customIconUrl"
+        :node="visualMapCoords"
+      />
     </div>
   </div>
   <UToast ref="toastRefMap" />
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import UCustomMap from '@/components/UCustomMap.vue';
-import UInputCard from '@/components/UInputCard.vue';
-import UToast from '@/components/UToast.vue';
-import arrowImg from '../assets/images/arrow-up.png';
-import arrowHighlighted from '../assets/images/arrow-up-highlighted.png';
-import campusMap from '@/assets/images/campus-map.jpg';
-import locationIconRaw from '@/assets/icons/location.svg?url';
-import { Viewer } from '@photo-sphere-viewer/core';
-import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
-import { useNodeStore } from '@/service/stores/nodes';
-import { useTagStore } from '@/service/stores/tags';
-import { adjustAngle, getImagePath, searchNodeByKeyword, generateRandomStartNode } from '@/service/shared/utils';
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
+import UCustomMap from "@/components/UCustomMap.vue";
+import UInputCard from "@/components/UInputCard.vue";
+import UToast from "@/components/UToast.vue";
+import arrowImg from "../assets/images/arrow-up.png";
+import arrowHighlighted from "../assets/images/arrow-up-highlighted.png";
+import campusMap from "@/assets/images/campus-map.jpg";
+import locationIconRaw from "@/assets/icons/location.svg?url";
+import { Viewer } from "@photo-sphere-viewer/core";
+import { MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
+import { EquirectangularTilesAdapter } from "@photo-sphere-viewer/equirectangular-tiles-adapter";
+import { useNodeStore } from "@/service/stores/nodes";
+import { useTagStore } from "@/service/stores/tags";
+import {
+  adjustAngle,
+  getImagePath,
+  searchNodeByKeyword,
+  generateRandomStartNode,
+} from "@/service/shared/utils";
+import "@photo-sphere-viewer/core/index.css";
+import "@photo-sphere-viewer/markers-plugin/index.css";
 
 // Stores
 const nodeStore = useNodeStore();
 const tagStore = useTagStore();
 
 // Inputs para búsqueda
-const searchInput = ref('');
-const searchSource = ref('');
-const searchTarget = ref('');
+const searchInput = ref("");
+const searchSource = ref("");
+const searchTarget = ref("");
 const varAux = ref(0);
 
 const searchResults = ref(null);
@@ -48,22 +74,22 @@ let viewer;
 const viewerContainer = ref(null);
 
 // Datos y estado actuales
-const currentImage = ref('');
+const currentImage = ref("");
 const currentNodeData = ref({});
 const markersPlugin = ref(null);
 const visualMapCoords = ref({ x: 0, y: 0 });
 const pendingMapUpdate = ref(null);
 
 // Constantes de posicionamiento y direcciones
-const POSITION_LABELS = ['Frente', 'Derecha', 'Atrás', 'Izquierda'];
+const POSITION_LABELS = ["Frente", "Derecha", "Atrás", "Izquierda"];
 
 // Recursos visuales
 const customMapUrl = ref(campusMap);
 const customIconUrl = locationIconRaw;
 
 // Estado adicional
-const lastDirection = ref('');
-const searchedNode = ref('');
+const lastDirection = ref("");
+const searchedNode = ref("");
 const actualRoute = ref({});
 const checkedRouteNodes = ref({});
 const isTravelling = ref(false);
@@ -72,15 +98,15 @@ const toastRefMap = ref(null);
 // Funciones auxiliares (que no pertenecen a UTILS)
 const setVh = () => {
   const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
-}
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
+};
 
 // Funciones de inicialización del nodo
 const setNode = (nodeName) => {
   const nodes = nodeStore.nodes;
-  const node = nodes.find(n => n.name === nodeName);
+  const node = nodes.find((n) => n.name === nodeName);
   if (!node) {
-    console.warn('Nodo no encontrado:', nodeName);
+    console.warn("Nodo no encontrado:", nodeName);
     return;
   }
   currentNodeData.value = node;
@@ -90,8 +116,14 @@ const defineData = async () => {
   let newMapUrl = campusMap;
   let newCoords = { x: 0, y: 0 };
   if (currentNodeData.value.minimap) {
-    newMapUrl = new URL(`../assets/images/${currentNodeData.value.minimap.image}`, import.meta.url).href;
-    newCoords = { x: currentNodeData.value.minimap.x, y: currentNodeData.value.minimap.y };
+    newMapUrl = new URL(
+      `../assets/images/${currentNodeData.value.minimap.image}`,
+      import.meta.url,
+    ).href;
+    newCoords = {
+      x: currentNodeData.value.minimap.x,
+      y: currentNodeData.value.minimap.y,
+    };
   }
 
   currentImage.value = currentNodeData.value.url_image;
@@ -106,7 +138,7 @@ const addMarkersFromCurrentNode = async () => {
 
   markers.clearMarkers();
 
-  await new Promise(resolve => setTimeout(resolve, 50));
+  await new Promise((resolve) => setTimeout(resolve, 50));
 
   let flag = false;
 
@@ -114,7 +146,7 @@ const addMarkersFromCurrentNode = async () => {
   node.adjacent_nodes.forEach((adyNode, i) => {
     if (adyNode && Object.keys(adyNode).length > 0) {
       const neighborName = Object.keys(adyNode)[0];
-      const neighbor = nodes.find(n => n.name === neighborName);
+      const neighbor = nodes.find((n) => n.name === neighborName);
 
       if (!neighbor) {
         console.warn(`Vecino ${neighborName} no encontrado`);
@@ -124,7 +156,11 @@ const addMarkersFromCurrentNode = async () => {
       const markerId = `arrow-${POSITION_LABELS[i].toLowerCase()}-${neighbor.name}`;
       let arrow = arrowImg;
 
-      if (isTravelling.value && actualRoute.value != null && actualRoute.value?.route != null) {
+      if (
+        isTravelling.value &&
+        actualRoute.value != null &&
+        actualRoute.value?.route != null
+      ) {
         for (let node of actualRoute.value.route) {
           if (node == neighborName) {
             if (checkedRouteNodes.value?.[neighborName] !== true) {
@@ -153,13 +189,13 @@ const addMarkersFromCurrentNode = async () => {
           height: 32,
           tooltip: {
             content: POSITION_LABELS[i],
-            position: 'right center'
+            position: "right center",
           },
-          anchor: 'bottom center',
+          anchor: "bottom center",
           data: JSON.stringify({
             target: neighbor.name,
-            url: neighbor.url_image
-          })
+            url: neighbor.url_image,
+          }),
         });
       }, 100);
     }
@@ -174,7 +210,7 @@ const addMarkersFromCurrentNode = async () => {
   for (const tagName in node.tags) {
     const tagData = node.tags[tagName];
     for (const key in tagData) {
-      const keyNormalizada = key.toLowerCase().replace(/\s+/g, '');
+      const keyNormalizada = key.toLowerCase().replace(/\s+/g, "");
       const markerId = `arrow-${keyNormalizada.toLowerCase()}-${tagData[key]}`;
       const iconName = getIconNameForTag(tagName); // Fetch icon dynamically based on tagName
 
@@ -187,33 +223,18 @@ const addMarkersFromCurrentNode = async () => {
           height: 32,
           tooltip: {
             content: key,
-            position: 'right center'
+            position: "right center",
           },
-          anchor: 'bottom center',
+          anchor: "bottom center",
         });
       }, 100);
     }
   }
 };
 
-// DISPARADOR DE CAMBIO DE NODO
-watch(currentImage, async (newImage) => {
-  if (viewer && newImage) {
-    markersPlugin.value?.clearMarkers();
-
-    await viewer.setPanorama(newImage, {
-      position: { yaw: adjustAngle(currentNodeData.value.forward_heading, lastDirection.value), pitch: 0 },
-      transition: {
-        rotation: false,
-        effect: 'fade',
-      },
-    });
-  }
-});
-
 // FUNCIONES DE INPUTS
 watch(searchInput, (newValue) => {
-  if (newValue.trim() === '') {
+  if (newValue.trim() === "") {
     searchResults.value = new Map();
     return;
   }
@@ -222,22 +243,19 @@ watch(searchInput, (newValue) => {
   searchResults.value = result;
 });
 
-watch(
-  searchedNode,
-  (newVal, oldVal) => {
-    if (newVal.trim() !== '') {
-      setNode(newVal);
-      defineData(newVal);
-      searchResults.value = null;
-      searchInput.value = '';
-      varAux.value++;
-    }
+watch(searchedNode, (newVal, oldVal) => {
+  if (newVal.trim() !== "") {
+    setNode(newVal);
+    defineData(newVal);
+    searchResults.value = null;
+    searchInput.value = "";
+    varAux.value++;
   }
-);
+});
 
 watch(
   actualRoute,
-  async (newVal, oldVal) => {
+  async (newVal, _) => {
     setNode(newVal.route[0]);
     defineData(newVal.route[0]);
     isTravelling.value = true;
@@ -245,7 +263,7 @@ watch(
     varAux.value++;
     notifyTravel(newVal.weight);
   },
-  { deep: true }
+  { deep: true },
 );
 
 // TOAST FUNCTIONS
@@ -257,52 +275,91 @@ function walkingTimeCampus(distanceMeters, speedMps = 1.39) {
 
 function notifyTravel(distancia) {
   const aproxTime = walkingTimeCampus(distancia);
-  toastRefMap.value.showToast(`¡Tu viaje está por empezar, explora a tu alrededor y sigue las flechas!: la distancia promedio es de ${distancia.toFixed(2)} metros, y una duración promedio de ${aproxTime} minutos.`);
+  toastRefMap.value.showToast(
+    `¡Tu viaje está por empezar, explora a tu alrededor y sigue las flechas!: la distancia promedio es de ${distancia.toFixed(2)} metros, y una duración promedio de ${aproxTime} minutos.`,
+  );
 }
 
 function notifyTravelEnd() {
   toastRefMap.value.showToast("¡Tu viaje ha terminado!");
 }
 
-// VUE LIFETIME FUNCTIONS
+// LÓGICA DE TESELAS
+const getTilesConfig = (nodeName) => {
+  const basePath = `/tiles/${nodeName}`;
 
+  return {
+    width: 8192,
+    cols: 8,
+    rows: 4,
+    baseUrl: `${basePath}/pano.jpg`,
+    tileUrl: (col, row) => {
+      return `${basePath}/L2_${col}_${row}.jpg`;
+    },
+  };
+};
+
+watch(currentImage, async (newImage) => {
+  if (!viewer || !newImage || newImage === oldImage) return;
+
+  if (viewer && newImage) {
+    markersPlugin.value?.clearMarkers();
+
+    const nodeName = currentNodeData.value.name;
+    const tilesConfig = getTilesConfig(nodeName);
+
+    await viewer.setPanorama(tilesConfig, {
+      position: {
+        yaw: adjustAngle(
+          currentNodeData.value.forward_heading ?? 0,
+          lastDirection.value,
+        ),
+        pitch: 0,
+      },
+      transition: {
+        rotation: false,
+        effect: "fade",
+      },
+    });
+  }
+});
+
+// VUE LIFETIME FUNCTIONS
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', setVh);
+  window.removeEventListener("resize", setVh);
 });
 
 onMounted(async () => {
   setVh();
-  window.addEventListener('resize', setVh);
+  window.addEventListener("resize", setVh);
 
   setNode(generateRandomStartNode());
 
   viewer = new Viewer({
     container: viewerContainer.value,
-    panorama: '',
-    plugins: [
-      [MarkersPlugin, {}]
-    ],
+    adapter: [EquirectangularTilesAdapter, {}],
+    panorama: getTilesConfig(currentNodeData.value.name),
+    plugins: [[MarkersPlugin, {}]],
     defaultZoomLvl: 50,
     moveSpeed: 1.75,
-    defaultYaw: currentNodeData.value.forward_heading,
+    defaultYaw: currentNodeData.value.forward_heading ?? 0,
   });
 
   const markers = viewer.getPlugin(MarkersPlugin);
+  markersPlugin.value = markers;
 
-  markers.addEventListener('select-marker', ({ marker }) => {
+  markers.addEventListener("select-marker", ({ marker }) => {
     lastDirection.value = marker.config.tooltip.content;
     try {
       const markerData = JSON.parse(marker.data);
       setNode(markerData.target);
       defineData(markerData.target);
     } catch (error) {
-      console.error('Error al procesar marcador:', error);
+      console.error("Error al procesar marcador:", error);
     }
   });
 
-  await defineData();
-
-  viewer.addEventListener('panorama-loaded', async () => {
+  viewer.addEventListener("panorama-loaded", async () => {
     await addMarkersFromCurrentNode();
 
     if (pendingMapUpdate.value) {
@@ -314,19 +371,13 @@ onMounted(async () => {
     }
   });
 
-  // viewer.addEventListener('click', ({ data }) => {
-  //   console.log(`${data.rightclick ? 'right ' : ''}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`); 
-  // });
-
-  // const response = await fetchShortestPath('002', '004');
-  // console.log("Response: ", response)
+  await defineData();
 });
 
 const getIconNameForTag = (tagName) => {
-  const tag = tagStore.tags.find(item => item.name === tagName);
-  return tag?.icon_name || 'default-icon'; // Fallback to 'default-icon' if not found
+  const tag = tagStore.tags.find((item) => item.name === tagName);
+  return tag?.icon_name || "default-icon"; // Fallback to 'default-icon' if not found
 };
-
 </script>
 
 <style>
