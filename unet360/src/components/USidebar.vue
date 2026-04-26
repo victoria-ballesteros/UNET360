@@ -16,7 +16,7 @@
         class="sidebar-panel"
         @click.stop
       >
-        <UHeader @isPanelOpen="emit('close', event)" />
+        <UHeader @isPanelOpen="emit('close', event)" @isPanelOpenFromLogo="emit('close', event)" />
         <nav class="menu">
           <slot />
         </nav>

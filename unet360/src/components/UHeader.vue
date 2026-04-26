@@ -5,7 +5,7 @@
         name="icons/logo"
         size="43"
         class="cursor-pointer"
-        @click="emit('isPanelOpen', event)"
+        @click="emit('isPanelOpenFromLogo', event)"
       />
     </RouterLink>
     <UIcon
@@ -21,7 +21,7 @@
 import UIcon from "@/components/UIcon.vue";
 import { RouterLink } from "vue-router";
 
-const emit = defineEmits(["isPanelOpen"]);
+const emit = defineEmits(["isPanelOpen", "isPanelOpenFromLogo"]);
 </script>
 
 <style scoped>
