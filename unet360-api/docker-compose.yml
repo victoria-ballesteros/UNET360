@@ -2,15 +2,9 @@ services:
   web:
     build: .
     ports:
-      - "8000:8000"
-      - "9023:9023"
+      - "${PORT}:${PORT}"
     volumes:
       - .:/app:z
+      - ${LOCAL_BUCKET_PATH}:${INTERNAL_BUCKET_PATH}:ro,Z
     environment:
       - .env
-    networks:
-      - app_network
-
-networks:
-  app_network:
-    driver: bridge

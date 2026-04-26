@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pymongo import AsyncMongoClient
 
 load_dotenv()
@@ -34,6 +35,18 @@ async def lifespan(app: FastAPI):
     client = None
 
     try:
+        # Initialize internal bucket (images)
+        INTERNAL_BUCKET_PATH = os.getenv("INTERNAL_BUCKET_PATH")
+
+        if os.path.exists(INTERNAL_BUCKET_PATH):
+            app.mount(
+                "/tiles", StaticFiles(directory=INTERNAL_BUCKET_PATH), name="tiles"
+            )
+        else:
+            logger.error("An unexpected error occurred during bucket initilization")
+            raise Exception
+
+        # Initialize MongoDB client (images metadata)
         mongo_db_name = os.getenv("MONGODB_DB")
         mongo_uri = os.getenv("MONGODB_URL")
 
@@ -44,6 +57,7 @@ async def lifespan(app: FastAPI):
             database=database, document_models=[Location, Tag, Node, Tenant]
         )
 
+        # Initialize Supabase client (auth)
         supabase = create_supabase_client()
         app.state.supabase = supabase
 
