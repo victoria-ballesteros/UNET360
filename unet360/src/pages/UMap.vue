@@ -126,8 +126,33 @@ const defineData = async () => {
     };
   }
 
+  if (viewer && currentNodeData.value.name) {
+    const tilesConfig = getTilesConfig(currentNodeData.value.name);
+
+    await viewer.setPanorama(tilesConfig, {
+      position: {
+        yaw: adjustAngle(
+          currentNodeData.value.forward_heading ?? 0,
+          lastDirection.value,
+        ),
+        pitch: 0,
+      },
+      transition: {
+        rotation: false,
+        effect: "fade",
+      },
+    });
+  }
+
   currentImage.value = currentNodeData.value.url_image;
   pendingMapUpdate.value = { url: newMapUrl, coords: newCoords };
+  if (pendingMapUpdate.value) {
+    if (customMapUrl.value !== pendingMapUpdate.value.url) {
+      customMapUrl.value = pendingMapUpdate.value.url;
+    }
+    visualMapCoords.value = pendingMapUpdate.value.coords;
+    pendingMapUpdate.value = null;
+  }
 };
 
 // CREACIÓN DE MARCADORES DE LA IMAGEN
@@ -299,31 +324,6 @@ const getTilesConfig = (nodeName) => {
   };
 };
 
-watch(currentImage, async (newImage) => {
-  if (!viewer || !newImage || newImage === oldImage) return;
-
-  if (viewer && newImage) {
-    markersPlugin.value?.clearMarkers();
-
-    const nodeName = currentNodeData.value.name;
-    const tilesConfig = getTilesConfig(nodeName);
-
-    await viewer.setPanorama(tilesConfig, {
-      position: {
-        yaw: adjustAngle(
-          currentNodeData.value.forward_heading ?? 0,
-          lastDirection.value,
-        ),
-        pitch: 0,
-      },
-      transition: {
-        rotation: false,
-        effect: "fade",
-      },
-    });
-  }
-});
-
 // VUE LIFETIME FUNCTIONS
 onBeforeUnmount(() => {
   window.removeEventListener("resize", setVh);
@@ -342,7 +342,7 @@ onMounted(async () => {
     plugins: [[MarkersPlugin, {}]],
     defaultZoomLvl: 50,
     moveSpeed: 1.75,
-    defaultYaw: currentNodeData.value.forward_heading ?? 0,
+    defaultYaw: currentNodeData.value.forward_heading,
   });
 
   const markers = viewer.getPlugin(MarkersPlugin);
@@ -362,6 +362,22 @@ onMounted(async () => {
   viewer.addEventListener("panorama-loaded", async () => {
     await addMarkersFromCurrentNode();
 
+    let newMapUrl = campusMap;
+    let newCoords = { x: 0, y: 0 };
+
+    if (currentNodeData.value.minimap) {
+      newMapUrl = new URL(
+        `../assets/images/${currentNodeData.value.minimap.image}`,
+        import.meta.url,
+      ).href;
+      newCoords = {
+        x: currentNodeData.value.minimap.x,
+        y: currentNodeData.value.minimap.y,
+      };
+    }
+
+    pendingMapUpdate.value = { url: newMapUrl, coords: newCoords };
+
     if (pendingMapUpdate.value) {
       if (customMapUrl.value !== pendingMapUpdate.value.url) {
         customMapUrl.value = pendingMapUpdate.value.url;
@@ -371,7 +387,11 @@ onMounted(async () => {
     }
   });
 
-  await defineData();
+  viewer.addEventListener("click", ({ data }) => {
+    console.log(
+      `${data.rightclick ? "right " : ""}clicked at yaw: ${data.yaw} pitch: ${data.pitch}`,
+    );
+  });
 });
 
 const getIconNameForTag = (tagName) => {
