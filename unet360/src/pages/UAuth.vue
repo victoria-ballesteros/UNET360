@@ -1,5 +1,6 @@
 <template>
-  <div class="form-container">
+  <ULoader v-if="isLoading" />
+  <div v-else class="form-container">
     <!-- ═══════════════  Títulos y subtítulos  ═══════════════ -->
     <div class="text-section">
       <p class="upper-paragrah">{{ currentTexts.upper }}</p>
@@ -79,6 +80,7 @@ import { useAuthStore } from '@/service/stores/auth';
 
 import UInput from "@/components/UInput.vue";
 import UButton from "@/components/UButton.vue";
+import ULoader from "@/components/ULoader.vue";
 
 
 // ═══════════════  Variables reactivas y helpers  ═══════════════
@@ -87,6 +89,8 @@ const showPassword = reactive({
   password: false,
   confirmPassword: false
 });
+
+const isLoading = ref(false);
 
 const authStore = useAuthStore();
 const route = useRoute();
@@ -200,6 +204,9 @@ async function handleSubmit() {
   // Si hay errores, no continuar
   if (!isFormValid.value) return;
 
+  // Indicar que la petición al backend va a Iniciar
+  isLoading.value = true;
+
   // ═══════════════ LOGIN FLOW ═══════════════
   if (currentMode.value === 'Login') {
     // Llama al store de autenticación
@@ -213,6 +220,7 @@ async function handleSubmit() {
       // Si falla, muestra el error debajo de Contraseña y pone el input de email en rojo
       inputErrors.email = ' '; 
       inputErrors.password = 'Error de autenticación';
+      isLoading.value = false;
     }
     return;
   }
@@ -228,6 +236,7 @@ async function handleSubmit() {
     } else {
       inputErrors.email = ' ';
       inputErrors.password = result.message;
+      isLoading.value = false;
     }
     return;
   }
@@ -247,6 +256,7 @@ async function handleSubmit() {
     const refresh_token = hash.match(/refresh_token=([^&]+)/)?.[1] || '';
     if (!access_token || !refresh_token) {
       inputErrors.password = 'Enlace inválido o expirado.';
+      isLoading.value = false;
       return;
     }
     const result = await authStore.changePassword({
@@ -259,6 +269,7 @@ async function handleSubmit() {
       router.push({ name: 'SuccessNewPassword' });
     } else {
       inputErrors.password = result.message;
+      isLoading.value = false;
     }
     return;
   }

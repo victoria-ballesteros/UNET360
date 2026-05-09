@@ -24,7 +24,6 @@
         v-if="option.to && !option.action"
         :to="option.to"
         class="nav-item"
-        @click="isPanelOpen = false"
       >
         {{ option.label }}
       </RouterLink>
@@ -54,14 +53,24 @@ const authStore = useAuthStore();
 
 const headerHeight = ref(0);
 const isPanelOpen = ref(false);
+
 const sidebarOptions = computed(() =>
   getSidebarOptions(authStore.isAuthenticated, authStore.user?.role)
 );
 
-// Lock body scroll when sidebar is open
+/* --- LÓGICA DE NAVEGACIÓN Y PANEL --- */
+
+// 1. Cerrar panel automáticamente al cambiar de ruta
+watch(() => route.fullPath, () => {
+  isPanelOpen.value = false;
+});
+
+// 3. Bloquear scroll al abrir panel
 watch(isPanelOpen, (open) => {
   document.body.style.overflow = open ? "hidden" : "";
 });
+
+/* --- ACCIONES --- */
 
 function handleLogout() {
   isPanelOpen.value = false;
@@ -70,10 +79,6 @@ function handleLogout() {
 }
 
 onMounted(async () => {
-  // router.isReady().then(async () => {
-  //   await obtainData();
-  // });
-
   await obtainData();
 
   const headerEl = document.querySelector(".header-container");
@@ -90,4 +95,16 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 @import "@/assets/styles/pages/_layout.scss";
+
+// Estilo rápido para el loader si no tienes componente aún
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(var(--strong-gray-dark-rgb), 0.8);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
 </style>

@@ -18,3 +18,16 @@ body {
 .no-underline-link {
   text-decoration: none;
 }
+
+/* ─── SCROLLBAR INVISIBLE GLOBAL ────────────────────────── */
+
+/* Para Chrome, Safari, Edge y Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Para Firefox y IE/Edge antiguo */
+* {
+  -ms-overflow-style: none;  /* IE y Edge */
+  scrollbar-width: none;     /* Firefox */
+}

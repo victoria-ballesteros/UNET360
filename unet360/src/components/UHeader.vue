@@ -1,6 +1,6 @@
 <template>
   <header class="header-container">
-    <RouterLink :to="{ name: 'Home' }">
+    <RouterLink :to="{ name: 'Home' }" class="logo-link">
       <UIcon
         name="icons/logo"
         size="43"
@@ -31,5 +31,11 @@ const emit = defineEmits(["isPanelOpen", "isPanelOpenFromLogo"]);
   justify-content: space-between;
   z-index: 10;
   padding: 0rem 1.125rem;
+}
+
+.logo-link {
+  display: inline-flex;
+  line-height: 0;
+  text-decoration: none;
 }
 </style>

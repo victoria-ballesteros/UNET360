@@ -19,7 +19,7 @@
         </h1>
 
         <p class="hero-sub">
-          Encuentra salones, rutas y más —<br />sin perderte nunca más.
+          Encuentra salones, rutas y más.
         </p>
 
         <UButton
@@ -196,12 +196,11 @@ const handleLogout = () => {
 .hero {
   position: relative;
   background: var(--strong-gray-dark);
-  min-height: 72vh;
+  min-height: calc(100vh - 60px);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 5rem 2rem 6rem;
 
   /* subtle dot-grid texture */
   .hero-grid {

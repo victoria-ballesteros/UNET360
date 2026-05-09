@@ -45,7 +45,7 @@ export const getCardsInfo = () => {
 };
 
 export const getGeneralInfo = () => {
-  return "Navega el campus con mapas 360°, rutas personalizadas y búsqueda inteligente. Olvídate de perderte y disfruta de una experiencia universitaria fluida.";
+  return "Navega el campus con mapas 360°, rutas personalizadas y búsqueda inteligente. Disfruta de una experiencia universitaria fluida donde perderse es cosa del pasado.";
 };
 
 export const getButtonData = (authStatus = false) => ({

@@ -16,7 +16,7 @@
 
           <h1 class="hero-title">
             Tu guía inteligente<br />
-            para explorar la<br />
+            para explorar la <br />
             <em>UNET</em>
           </h1>
 
@@ -94,7 +94,8 @@ onMounted(() => {
 .home-container {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  height: 100dvh; /* Evita el scroll ocupando el alto exacto */
+  overflow: hidden;
 }
 
 .no-underline-link {
@@ -113,22 +114,19 @@ onMounted(() => {
   flex: 1;
 
   @media (max-width: 768px) {
-    align-items: flex-start;
-    padding: 1.5rem 1rem 2rem;
-    flex: unset;
+    align-items: center; /* Centrado vertical para que respire */
+    padding: 1rem;
   }
 
-  /* dot-grid texture — mismo que about */
   .hero-dots {
     position: absolute;
     inset: 0;
     background-image: radial-gradient(circle, rgba(255, 239, 61, 0.1) 1px, transparent 1px);
-    background-size: 28px 28px;
+    background-size: 24px 24px;
     pointer-events: none;
     z-index: 0;
   }
 
-  /* vignette radial encima del grid */
   .hero-vignette {
     position: absolute;
     inset: 0;
@@ -150,8 +148,8 @@ onMounted(() => {
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    text-align: center;
-    gap: 0;
+    text-align: left; /* Alineado a la izquierda */
+    gap: 0.5rem;
   }
 }
 
@@ -163,8 +161,9 @@ onMounted(() => {
   gap: 0;
 
   @media (max-width: 768px) {
-    align-items: center;
-    padding: 0 1rem;
+    align-items: flex-start; /* Forzado a la izquierda */
+    padding: 0 0.5rem;
+    order: 2; /* Texto abajo del visual para mejor balance */
   }
 }
 
@@ -174,16 +173,16 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-size: 0.65rem; /* Más pequeño */
 
   .eyebrow-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
+    width: 4px;
+    height: 4px;
     background: var(--main-yellow);
-    flex-shrink: 0;
+    border-radius: 50%;
   }
 }
 
@@ -191,9 +190,8 @@ onMounted(() => {
   @include paragraph-h1;
   font-size: 2.75rem;
   line-height: 1.1;
-  letter-spacing: -0.035em;
   color: var(--full-white);
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 
   em {
     font-style: normal;
@@ -201,79 +199,57 @@ onMounted(() => {
   }
 
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 1.6rem; /* Reducción elegante */
+    line-height: 1.2;
+    br { display: none; } /* Dejamos que el texto fluya natural */
   }
 }
 
 .hero-sub {
   @include paragraph-medium-light;
   color: rgba(255, 255, 255, 0.45);
-  line-height: 1.75;
-  margin-bottom: 2.25rem;
-  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
   max-width: 400px;
+
+  @media (max-width: 768px) {
+    font-size: 0.85rem; /* Texto pequeño y legible */
+    margin-bottom: 1.25rem;
+    max-width: 85%;
+  }
 }
 
-/* ── Visual / anillos orbitales ── */
+/* ── Visual (Restaurado a los estilos originales) ── */
 .hero-visual {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 380px;
+  height: 380px; /* Altura original restaurada */
 
   @media (max-width: 768px) {
-    height: 220px;
-    order: -1;
-    overflow: hidden;
+    order: 1; /* Visual arriba del texto */
+    height: 220px; /* Altura móvil original restaurada */
+    margin-bottom: 0rem; /* Margen removido */
+    justify-content: center; /* Centrado original restaurado */
   }
 }
 
-/* Anillos inclinados como órbitas */
 .orbit {
   position: absolute;
   border-radius: 50%;
   border: 1px solid rgba(255, 239, 61, 0.18);
   transform: rotateX(65deg) rotateZ(-15deg);
 
-  &.orbit-1 {
-    width: 220px;
-    height: 220px;
-
-    @media (max-width: 768px) {
-      width: 150px;
-      height: 150px;
-    }
-  }
-
-  &.orbit-2 {
-    width: 290px;
-    height: 290px;
-    border-color: rgba(255, 239, 61, 0.1);
-
-    @media (max-width: 768px) {
-      width: 200px;
-      height: 200px;
-    }
-  }
-
-  &.orbit-3 {
-    width: 360px;
-    height: 360px;
-    border-color: rgba(255, 239, 61, 0.05);
-
-    @media (max-width: 768px) {
-      width: 260px;
-      height: 260px;
-    }
-  }
+  &.orbit-1 { width: 220px; height: 220px; @media (max-width: 768px) { width: 150px; height: 150px; }}
+  &.orbit-2 { width: 290px; height: 290px; @media (max-width: 768px) { width: 200px; height: 200px; }}
+  &.orbit-3 { width: 360px; height: 360px; @media (max-width: 768px) { width: 260px; height: 260px; }}
 }
 
-/* Íconos pequeños flotando en los anillos */
 .orbit-icon {
   position: absolute;
   z-index: 3;
-  width: 32px;
+  width: 32px; /* Tamaño original restaurado */
   height: 32px;
   border-radius: 50%;
   background: rgba(255, 239, 61, 0.1);
@@ -281,53 +257,36 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  @media (max-width: 768px) {
+    width: 28px; /* Tamaño móvil original restaurado */
+    height: 28px;
+  }
 
-  &.oi-1 { top: 18%;  right: 12%; }
-  &.oi-2 { bottom: 22%; right: 8%;  }
-  &.oi-3 { top: 40%;  left: 6%;   }
+  &.oi-1 { top: 18%; right: 12%; }
+  &.oi-2 { bottom: 22%; right: 8%; }
+  &.oi-3 { top: 40%; left: 6%; }
 }
 
-/* Imagen central */
 .visual-center {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @media (max-width: 768px) {
+    transform: none; /* Transformación removida */
+    transform-origin: center center; /* Origen centrado */
+  }
 }
 
-/* ── Botón amarillo ── */
+/* ── Botón ── */
 :deep(.u-button) {
   background: var(--main-yellow) !important;
   color: var(--strong-gray-dark) !important;
-  border-color: var(--main-yellow) !important;
   font-weight: 600;
+  @media (max-width: 768px) {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
 }
 
-
 .hero-badge-float {
-  position: absolute;
-  z-index: 3;
-  bottom: 1.75rem;
-  right: 1.75rem;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 239, 61, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 239, 61, 0.06);
-
-  span {
-    @include paragraph-small;
-    font-size: 0.7rem;
-    color: var(--main-yellow);
-    letter-spacing: 0.05em;
-  }
-
-  @media (max-width: 480px) {
-    display: none;
-  }
+  display: none; /* Eliminado en mobile para ganar espacio */
 }
 </style>
