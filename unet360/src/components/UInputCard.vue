@@ -191,17 +191,24 @@ function toggleRouteSearcher() {
     menuVisible.value = true
     routeSearcherActive.value = !routeSearcherActive.value
     searcherInputPlaceholder.value = "Ruta"
+    routeSearcherResult.value["Posición actual"] = props.actualNode.name;
+    sourceValue.value = "Posición actual";
+    emit('update:searchSource', sourceValue.value);
 }
 
 const searchPath = async () => {
     route.value = await fetchShortestPath(routeSearcherResult.value?.[sourceValue.value], routeSearcherTargetResult.value?.[targetValue.value])
     if (route.value.status == true && route.value.response_obj.total_weight != 0) {
-        console.log("ROUTE: ", route.value.response_obj.path);
-        console.log("WEIGHT: ", parseFloat(route.value.response_obj.total_weight) * 10);
-        emit('update:actualRoute', { 'route': route.value.response_obj.path, 'weight': parseFloat(route.value.response_obj.total_weight) * 10 })
+        emit('update:actualRoute', { 'route': route.value.response_obj.path, 'weight': parseFloat(route.value.response_obj.total_weight) * 10, 'targetTag': targetValue.value })
     } else {
         notify();
     }
+    sourceValue.value = null;
+    targetValue.value = null;
+    emit('update:searchSource', '');
+    emit('update:searchTarget', '');
+    routeSearcherResult.value = {};
+    routeSearcherTargetResult.value = {};
 }
 
 watch(

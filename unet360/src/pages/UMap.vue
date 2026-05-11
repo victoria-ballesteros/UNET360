@@ -1,34 +1,18 @@
 <template>
   <div class="viewer-wrapper">
     <!-- No tocar la property style, el visor no funciona sin ella -->
-    <div
-      class="viewer-container"
-      ref="viewerContainer"
-      style="width: 100vw; height: 100vh; background: grey"
-    ></div>
+    <div class="viewer-container" ref="viewerContainer" style="width: 100vw; height: 100vh; background: grey"></div>
 
     <div class="top-controls">
-      <UInputCard
-        v-model:searchBar="searchInput"
-        v-model:searchSource="searchSource"
-        v-model:searchTarget="searchTarget"
-        v-model:searchedNode="searchedNode"
-        v-model:actualRoute="actualRoute"
-        :searchResults="searchResults"
-        :actualNode="{ name: currentNodeData.name }"
-        :searchedNode="searchedNode"
-        :key="varAux"
-      />
+      <UInputCard v-model:searchBar="searchInput" v-model:searchSource="searchSource"
+        v-model:searchTarget="searchTarget" v-model:searchedNode="searchedNode" v-model:actualRoute="actualRoute"
+        :searchResults="searchResults" :actualNode="{ name: currentNodeData.name }" :searchedNode="searchedNode"
+        :key="varAux" />
     </div>
 
     <div class="map-2d-box">
-      <UCustomMap
-        v-if="currentNodeData && visualMapCoords"
-        :key="customMapUrl"
-        :mapUrl="customMapUrl"
-        :iconUrl="customIconUrl"
-        :node="visualMapCoords"
-      />
+      <UCustomMap v-if="currentNodeData && visualMapCoords" :key="customMapUrl" :mapUrl="customMapUrl"
+        :iconUrl="customIconUrl" :node="visualMapCoords" />
     </div>
   </div>
   <UToast ref="toastRefMap" />
@@ -128,13 +112,39 @@ const defineData = async () => {
 
   if (viewer && currentNodeData.value.name) {
     const tilesConfig = getTilesConfig(currentNodeData.value.name);
+    const markers = viewer.getPlugin(MarkersPlugin);
+    markers.clearMarkers();
+
+    let initialYaw = adjustAngle(
+      currentNodeData.value.forward_heading ?? 0,
+      lastDirection.value,
+    );
+
+    if (isTravelling.value && actualRoute.value?.route) {
+      const nextIndex = currentNodeData.value.adjacent_nodes.findIndex((adyNode) => {
+        if (!adyNode || Object.keys(adyNode).length === 0) return false;
+        const neighborName = Object.keys(adyNode)[0];
+        return actualRoute.value.route.includes(neighborName) &&
+          !checkedRouteNodes.value[neighborName]; // ← excluir visitados
+      });
+
+      if (nextIndex !== -1) {
+        initialYaw = currentNodeData.value.arrow_angles[nextIndex];
+      } else if (actualRoute.value?.targetTag) {
+        const node = currentNodeData.value;
+        for (const tagName in node.tags) {
+          const tagData = node.tags[tagName];
+          if (actualRoute.value.targetTag in tagData) {
+            initialYaw = tagData[actualRoute.value.targetTag];
+            break;
+          }
+        }
+      }
+    }
 
     await viewer.setPanorama(tilesConfig, {
       position: {
-        yaw: adjustAngle(
-          currentNodeData.value.forward_heading ?? 0,
-          lastDirection.value,
-        ),
+        yaw: initialYaw,
         pitch: 0,
       },
       transition: {
@@ -142,6 +152,7 @@ const defineData = async () => {
         effect: "fade",
       },
     });
+    await addMarkersFromCurrentNode();
   }
 
   currentImage.value = currentNodeData.value.url_image;
@@ -162,99 +173,82 @@ const addMarkersFromCurrentNode = async () => {
   const markers = viewer.getPlugin(MarkersPlugin);
 
   markers.clearMarkers();
-
   await new Promise((resolve) => setTimeout(resolve, 50));
 
   let flag = false;
 
-  // MARCADORES PARA LOS NODOS ADYACENTES
-  node.adjacent_nodes.forEach((adyNode, i) => {
+  const addMarker = (markerConfig) => {
+    return new Promise((resolve) => {
+      viewer.addEventListener("render", () => {
+        markers.addMarker(markerConfig);
+        resolve();
+      }, { once: true });
+      viewer.needsUpdate();
+    });
+  };
+
+  checkedRouteNodes.value[node.name] = true; // ← antes del loop
+
+  for (const [i, adyNode] of node.adjacent_nodes.entries()) {
     if (adyNode && Object.keys(adyNode).length > 0) {
       const neighborName = Object.keys(adyNode)[0];
       const neighbor = nodes.find((n) => n.name === neighborName);
 
       if (!neighbor) {
         console.warn(`Vecino ${neighborName} no encontrado`);
-        return;
+        continue;
       }
 
       const markerId = `arrow-${POSITION_LABELS[i].toLowerCase()}-${neighbor.name}`;
       let arrow = arrowImg;
 
-      if (
-        isTravelling.value &&
-        actualRoute.value != null &&
-        actualRoute.value?.route != null
-      ) {
-        for (let node of actualRoute.value.route) {
-          if (node == neighborName) {
-            if (checkedRouteNodes.value?.[neighborName] !== true) {
-              arrow = arrowHighlighted;
-              flag = true;
-            }
+      if (isTravelling.value && actualRoute.value?.route != null) {
+        for (let routeNode of actualRoute.value.route) {
+          if (routeNode == neighborName && checkedRouteNodes.value?.[neighborName] !== true) {
+            arrow = arrowHighlighted;
+            flag = true;
           }
         }
-        // ESTO IMPLEMENTA UN VIAJE AUTOMÁTICO (NO SÉ POR QUÉ) (¿FUTURO FEATURE?) (YA SÉ POR QUÉ PERO TENGO SUEÑO)
-        // actualRoute.value.route = actualRoute.value.route.filter(thisNode => {
-        //   if (thisNode === node.name) {
-        //     return false;
-        //   }
-        //   return true;
-        // });
       }
 
-      checkedRouteNodes.value[node.name] = true;
-
-      setTimeout(() => {
-        markers.addMarker({
-          id: markerId,
-          position: { yaw: node.arrow_angles[i], pitch: 0 },
-          html: `<img src="${arrow}" class="arrow-marker-img" />`,
-          width: 32,
-          height: 32,
-          tooltip: {
-            content: POSITION_LABELS[i],
-            position: "right center",
-          },
-          anchor: "bottom center",
-          data: JSON.stringify({
-            target: neighbor.name,
-            url: neighbor.url_image,
-          }),
-        });
-      }, 100);
+      await addMarker({
+        id: markerId,
+        position: { yaw: node.arrow_angles[i], pitch: 0 },
+        html: `<img src="${arrow}" class="arrow-marker-img" />`,
+        width: 32,
+        height: 32,
+        tooltip: { content: POSITION_LABELS[i], position: "right center" },
+        anchor: "bottom center",
+        data: JSON.stringify({ target: neighbor.name, url: neighbor.url_image }),
+      });
     }
-  });
+  }
 
-  if (!flag && isTravelling.value == true) {
+  if (!flag && isTravelling.value === true) {
     isTravelling.value = false;
     notifyTravelEnd();
   }
 
-  // MARCADORES PARA TODOS LOS TAGS
   for (const tagName in node.tags) {
     const tagData = node.tags[tagName];
     for (const key in tagData) {
       const keyNormalizada = key.toLowerCase().replace(/\s+/g, "");
       const markerId = `arrow-${keyNormalizada.toLowerCase()}-${tagData[key]}`;
-      const iconName = getIconNameForTag(tagName); // Fetch icon dynamically based on tagName
+      const iconName = getIconNameForTag(tagName);
 
-      setTimeout(() => {
-        markers.addMarker({
-          id: markerId,
-          position: { yaw: tagData[key], pitch: 0 },
-          html: `<img src="${getImagePath(iconName)}" class="arrow-marker-img" />`,
-          width: 32,
-          height: 32,
-          tooltip: {
-            content: key,
-            position: "right center",
-          },
-          anchor: "bottom center",
-        });
-      }, 100);
+      await addMarker({
+        id: markerId,
+        position: { yaw: tagData[key], pitch: 0 },
+        html: `<img src="${getImagePath(iconName)}" class="arrow-marker-img" />`,
+        width: 32,
+        height: 32,
+        tooltip: { content: key, position: "right center" },
+        anchor: "bottom center",
+      });
     }
   }
+
+  viewer.needsUpdate();
 };
 
 // FUNCIONES DE INPUTS
@@ -281,10 +275,10 @@ watch(searchedNode, (newVal, oldVal) => {
 watch(
   actualRoute,
   async (newVal, _) => {
-    setNode(newVal.route[0]);
-    defineData(newVal.route[0]);
     isTravelling.value = true;
-    await addMarkersFromCurrentNode();
+    checkedRouteNodes.value = {};
+    setNode(newVal.route[0]);
+    await defineData();
     varAux.value++;
     notifyTravel(newVal.weight);
   },
@@ -360,8 +354,6 @@ onMounted(async () => {
   });
 
   viewer.addEventListener("panorama-loaded", async () => {
-    await addMarkersFromCurrentNode();
-
     let newMapUrl = campusMap;
     let newCoords = { x: 0, y: 0 };
 
@@ -376,16 +368,13 @@ onMounted(async () => {
       };
     }
 
-    pendingMapUpdate.value = { url: newMapUrl, coords: newCoords };
-
-    if (pendingMapUpdate.value) {
-      if (customMapUrl.value !== pendingMapUpdate.value.url) {
-        customMapUrl.value = pendingMapUpdate.value.url;
-      }
-      visualMapCoords.value = pendingMapUpdate.value.coords;
-      pendingMapUpdate.value = null;
+    if (customMapUrl.value !== newMapUrl) {
+      customMapUrl.value = newMapUrl;
     }
-  });
+    visualMapCoords.value = newCoords;
+
+    await addMarkersFromCurrentNode();
+  }, { once: true });
 
   viewer.addEventListener("click", ({ data }) => {
     console.log(
