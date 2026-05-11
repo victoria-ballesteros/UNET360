@@ -9,14 +9,26 @@ import { ref } from "vue";
 
 const visible = ref(false);
 const message = ref("");
+let toastTimeout = null;
 
 function showToast(text, duration = 10000) {
-  message.value = text;
-  visible.value = true;
+  // Cancelar el timeout anterior si existe
+  if (toastTimeout) {
+    clearTimeout(toastTimeout);
+    toastTimeout = null;
+  }
+
+  visible.value = false; // forzar re-render para reiniciar la animación
 
   setTimeout(() => {
-    visible.value = false;
-  }, duration);
+    message.value = text;
+    visible.value = true;
+
+    toastTimeout = setTimeout(() => {
+      visible.value = false;
+      toastTimeout = null;
+    }, duration);
+  }, 50); // pequeño delay para que Vue procese el visible = false
 }
 
 defineExpose({ showToast });
