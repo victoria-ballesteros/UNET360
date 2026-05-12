@@ -213,7 +213,7 @@ const addMarkersFromCurrentNode = async () => {
 
       await addMarker({
         id: markerId,
-        position: { yaw: node.arrow_angles[i], pitch: 0 },
+        position: { yaw: node.arrow_angles[i], pitch: -0.20 },
         html: `<img src="${arrow}" class="arrow-marker-img" />`,
         width: 32,
         height: 32,
