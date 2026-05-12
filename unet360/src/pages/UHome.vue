@@ -22,9 +22,11 @@
 
           <p class="hero-sub">{{ generalInfo }}</p>
 
-          <RouterLink :to="{ name: button.route }" class="no-underline-link">
-            <UButton :text="button.label" type="contrast" />
-          </RouterLink>
+          <div class="button-container">
+            <RouterLink :to="{ name: button.route }" class="no-underline-link">
+              <UButton :text="button.label" type="contrast" />
+            </RouterLink>
+          </div>
         </div>
 
         <!-- RIGHT: visual con anillos orbitales + logo pin -->
@@ -214,6 +216,13 @@ onMounted(() => {
   }
 }
 
+.button-container {
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
 /* ── Visual ── */
 .hero-visual {
   position: relative;
@@ -272,6 +281,12 @@ onMounted(() => {
 }
 
 /* ── Botón ── */
+.button-container {
+  @media (max-width: 768px) {
+    align-self: center;
+  }
+}
+
 :deep(.u-button) {
   background: var(--main-yellow) !important;
   color: var(--strong-gray-dark) !important;
