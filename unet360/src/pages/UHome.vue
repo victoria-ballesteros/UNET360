@@ -29,12 +29,10 @@
 
         <!-- RIGHT: visual con anillos orbitales + logo pin -->
         <div class="hero-visual">
-          <!-- anillos orbitales inclinados -->
           <div class="orbit orbit-3"></div>
           <div class="orbit orbit-2"></div>
           <div class="orbit orbit-1"></div>
 
-          <!-- íconos flotantes en órbita -->
           <div class="orbit-icon oi-1">
             <UIcon name="icons/search" size="16" color="var(--main-yellow)" />
           </div>
@@ -45,14 +43,12 @@
             <UIcon name="icons/camera" size="16" color="var(--main-yellow)" />
           </div>
 
-          <!-- imagen principal (pin/logo) -->
           <div class="visual-center">
             <UIcon name="images/home-image" :size="isMobile ? 160 : 280" />
           </div>
         </div>
       </div>
 
-      <!-- badge flotante igual que about -->
       <div class="hero-badge-float">
         <span>360°</span>
       </div>
@@ -94,8 +90,7 @@ onMounted(() => {
 .home-container {
   display: flex;
   flex-direction: column;
-  height: 100dvh; /* Evita el scroll ocupando el alto exacto */
-  overflow: hidden;
+  flex: 1; /* FIX: reemplaza height:100dvh — crece dentro del wrapper sin forzar altura */
 }
 
 .no-underline-link {
@@ -111,10 +106,10 @@ onMounted(() => {
   justify-content: center;
   overflow: hidden;
   padding: 0 2rem;
-  flex: 1;
+  flex: 1; /* FIX: llena home-container → el contenido queda centrado naturalmente */
 
   @media (max-width: 768px) {
-    align-items: center; /* Centrado vertical para que respire */
+    align-items: center;
     padding: 1rem;
   }
 
@@ -148,7 +143,7 @@ onMounted(() => {
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    text-align: left; /* Alineado a la izquierda */
+    text-align: left;
     gap: 0.5rem;
   }
 }
@@ -161,9 +156,9 @@ onMounted(() => {
   gap: 0;
 
   @media (max-width: 768px) {
-    align-items: flex-start; /* Forzado a la izquierda */
+    align-items: flex-start;
     padding: 0 0.5rem;
-    order: 2; /* Texto abajo del visual para mejor balance */
+    order: 2;
   }
 }
 
@@ -176,7 +171,7 @@ onMounted(() => {
   margin-bottom: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 0.65rem; /* Más pequeño */
+  font-size: 0.65rem;
 
   .eyebrow-dot {
     width: 4px;
@@ -199,9 +194,9 @@ onMounted(() => {
   }
 
   @media (max-width: 768px) {
-    font-size: 1.6rem; /* Reducción elegante */
+    font-size: 1.6rem;
     line-height: 1.2;
-    br { display: none; } /* Dejamos que el texto fluya natural */
+    br { display: none; }
   }
 }
 
@@ -213,25 +208,25 @@ onMounted(() => {
   max-width: 400px;
 
   @media (max-width: 768px) {
-    font-size: 0.85rem; /* Texto pequeño y legible */
+    font-size: 0.85rem;
     margin-bottom: 1.25rem;
     max-width: 85%;
   }
 }
 
-/* ── Visual (Restaurado a los estilos originales) ── */
+/* ── Visual ── */
 .hero-visual {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 380px; /* Altura original restaurada */
+  height: 380px;
 
   @media (max-width: 768px) {
-    order: 1; /* Visual arriba del texto */
-    height: 220px; /* Altura móvil original restaurada */
-    margin-bottom: 0rem; /* Margen removido */
-    justify-content: center; /* Centrado original restaurado */
+    order: 1;
+    height: 220px;
+    margin-bottom: 0rem;
+    justify-content: center;
   }
 }
 
@@ -241,15 +236,15 @@ onMounted(() => {
   border: 1px solid rgba(255, 239, 61, 0.18);
   transform: rotateX(65deg) rotateZ(-15deg);
 
-  &.orbit-1 { width: 220px; height: 220px; @media (max-width: 768px) { width: 150px; height: 150px; }}
-  &.orbit-2 { width: 290px; height: 290px; @media (max-width: 768px) { width: 200px; height: 200px; }}
-  &.orbit-3 { width: 360px; height: 360px; @media (max-width: 768px) { width: 260px; height: 260px; }}
+  &.orbit-1 { width: 220px; height: 220px; @media (max-width: 768px) { width: 150px; height: 150px; } }
+  &.orbit-2 { width: 290px; height: 290px; border-color: rgba(255, 239, 61, 0.1); @media (max-width: 768px) { width: 200px; height: 200px; } }
+  &.orbit-3 { width: 360px; height: 360px; border-color: rgba(255, 239, 61, 0.05); @media (max-width: 768px) { width: 260px; height: 260px; } }
 }
 
 .orbit-icon {
   position: absolute;
   z-index: 3;
-  width: 32px; /* Tamaño original restaurado */
+  width: 32px;
   height: 32px;
   border-radius: 50%;
   background: rgba(255, 239, 61, 0.1);
@@ -257,9 +252,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   @media (max-width: 768px) {
-    width: 28px; /* Tamaño móvil original restaurado */
+    width: 28px;
     height: 28px;
   }
 
@@ -269,10 +264,11 @@ onMounted(() => {
 }
 
 .visual-center {
-  @media (max-width: 768px) {
-    transform: none; /* Transformación removida */
-    transform-origin: center center; /* Origen centrado */
-  }
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ── Botón ── */
@@ -280,6 +276,7 @@ onMounted(() => {
   background: var(--main-yellow) !important;
   color: var(--strong-gray-dark) !important;
   font-weight: 600;
+
   @media (max-width: 768px) {
     padding: 0.6rem 1.2rem;
     font-size: 0.85rem;
@@ -287,6 +284,6 @@ onMounted(() => {
 }
 
 .hero-badge-float {
-  display: none; /* Eliminado en mobile para ganar espacio */
+  display: none;
 }
 </style>
