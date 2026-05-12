@@ -1,11 +1,13 @@
 <template>
   <div class="node-admin-container">
 
-    <!-- Header: title + create button -->
+    <!-- Header -->
     <div class="node-admin-header">
       <div class="text-section">
-        <h2>ADMINISTRAR NODOS</h2>
+        <p class="header-overline">Panel de control</p>
+        <h2>Administrar Nodos</h2>
       </div>
+
       <div class="button-section">
         <UButton text="Crear Nuevo Nodo" type="contrast-2" @click="router.push({ name: 'NodeCreate' })" />
         <div class="admin-entities-buttons">
@@ -15,15 +17,45 @@
       </div>
     </div>
 
-    <!-- List -->
+    <!-- Toolbar: search + sort -->
     <div class="nodes-list-section">
       <div class="nodes-list-toolbar">
-        <input
-          v-model="searchQuery"
-          type="text"
-          class="nodes-search-input"
-          placeholder="Buscar por nombre o ubicación..."
-        />
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            v-model="searchQuery"
+            type="text"
+            class="nodes-search-input"
+            placeholder="Buscar por nombre o ubicación..."
+          />
+        </div>
+
+        <div class="sort-toggle">
+          <button
+            class="sort-btn"
+            :class="{ active: sortOrder === 'asc' }"
+            @click="sortOrder = 'asc'"
+            title="A → Z"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M3 12h12M3 18h6"/><path d="m17 14 3 3 3-3"/><path d="M20 17V8"/>
+            </svg>
+            A–Z
+          </button>
+          <button
+            class="sort-btn"
+            :class="{ active: sortOrder === 'desc' }"
+            @click="sortOrder = 'desc'"
+            title="Z → A"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M3 12h12M3 18h6"/><path d="m17 10-3-3-3 3"/><path d="M14 7v9"/>
+            </svg>
+            Z–A
+          </button>
+        </div>
       </div>
 
       <div v-if="filteredNodes.length === 0" class="empty-message">
@@ -47,7 +79,6 @@
             </div>
           </div>
 
-          <!-- Expanded details -->
           <div v-if="expandedNode === node.name" class="node-details">
             <div class="primary-info">
               <div class="adyacent-info">
@@ -104,7 +135,7 @@
 
         <div class="pagination" v-if="totalPages > 1">
           <button class="page-btn" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">Anterior</button>
-          <span class="page-info">Página {{ currentPage }} / {{ totalPages }}</span>
+          <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
           <button class="page-btn" :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">Siguiente</button>
         </div>
       </div>
@@ -163,17 +194,24 @@ const { nodes } = storeToRefs(nodeStore);
 const pageSize = 10;
 const currentPage = ref(1);
 const searchQuery = ref('');
+const sortOrder = ref('asc'); // 'asc' | 'desc'
 
 const statusPriority = { 'ERROR': 0, 'WARNING': 1, 'OK': 2 };
 
 const sortedNodes = computed(() => {
   const arr = [...nodes.value];
-  arr.reverse();
-  return arr.sort((a, b) => {
+  arr.sort((a, b) => {
     const pa = statusPriority[a.status] ?? 3;
     const pb = statusPriority[b.status] ?? 3;
-    return pa !== pb ? pa - pb : 0;
+    if (pa !== pb) return pa - pb;
+    // nombre A→Z o Z→A según sortOrder
+    const nameA = a.name?.toLowerCase() ?? '';
+    const nameB = b.name?.toLowerCase() ?? '';
+    return sortOrder.value === 'asc'
+      ? nameA.localeCompare(nameB)
+      : nameB.localeCompare(nameA);
   });
+  return arr;
 });
 
 const filteredNodes = computed(() => {
@@ -194,6 +232,7 @@ watch(sortedNodes, () => {
   if (currentPage.value > totalPages.value) currentPage.value = totalPages.value;
 });
 watch(searchQuery, () => { currentPage.value = 1; });
+watch(sortOrder,  () => { currentPage.value = 1; });
 
 function goToPage(p) {
   if (p >= 1 && p <= totalPages.value) currentPage.value = p;
