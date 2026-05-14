@@ -13,7 +13,7 @@ class Node(Document):
         min_length=3,
         max_length=30,
         description="Unique name of the node, Starting with a number (e.g., 002, 043, 583), optionally followed by a name.",
-        example="003-HallA",
+        example="003",
         pattern=r"^\d+(-[a-zA-Z0-9]+)*$"
     )
     location: Optional[Link[Location]]

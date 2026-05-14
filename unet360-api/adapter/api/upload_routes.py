@@ -108,7 +108,7 @@ async def delete_image(
         )
 
 
-@router.post("/tiles/upload")
+@router.post("/tiles")
 async def upload_tiles_folder(file: UploadFile = File(...)) -> GeneralResponse:
     if not file.filename.endswith(".zip"):
         raise HTTPException(status_code=400, detail="Only ZIP files are accepted")

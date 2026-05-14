@@ -1,4 +1,5 @@
 import os
+import shutil
 import zipfile
 import logging
 
@@ -32,6 +33,9 @@ class LocalUploadService:
                 buffer.write(file_content)
 
             with zipfile.ZipFile(temp_zip_path, "r") as zip_ref:
+                image_folder = zip_ref.namelist()[0].split("/")[0]
+                full_folder_path = os.path.join(self.internal_bucket_path, image_folder)
+                
                 for zip_info in zip_ref.infolist():
                     target_path = os.path.realpath(
                         os.path.join(self.internal_bucket_path, zip_info.filename)
@@ -42,9 +46,11 @@ class LocalUploadService:
                         raise HTTPException(
                             status_code=400, detail="Invalid path in ZIP file"
                         )
-                    zip_ref.extract(zip_info, self.internal_bucket_path)
-
-                image_folder = zip_ref.namelist()[0].split("/")[0]
+                
+                if os.path.exists(full_folder_path):
+                    shutil.rmtree(full_folder_path)
+                
+                zip_ref.extractall(self.internal_bucket_path)
 
             return GeneralResponse(
                 http_code=status.HTTP_200_OK,
@@ -52,9 +58,7 @@ class LocalUploadService:
                 response_obj={
                     "message": "Tiles uploaded successfully",
                     "image_folder": image_folder,
-                    "destination": os.path.join(
-                        self.internal_bucket_path, image_folder
-                    ),
+                    "destination": full_folder_path,
                 },
             )
 
@@ -62,14 +66,11 @@ class LocalUploadService:
             raise HTTPException(
                 status_code=400, detail="Uploaded file is not a valid ZIP"
             )
-
         except HTTPException:
             raise
-
         except Exception as e:
             logger.error(f"Upload failed: {e}")
             raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
-
         finally:
             if os.path.exists(temp_zip_path):
                 os.remove(temp_zip_path)
