@@ -63,76 +63,78 @@
       </div>
 
       <div v-else class="node-list-wrap">
-        <div v-for="(node, index) in paginatedNodes" :key="node.name" class="node-item">
-          <div class="node-main" @click="toggleNode(node.name)">
-            <div class="node-info">
-              <span class="node-status" :style="{ background: getStatusColor(node.status) }" />
-              <span class="node-name">{{ node.name }}</span>
+        
+        <div class="nodes-items-container">
+          <div v-for="(node, index) in paginatedNodes" :key="node.name" class="node-item">
+            <div class="node-main" @click="toggleNode(node.name)">
+              <div class="node-info">
+                <span class="node-status" :style="{ background: getStatusColor(node.status) }" />
+                <span class="node-name">{{ node.name }}</span>
+              </div>
+              <div class="node-actions">
+                <button class="icon-btn" @click.stop="goToMap(node)" title="Ver en mapa 360°">
+                  <UIcon name="icons/image" class="node-action-icon" size="100%" />
+                </button>
+                <button class="icon-btn" @click.stop="editNode(node)">
+                  <UIcon name="icons/edit" class="node-action-icon" size="100%" />
+                </button>
+              </div>
             </div>
-            <div class="node-actions">
-              <button class="icon-btn" @click.stop="goToMap(node)" title="Ver en mapa 360°">
-                <UIcon name="icons/image" class="node-action-icon" size="100%" />
-              </button>
-              <button class="icon-btn" @click.stop="editNode(node)">
-                <UIcon name="icons/edit" class="node-action-icon" size="100%" />
-              </button>
-            </div>
-          </div>
 
-          <div v-if="expandedNode === node.name" class="node-details">
-            <div class="primary-info">
-              <div class="adyacent-info">
-                <div class="adyacent-title">{{ adyacentTitle }}</div>
-                <div class="adyacent-nodes">
-                  <div v-for="group in adyacentGroups" :key="group.name" :class="group.class">
-                    <span v-for="adj in group.items" :key="adj.key" class="adyacent-label">
-                      {{ adj.label }}:
-                      <span class="adyacent-value-blue">{{ getAdyacentValue(node, adj.key) }}</span>
-                    </span>
+            <div v-if="expandedNode === node.name" class="node-details">
+              <div class="primary-info">
+                <div class="adyacent-info">
+                  <div class="adyacent-title">{{ adyacentTitle }}</div>
+                  <div class="adyacent-nodes">
+                    <div v-for="group in adyacentGroups" :key="group.name" :class="group.class">
+                      <span v-for="adj in group.items" :key="adj.key" class="adyacent-label">
+                        {{ adj.label }}:
+                        <span class="adyacent-value-blue">{{ getAdyacentValue(node, adj.key) }}</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <div class="location-info">
+                  <span class="location-label">{{ locationLabel }}</span>
+                  <span class="location-value">{{ node.location }}</span>
+                </div>
               </div>
-              <div class="location-info">
-                <span class="location-label">{{ locationLabel }}</span>
-                <span class="location-value">{{ node.location }}</span>
+
+              <div class="tags-info">
+                <span class="tags-label">{{ tagsLabel }}</span>
+                <div class="tags-list">
+                  <span
+                    v-if="node.tags && Object.keys(node.tags).length"
+                    v-for="(values, tag) in node.tags"
+                    :key="tag"
+                    class="tag-item"
+                  >
+                    {{ tag }}:
+                    <template v-if="Array.isArray(values)">{{ values.join(', ') }}</template>
+                    <template v-else>{{ Object.entries(values)[0][0] }}</template>
+                  </span>
+                  <span v-else class="tag-item">{{ tagsEmpty }}</span>
+                </div>
+              </div>
+
+              <div class="reasons" v-if="node.reasons && node.reasons.length">
+                <div class="reasons-title">Advertencias:</div>
+                <ul class="reasons-list">
+                  <li v-for="(r, i) in node.reasons" :key="i">{{ r }}</li>
+                </ul>
+              </div>
+
+              <div class="delete-section">
+                <button class="delete-node-btn" @click.stop="openDeleteConfirm(node.name)">
+                  <UIcon name="icons/trash" class="delete-icon" />
+                  {{ deleteLabel }}
+                </button>
               </div>
             </div>
 
-            <div class="tags-info">
-              <span class="tags-label">{{ tagsLabel }}</span>
-              <div class="tags-list">
-                <span
-                  v-if="node.tags && Object.keys(node.tags).length"
-                  v-for="(values, tag) in node.tags"
-                  :key="tag"
-                  class="tag-item"
-                >
-                  {{ tag }}:
-                  <template v-if="Array.isArray(values)">{{ values.join(', ') }}</template>
-                  <template v-else>{{ Object.entries(values)[0][0] }}</template>
-                </span>
-                <span v-else class="tag-item">{{ tagsEmpty }}</span>
-              </div>
-            </div>
-
-            <div class="reasons" v-if="node.reasons && node.reasons.length">
-              <div class="reasons-title">Advertencias:</div>
-              <ul class="reasons-list">
-                <li v-for="(r, i) in node.reasons" :key="i">{{ r }}</li>
-              </ul>
-            </div>
-
-            <div class="delete-section">
-              <button class="delete-node-btn" @click.stop="openDeleteConfirm(node.name)">
-                <UIcon name="icons/trash" class="delete-icon" />
-                {{ deleteLabel }}
-              </button>
-            </div>
+            <div v-if="index !== paginatedNodes.length - 1" class="node-separator" />
           </div>
-
-          <div v-if="index !== paginatedNodes.length - 1" class="node-separator" />
         </div>
-
         <div class="pagination" v-if="totalPages > 1">
           <button class="page-btn" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">Anterior</button>
           <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
@@ -156,7 +158,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useNodeStore } from '@/service/stores/nodes.js';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
@@ -171,7 +173,8 @@ const router = useRouter();
 const nodeStore = useNodeStore();
 const { nodes } = storeToRefs(nodeStore);
 
-const pageSize = 10;
+// 1. Cambiamos pageSize a una variable reactiva
+const pageSize = ref(10);
 const currentPage = ref(1);
 const searchQuery = ref('');
 const sortOrder = ref('asc'); // 'asc' | 'desc'
@@ -184,7 +187,7 @@ const sortedNodes = computed(() => {
     const pa = statusPriority[a.status] ?? 3;
     const pb = statusPriority[b.status] ?? 3;
     if (pa !== pb) return pa - pb;
-    // nombre A→Z o Z→A según sortOrder
+    
     const nameA = a.name?.toLowerCase() ?? '';
     const nameB = b.name?.toLowerCase() ?? '';
     return sortOrder.value === 'asc'
@@ -202,21 +205,49 @@ const filteredNodes = computed(() => {
   );
 });
 
-const totalPages = computed(() => Math.max(1, Math.ceil(filteredNodes.value.length / pageSize)));
+// 2. Actualizamos los computed para que usen pageSize.value
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredNodes.value.length / pageSize.value)));
 const paginatedNodes = computed(() => {
-  const start = (currentPage.value - 1) * pageSize;
-  return filteredNodes.value.slice(start, start + pageSize);
+  const start = (currentPage.value - 1) * pageSize.value;
+  return filteredNodes.value.slice(start, start + pageSize.value);
 });
 
 watch(sortedNodes, () => {
-  if (currentPage.value > totalPages.value) currentPage.value = totalPages.value;
+  if (currentPage.value > totalPages.value) currentPage.value = Math.max(1, totalPages.value);
 });
 watch(searchQuery, () => { currentPage.value = 1; });
 watch(sortOrder,  () => { currentPage.value = 1; });
+// Si el tamaño de página cambia y nos quedamos en una página que ya no existe, volvemos a ajustarla
+watch(pageSize, () => {
+  if (currentPage.value > totalPages.value) currentPage.value = Math.max(1, totalPages.value);
+});
 
 function goToPage(p) {
   if (p >= 1 && p <= totalPages.value) currentPage.value = p;
 }
+
+// --- 3. Lógica para calcular la cantidad de nodos según la pantalla ---
+const calculatePageSize = () => {
+  // Si estamos en un móvil (pantallas menores a 768px), podemos dejar un valor por defecto
+  // o permitir el scroll habitual de móviles.
+  if (window.innerWidth < 768) {
+    pageSize.value = 10;
+    return;
+  }
+
+  // offsetHeight es la suma aproximada en píxeles del espacio ocupado por el Header, 
+  // la barra de búsqueda, la paginación y los paddings globales. (Ajústalo si notas que falta o sobra espacio)
+  const offsetHeight = 320; 
+  
+  // nodeItemHeight es la altura en píxeles de una fila de nodo contraída
+  const nodeItemHeight = 65; 
+
+  const availableHeight = window.innerHeight - offsetHeight;
+  let calculatedSize = Math.floor(availableHeight / nodeItemHeight);
+
+  // Aseguramos que como mínimo se muestren 4 elementos aunque la pantalla sea muy bajita
+  pageSize.value = Math.max(4, calculatedSize);
+};
 
 const expandedNode = ref(null);
 
@@ -279,7 +310,17 @@ const getAdyacentValue = (node, key) => {
   return node.adjacent_nodes?.[key] || 'N/A';
 };
 
-onMounted(async () => { await nodeStore.fetchNodes(); });
+// 4. Inicializamos eventos al montar el componente
+onMounted(async () => { 
+  calculatePageSize();
+  window.addEventListener('resize', calculatePageSize);
+  await nodeStore.fetchNodes(); 
+});
+
+// 5. Limpiamos el evento de resize al destruir el componente
+onUnmounted(() => {
+  window.removeEventListener('resize', calculatePageSize);
+});
 </script>
 
 <script>

@@ -196,8 +196,8 @@ onMounted(() => {
   }
 
   @media (max-width: 768px) {
-    font-size: 1.6rem;
-    line-height: 1.2;
+    font-size: 2.2rem;
+    line-height: 1.15;
     br { display: none; }
   }
 }
@@ -210,9 +210,10 @@ onMounted(() => {
   max-width: 400px;
 
   @media (max-width: 768px) {
-    font-size: 0.85rem;
-    margin-bottom: 1.25rem;
-    max-width: 85%;
+    font-size: 1.05rem; /* <-- Aumentado para equilibrar el título grande */
+    line-height: 1.4; /* <-- Interlineado ajustado para mejor lectura */
+    margin-bottom: 1.75rem; /* <-- Un poco más de espacio antes del botón */
+    max-width: 95%; /* <-- Permite que el texto respire mejor en los bordes */
   }
 }
 
