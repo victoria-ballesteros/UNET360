@@ -110,6 +110,20 @@ export function getImagePath(fileName) {
     return new URL(`../../assets/images/icons-images/${fileName}.png`, import.meta.url).href;
 }
 
+export function formatUserName(rawName = "") {
+    const name = String(rawName).trim();
+    if (!name) return "";
+    if (name.includes("@")) return name;
+
+    const parts = name.split('.').filter(Boolean);
+    const formattedParts = parts.map(part => {
+        const lower = part.trim().toLowerCase();
+        return lower ? `${lower.charAt(0).toUpperCase()}${lower.slice(1)}` : "";
+    }).filter(Boolean);
+
+    return formattedParts.length ? formattedParts.join(' ') : name;
+}
+
 export function searchNodeByKeyword(keyword) {
     const nodeStore = useNodeStore();
 

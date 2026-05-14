@@ -96,6 +96,7 @@ const setNode = (nodeName) => {
     return;
   }
   currentNodeData.value = node;
+  console.log("Nodo actual:", node.name);
 };
 
 const defineData = async () => {
