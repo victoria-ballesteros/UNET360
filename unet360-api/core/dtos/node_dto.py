@@ -5,7 +5,7 @@ import math
 class NodeCreateDTO(BaseModel):
     name: str
     location: Optional[str] = None
-    url_image: str
+    url_image: Optional[str] = "none"
     adjacent_nodes: list[Optional[Dict[str, float]]] = Field(
         default_factory=lambda: [None, None, None, None],
         description="list of up to 4 adjacent node names (forward, back, left, right)"

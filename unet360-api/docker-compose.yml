@@ -5,6 +5,6 @@ services:
       - "${PORT}:${PORT}"
     volumes:
       - .:/app:z
-      - ${LOCAL_BUCKET_PATH}:${INTERNAL_BUCKET_PATH}:ro,Z
+      - ${LOCAL_BUCKET_PATH}:${INTERNAL_BUCKET_PATH}:rw,Z
     environment:
       - .env
