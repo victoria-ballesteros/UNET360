@@ -108,7 +108,7 @@ const emitIconClick = () => {
   border-radius: 12px;
   padding: 0.938rem 1rem;
   display: flex;
-  align-items: center;
+  align-items: left;
   position: relative;
 
   .input {

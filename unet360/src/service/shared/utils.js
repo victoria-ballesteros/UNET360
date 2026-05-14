@@ -150,6 +150,5 @@ export function searchNodeByKeyword(keyword) {
 
 export function generateRandomStartNode() {
     const numero = Math.floor(Math.random() * 109) + 1;
-    const numeroFormateado = numero.toString().padStart(3, '0');
-    return "002";
+    return numero.toString().padStart(3, '0');
 }

@@ -5,7 +5,7 @@
         <div class="dialog-header" v-if="headerTitle?.trim()">
           <p class="header-title">{{ headerTitle }}</p>
           <button class="dialog-close" @click="close">
-            <UIcon name="x-lg" size="16" color="currentColor" />
+            <UIcon name="icons/x-lg" size="16" color="currentColor" />
           </button>
         </div>
         <div class="dialog-body">
@@ -49,7 +49,7 @@ function close() {
   position: relative;
   background: var(--strong-gray);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  border-radius: 4px;
   width: 92%;
   max-width: 480px;
   max-height: 90vh;
@@ -76,7 +76,7 @@ function close() {
 }
 
 .dialog-close {
-  background: rgba(255, 255, 255, 0.07);
+  background: transparent;
   border: none;
   border-radius: 8px;
   width: 2rem;
