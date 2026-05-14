@@ -20,6 +20,7 @@
 
 <script setup>
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import UCustomMap from "@/components/UCustomMap.vue";
 import UInputCard from "@/components/UInputCard.vue";
 import UToast from "@/components/UToast.vue";
@@ -42,6 +43,7 @@ import "@photo-sphere-viewer/core/index.css";
 import "@photo-sphere-viewer/markers-plugin/index.css";
 
 // Stores
+const route = useRoute();
 const nodeStore = useNodeStore();
 const tagStore = useTagStore();
 
@@ -327,7 +329,7 @@ onMounted(async () => {
   setVh();
   window.addEventListener("resize", setVh);
 
-  setNode(generateRandomStartNode());
+  setNode(route.query.node || "001");
 
   viewer = new Viewer({
     container: viewerContainer.value,

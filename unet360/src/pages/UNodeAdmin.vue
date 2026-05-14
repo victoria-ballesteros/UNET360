@@ -70,7 +70,7 @@
               <span class="node-name">{{ node.name }}</span>
             </div>
             <div class="node-actions">
-              <button class="icon-btn" @click.stop="openImageModal(node)">
+              <button class="icon-btn" @click.stop="goToMap(node)" title="Ver en mapa 360°">
                 <UIcon name="icons/image" class="node-action-icon" size="100%" />
               </button>
               <button class="icon-btn" @click.stop="editNode(node)">
@@ -143,28 +143,8 @@
 
   </div>
 
-  <!-- Image modal -->
-  <div v-if="showImageModal" class="image-modal-overlay" @click.self="closeImageModal">
-    <div class="image-modal-content">
-      <div class="image-modal-header">
-        <span class="image-modal-title">{{ modalNodeName }}</span>
-        <button class="image-modal-close" @click="closeImageModal">✕</button>
-      </div>
-      <div v-if="isImageLoading" class="loading-bar-container">
-        <div class="loading-bar" />
-      </div>
-      <img
-        v-show="!isImageLoading"
-        :src="modalImageUrl"
-        alt="Imagen del nodo"
-        class="image-modal-img"
-        @load="isImageLoading = false"
-        @error="isImageLoading = false"
-      />
-    </div>
-  </div>
 
-  <UDialog v-model="showDeleteDialog" :headerTitle="''">
+<UDialog v-model="showDeleteDialog" :headerTitle="''">
     <div class="delete-dialog-content">
       <div class="delete-dialog-header">¿Desea eliminar el nodo {{ nodeToDelete }}?</div>
       <div class="delete-dialog-actions">
@@ -238,11 +218,7 @@ function goToPage(p) {
   if (p >= 1 && p <= totalPages.value) currentPage.value = p;
 }
 
-const isImageLoading = ref(true);
 const expandedNode = ref(null);
-const showImageModal = ref(false);
-const modalImageUrl = ref('');
-const modalNodeName = ref('');
 
 const adyacentTitle = 'Adyacentes';
 const adyacentGroups = [
@@ -268,17 +244,8 @@ const toggleNode = name => {
   expandedNode.value = expandedNode.value === name ? null : name;
 };
 
-const openImageModal = node => {
-  modalImageUrl.value = node.url_image;
-  modalNodeName.value = node.name;
-  isImageLoading.value = true;
-  showImageModal.value = true;
-};
-
-const closeImageModal = () => {
-  showImageModal.value = false;
-  modalImageUrl.value = '';
-  modalNodeName.value = '';
+const goToMap = node => {
+  router.push({ name: 'Map', query: { node: node.name } });
 };
 
 const editNode = node => {
