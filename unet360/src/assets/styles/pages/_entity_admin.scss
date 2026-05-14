@@ -1,6 +1,101 @@
+// ═══  Toolbar  ═══
+
+.entities-list-toolbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.search-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.entities-search-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.6rem 1rem 0.6rem 2.25rem;
+  color: var(--full-white);
+  outline: none;
+  @include paragraph-small;
+  font-weight: 400;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &:focus,
+  &:hover {
+    border-color: rgba(255, 239, 61, 0.4);
+    box-shadow: 0 0 0 3px rgba(255, 239, 61, 0.08);
+  }
+}
+
+// ═══  Sort toggle  ═══
+
+.sort-toggle {
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  @include paragraph-extra-small;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  transition: background 0.15s, color 0.15s;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  &:first-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  &:hover {
+    background: rgba(255, 239, 61, 0.1);
+    color: var(--main-yellow);
+  }
+
+  &.active {
+    background: rgba(255, 239, 61, 0.1);
+    color: var(--main-yellow);
+  }
+}
+
 // ═══════════════  Entity Admin  ═══════════════
 
 .entity-admin-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
@@ -15,9 +110,40 @@
   }
 }
 
+/* dot-grid */
+.hero-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 239, 61, 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 20%, var(--strong-gray-dark) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+// Estilos para centrar el loader de forma absoluta/relativa a la vista
+.full-page-loader {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80vh; /* Asegura que tome suficiente espacio vertical para verse centrado */
+}
+
 // ═══  Header row: title + actions side by side on desktop  ═══
 
 .entity-admin-header {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -39,6 +165,15 @@
   }
 }
 
+.header-overline {
+  @include paragraph-small;
+  color: var(--main-yellow);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+}
+
 .admin-entities-buttons {
   display: flex;
   gap: 0.625rem;
@@ -48,6 +183,8 @@
 // ═══  List  ═══
 
 .list-section {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
 }
