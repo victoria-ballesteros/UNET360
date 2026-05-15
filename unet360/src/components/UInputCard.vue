@@ -24,7 +24,22 @@
                     <UIcon :name="'icons/' + icon" size="20" color="var(--fill-white)" />
                     <span>{{ label }}</span>
                 </div>
+
+                <template v-if="isAdmin">
+                    <hr class="menu-separator" />
+                    
+                    <div class="menu-item text-warning" @click="toggleEditMapa">
+                        <UIcon name="icons/edit" size="20" :color="isMapEditMode ? 'var(--main-blue)' : 'var(--main-yellow)'" />
+                        <span>{{ isMapEditMode ? 'Guardar Cambios' : 'Editar Nodo Actual' }}</span>
+                    </div>
+
+                    <div v-if="isMapEditMode" class="menu-item text-danger" @click="cancelEditMapa">
+                        <UIcon name="icons/x-lg" size="20" color="var(--main-red, #e53935)" />
+                        <span>Cancelar Edición</span>
+                    </div>
+                </template>
             </div>
+            
             <div v-else class="route-searcher">
                 <div class="route-icons-container">
                     <UIcon name="icons/dot-inside-dot" size="20" />
@@ -63,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue'
 import UIcon from './UIcon.vue'
 import UToast from './UToast.vue';
 import { useRouter } from 'vue-router';
@@ -73,6 +88,40 @@ import { fetchShortestPath } from '@/service/requests/graph';
 
 const router = useRouter();
 const authStore = useAuthStore();
+
+// --- Lógica de Edición ---
+// Obtenemos el rol del usuario (Asumiendo que 'role' está en el objeto user)
+// TODO: Ajusta 'admin' al valor real que devuelva tu API para este rol
+const isAdmin = computed(() => {
+    return authStore.user?.role === 'admin' || authStore.user?.role === 'ADMIN'; 
+});
+
+const isMapEditMode = ref(false);
+
+const toggleEditMapa = () => {
+    window.dispatchEvent(new CustomEvent('trigger-toggle-edit'));
+    menuVisible.value = false; // Cerramos el menú después de hacer clic
+    listIconRotation.value = 0;
+};
+
+const cancelEditMapa = () => {
+    window.dispatchEvent(new CustomEvent('trigger-cancel-edit'));
+    menuVisible.value = false; // Cerramos el menú
+    listIconRotation.value = 0;
+};
+
+const syncEditMode = (e) => {
+    isMapEditMode.value = e.detail;
+};
+
+onMounted(() => {
+    window.addEventListener('map-edit-mode-changed', syncEditMode);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('map-edit-mode-changed', syncEditMode);
+});
+// --- Fin Lógica de Edición ---
 
 const menuVisible = ref(false)
 const listIconRotation = ref(0)
@@ -170,7 +219,7 @@ function toggleMenu(label = null) {
     routeSearcherActive.value = false
     searcherInputPlaceholder.value = "Ej. Edificio A"
 
-    if (label === null) {
+    if (label === null || typeof label !== 'string') {
         return;
     }
 
@@ -242,4 +291,19 @@ watch(
 
 <style scoped lang="scss">
 @import "@/assets/styles/pages/_input_card.scss";
+
+// Pequeños estilos adicionales para las opciones de admin
+.menu-separator {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 4px 10px;
+}
+
+.text-warning {
+    color: var(--main-yellow, #ffeb3b);
+}
+
+.text-danger {
+    color: var(--main-red, #e53935);
+}
 </style>
