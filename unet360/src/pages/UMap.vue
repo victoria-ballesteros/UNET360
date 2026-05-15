@@ -137,7 +137,9 @@ const tagStore = useTagStore();
 const authStore = useAuthStore();
 
 // --- SISTEMA DE EDICIÓN AVANZADA ---
-const isAdmin = computed(() => true); // TODO: Lógica real de authStore
+const isAdmin = computed(() => {
+  return authStore.user?.role === 'admin' || authStore.user?.role === 'ADMIN'; 
+}); // TODO: Lógica real de authStore
 const isEditMode = ref(false);
 const selectedTool = ref(null);
 const originalNodeDataBackup = ref(null); // Respaldo para "Cancelar"
@@ -567,24 +569,25 @@ onMounted(async () => {
   });
 
   viewer.addEventListener("panorama-loaded", async () => {
-      let newMapUrl = campusMap;
-      let newCoords = { x: 0, y: 0 };
-      if (currentNodeData.value.minimap) {
-        newMapUrl = new URL(`../assets/images/${currentNodeData.value.minimap.image}`, import.meta.url).href;
-        newCoords = { x: currentNodeData.value.minimap.x, y: currentNodeData.value.minimap.y };
-      }
-      customMapUrl.value = newMapUrl;
-      visualMapCoords.value = newCoords;
-      await addMarkersFromCurrentNode();
+    let newMapUrl = campusMap;
+    let newCoords = { x: 0, y: 0 };
+    if (currentNodeData.value.minimap) {
+      newMapUrl = new URL(`../assets/images/${currentNodeData.value.minimap.image}`, import.meta.url).href;
+      newCoords = { x: currentNodeData.value.minimap.x, y: currentNodeData.value.minimap.y };
+    }
+    customMapUrl.value = newMapUrl;
+    visualMapCoords.value = newCoords;
+    await addMarkersFromCurrentNode();
 
-      // 👉 NUEVO: Auto-iniciar edición si venimos desde el Administrador de Nodos
-      if (route.query.edit === 'true' && !isEditMode.value) {
-        toggleEditMode(); // Esto disparará el evento y el Sidebar mostrará los botones de guardado automáticamente
-      }
-    }, { once: true });
-  // Inserción de nuevos elementos al hacer clic en el mapa vacío
+    if (route.query.edit === 'true' && !isEditMode.value && isAdmin.value) {
+      toggleEditMode();
+    } else if (route.query.edit === 'true' && !isAdmin.value) {
+      toastRefMap.value.showToast("Acceso denegado: No tienes permisos para editar nodos.");
+    }
+  }, { once: true });
+  
   viewer.addEventListener("click", ({ data }) => {
-    if (isEditMode.value && selectedTool.value && selectedTool.value !== 'forward') {
+    if (isAdmin.value && isEditMode.value && selectedTool.value && selectedTool.value !== 'forward') {
       editForm.value.isEditing = false;
       editForm.value.originalData = null;
       editForm.value.type = selectedTool.value;
