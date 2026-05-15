@@ -280,9 +280,8 @@ const goToMap = node => {
 };
 
 const editNode = node => {
-  router.push({ name: 'NodeEdit', params: { name: node.name } });
+  router.push({ name: 'Map', query: { node: node.name, edit: 'true' } });
 };
-
 const openDeleteConfirm = name => {
   nodeToDelete.value = name;
   showDeleteDialog.value = true;

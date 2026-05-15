@@ -105,6 +105,7 @@
 </template>
 
 <script setup>
+import api from '@/axios';
 import { onBeforeUnmount, onMounted, ref, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 import UCustomMap from "@/components/UCustomMap.vue";
@@ -168,24 +169,52 @@ const modalTitle = computed(() => {
 });
 
 // Activar o desactivar modo edición desde un evento externo (Ej: Sidebar)
-const toggleEditMode = () => {
+const toggleEditMode = async () => {
   if (!isEditMode.value) {
     // Entrar a edición: Hacemos backup
     originalNodeDataBackup.value = JSON.parse(JSON.stringify(currentNodeData.value));
     isEditMode.value = true;
-    toastRefMap.value.showToast("Modo edición activado. Selecciona herramientas o haz clic en marcadores existentes.");
+    toastRefMap.value.showToast("Modo edición activado.");
   } else {
     // Guardar cambios en BD
-    console.log("Guardando cambios definitivos en BD:", currentNodeData.value);
-    // TODO: Llamada al backend para guardar currentNodeData.value
-    
-    isEditMode.value = false;
-    selectedTool.value = null;
-    originalNodeDataBackup.value = null;
-    toastRefMap.value.showToast("¡Cambios guardados en la base de datos!");
+    try {
+      toastRefMap.value.showToast("Guardando cambios en la base de datos...");
+      
+      // Construimos el payload siguiendo el modelo de UNodeEdit.vue
+      const payload = {
+        location: currentNodeData.value.location || null,
+        url_image: currentNodeData.value.url_image,
+        adjacent_nodes: currentNodeData.value.adjacent_nodes,
+        arrow_angles: currentNodeData.value.arrow_angles,
+        forward_heading: parseFloat(currentNodeData.value.forward_heading) || 0,
+        tags: currentNodeData.value.tags,
+      };
+
+      // Adjuntamos el minimapa solo si tiene datos válidos
+      if (currentNodeData.value.minimap && Object.keys(currentNodeData.value.minimap).length > 0) {
+        payload.minimap = currentNodeData.value.minimap;
+      }
+
+      // Hacemos la petición PATCH a la API
+      const { data } = await api.patch(`nodes/${encodeURIComponent(currentNodeData.value.name)}`, payload);
+
+      if (data?.status) {
+        isEditMode.value = false;
+        selectedTool.value = null;
+        originalNodeDataBackup.value = null;
+        toastRefMap.value.showToast("¡Cambios guardados exitosamente!");
+      } else {
+        toastRefMap.value.showToast("Ocurrió un error al guardar en la base de datos.");
+        return; // Detenemos la ejecución si falla
+      }
+    } catch (error) {
+      console.error("Error al guardar nodo:", error);
+      toastRefMap.value.showToast("Error de conexión al intentar guardar.");
+      return; // Detenemos la ejecución
+    }
   }
   
-  // Avisamos al Sidebar el estado actual de la edición
+  // Avisamos al Sidebar el estado actual de la edición (para cambiar los botones)
   window.dispatchEvent(new CustomEvent('map-edit-mode-changed', { detail: isEditMode.value }));
 };
 
@@ -538,17 +567,21 @@ onMounted(async () => {
   });
 
   viewer.addEventListener("panorama-loaded", async () => {
-    let newMapUrl = campusMap;
-    let newCoords = { x: 0, y: 0 };
-    if (currentNodeData.value.minimap) {
-      newMapUrl = new URL(`../assets/images/${currentNodeData.value.minimap.image}`, import.meta.url).href;
-      newCoords = { x: currentNodeData.value.minimap.x, y: currentNodeData.value.minimap.y };
-    }
-    customMapUrl.value = newMapUrl;
-    visualMapCoords.value = newCoords;
-    await addMarkersFromCurrentNode();
-  }, { once: true });
+      let newMapUrl = campusMap;
+      let newCoords = { x: 0, y: 0 };
+      if (currentNodeData.value.minimap) {
+        newMapUrl = new URL(`../assets/images/${currentNodeData.value.minimap.image}`, import.meta.url).href;
+        newCoords = { x: currentNodeData.value.minimap.x, y: currentNodeData.value.minimap.y };
+      }
+      customMapUrl.value = newMapUrl;
+      visualMapCoords.value = newCoords;
+      await addMarkersFromCurrentNode();
 
+      // 👉 NUEVO: Auto-iniciar edición si venimos desde el Administrador de Nodos
+      if (route.query.edit === 'true' && !isEditMode.value) {
+        toggleEditMode(); // Esto disparará el evento y el Sidebar mostrará los botones de guardado automáticamente
+      }
+    }, { once: true });
   // Inserción de nuevos elementos al hacer clic en el mapa vacío
   viewer.addEventListener("click", ({ data }) => {
     if (isEditMode.value && selectedTool.value && selectedTool.value !== 'forward') {
