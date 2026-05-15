@@ -80,52 +80,85 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 1rem;
-  background: rgba(20, 20, 20, 0.85);
-  padding: 10px 20px;
-  border-radius: 30px;
-  backdrop-filter: blur(8px);
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--strong-gray, #0c0c0e);
+  padding: 6px 8px;
+  border-radius: 40px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 20;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.07);
+  border: none;
   transition: all 0.3s ease;
 
   @media (max-width: 768px) {
     flex-direction: column;
     left: auto;
-    right: 1rem;
+    right: 1rem;         // ← cambiá a left: 1rem si preferís anclar a la izquierda
     top: 50%;
     bottom: auto;
     transform: translateY(-50%);
-    padding: 15px 10px;
-    border-radius: 20px;
-    gap: 0.75rem;
+    padding: 8px 6px;
+    border-radius: 24px;
+    gap: 0.4rem;
   }
 }
 
 .tool-btn {
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 16px;
-  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  background: transparent;
+  padding: 8px 14px;
+  border-radius: 30px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
   user-select: none;
   text-align: center;
+  white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
 
   @media (max-width: 768px) {
-    font-size: 0.75rem;
-    padding: 6px 10px;
+    font-size: 0;          // oculta el label en mobile, solo muestra el ícono
+    padding: 10px;
+    border-radius: 50%;
+    gap: 0;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.6);
+    background-color: #374151;
+
+    svg {
+      opacity: 1;
+    }
   }
 
   &.active {
-    background: var(--main-blue, #2196f3);
-    box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+    color: var(--full-white);
+    background: var(--main-blue);
+    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.25);
+
+    svg {
+      opacity: 1;
+    }
   }
 }
 

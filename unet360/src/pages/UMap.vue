@@ -10,15 +10,35 @@
     </div>
 
     <div v-if="isEditMode" class="tools-carousel">
+
       <div class="tool-btn" :class="{ active: selectedTool === 'arrow' }" @click="selectTool('arrow')">
-        📍 Flecha
+        <!-- Arrow / Flecha -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M8 2L8 11M8 2L5 5M8 2L11 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="8" cy="13.5" r="1.5" fill="currentColor"/>
+        </svg>
+        Flecha
       </div>
+
       <div class="tool-btn" :class="{ active: selectedTool === 'tag' }" @click="selectTool('tag')">
-        🏷️ Etiqueta
+        <!-- Tag / Etiqueta -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M2 2.5C2 2.22 2.22 2 2.5 2H7.38C7.64 2 7.89 2.1 8.08 2.29L13.71 7.92C14.1 8.31 14.1 8.94 13.71 9.33L9.33 13.71C8.94 14.1 8.31 14.1 7.92 13.71L2.29 8.08C2.1 7.89 2 7.64 2 7.38V2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <circle cx="5" cy="5" r="1" fill="currentColor"/>
+        </svg>
+        Etiqueta
       </div>
+
       <div class="tool-btn" :class="{ active: selectedTool === 'forward' }" @click="selectTool('forward')">
-        👁️ Fijar Frente
+        <!-- Eye / Fijar Frente -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 8C1.5 8 3.5 3.5 8 3.5C12.5 3.5 14.5 8 14.5 8C14.5 8 12.5 12.5 8 12.5C3.5 12.5 1.5 8 1.5 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 6V4.5M8 11.5V10M10.6 9.6L11.7 10.7M4.3 5.3L5.4 6.4M11.5 8H13M3 8H4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        Fijar Frente
       </div>
+
     </div>
 
     <div class="map-2d-box">
