@@ -63,16 +63,6 @@
                 {{ inputErrors['Identificación'] }}
               </p>
             </div>
-
-            <!-- Tags inline -->
-            <div class="tags-inline">
-              <p class="input-label">Tags opcionales</p>
-              <div class="tag-row">
-                <UIcon v-for="(tag, i) in tags" :key="i" :name="'icons/' + tag.icon_name" size="34"
-                  :color="tagSelection[tag.name] ? 'var(--main-yellow)' : 'var(--border-gray)'"
-                  @click="handleTagClick(tag.name)" />
-              </div>
-            </div>
           </div>
         </div>
 
@@ -102,6 +92,38 @@
           </div>
         </div>
 
+        <div class="divider" />
+
+        <!-- Ubicación -->
+        <p class="form-section-label">Ubicación</p>
+        <div class="input-wrapper">
+          <p class="input-label">Ubicación del nodo</p>
+          <USelect v-model="selectedLocation" :options="locationOptions" styleType="dark"
+            placeholder="Selecciona una ubicación" />
+        </div>
+
+        <div class="divider" />
+
+        <!-- Minimapa -->
+        <p class="form-section-label">Minimapa</p>
+        <div class="input-wrapper">
+          <p class="input-label">Nombre del minimapa</p>
+          <USelect v-model="selectedMinimap" :options="MINIMAP_OPTIONS" styleType="dark"
+            placeholder="Selecciona un minimapa" />
+        </div>
+        <div class="adjacent-row">
+          <div class="input-wrapper" style="flex: 1">
+            <p class="input-label">Coordenada X</p>
+            <UInput v-model="minimapX" styleType="dark" placeholder="Ej: 120"
+              @update:modelValue="(v) => { minimapX = v?.replace(/[^0-9-]/g, ''); }" />
+          </div>
+          <div class="input-wrapper" style="flex: 1">
+            <p class="input-label">Coordenada Y</p>
+            <UInput v-model="minimapY" styleType="dark" placeholder="Ej: 240"
+              @update:modelValue="(v) => { minimapY = v?.replace(/[^0-9-]/g, ''); }" />
+          </div>
+        </div>
+
         <!-- Buttons -->
         <div class="form-actions">
           <UButton text="Cancelar" type="tertiary" @click="handleCancelEvent" />
@@ -114,7 +136,19 @@
   <!-- Dialogs... -->
   <UDialog v-model="showDialog" headerTitle="Identificación del tag">
     <div class="tag-dialog-content">
-      <UInput v-model="tagCustomName[actualTagSelected]" styleType="default" placeholder="Baño oeste" />
+      <div v-for="(_, index) in tagCustomNames[actualTagSelected]" :key="index" class="tag-name-row">
+        <UInput v-model="tagCustomNames[actualTagSelected][index]" styleType="dark" placeholder="Baño oeste" />
+        <button v-if="tagCustomNames[actualTagSelected].length > 1" class="tag-remove-btn"
+          @click="removeTagName(index)">
+          <UIcon name="icons/close" size="14" color="currentColor" />
+        </button>
+      </div>
+
+      <button class="tag-add-btn" @click="addTagName">
+        <UIcon name="icons/plus" size="14" color="var(--main-yellow)" />
+        Agregar otro
+      </button>
+
       <UButton style="align-self:flex-end" text="Aceptar" @click="handleTagCustomization" :type="dialogButtonType" />
     </div>
   </UDialog>
@@ -142,6 +176,7 @@ import {
 } from 'vue';
 import UButton from '@/components/UButton.vue';
 import UInput from '@/components/UInput.vue';
+import USelect from '@/components/USelect.vue';
 import UIcon from '@/components/UIcon.vue';
 import UDialog from '@/components/UDialog.vue';
 import ULoader from '@/components/ULoader.vue';
@@ -149,7 +184,7 @@ import ULoader from '@/components/ULoader.vue';
 import { useNodeStore } from '../service/stores/nodes';
 import { useTagStore } from '@/service/stores/tags';
 import { obtainData } from '../service/shared/utils';
-import { createNode, uploadTilesToServer } from '@/service/requests/requests';
+import { createNode, uploadTilesToServer, getLocations } from '@/service/requests/requests';
 import { useRouter } from 'vue-router';
 
 import { formatFileSize } from '@/service/shared/utils';
@@ -305,13 +340,23 @@ async function handleFormSubmit() {
   const tagDict = {};
   for (const tag of tagStore.tags) {
     if (tagSelection[tag.name]) {
-      tagDict[tag.name] = { [tagCustomName[tag.name]]: 0.0 };
+      const names = tagCustomNames[tag.name].filter((n) => n.trim());
+      if (names.length > 0) {
+        tagDict[tag.name] = Object.fromEntries(names.map((n) => [n, 0.0]));
+      }
     }
   }
 
   const nodeData = {
     name: inputModels['Identificación'],
-    location: null,
+    location: selectedLocation.value || null,
+    minimap: (selectedMinimap.value || minimapX.value !== '' || minimapY.value !== '')
+      ? {
+        image: selectedMinimap.value || null,
+        x: minimapX.value !== '' ? parseInt(minimapX.value, 10) : null,
+        y: minimapY.value !== '' ? parseInt(minimapY.value, 10) : null,
+      }
+      : null,
     tiles_path: uploadTilesResponse?.response_obj?.path,
     adjacent_nodes: adjacentNodes,
     tags: tagDict,
@@ -341,38 +386,73 @@ async function handleFormSubmit() {
   showResultDialog.value = true;
 }
 
+// ═══════════════  Ubicación  ═══════════════
+const locationOptions = ref([]);
+const selectedLocation = ref('');
+
+async function fetchLocations() {
+  try {
+    const resp = await getLocations();
+    if (resp?.status && Array.isArray(resp.response_obj)) {
+      locationOptions.value = resp.response_obj.map((loc) => loc.name);
+    }
+  } catch (e) {
+    console.error('Error al obtener ubicaciones:', e);
+  }
+}
+
+// ═══════════════  Minimapa  ═══════════════
+const MINIMAP_OPTIONS = [
+  'map-A1.jpg',
+  'map-A2.jpg',
+  'map-A3.jpg',
+  'map-A4.jpg',
+  'map-C1.jpg',
+];
+
+const selectedMinimap = ref('');
+const minimapX = ref('');
+const minimapY = ref('');
+
 // ═══════════════  Tags  ═══════════════
 const tagSelection = reactive({});
-const tagCustomName = reactive({});
+// Ahora cada tag tiene un array de nombres en lugar de uno solo
+const tagCustomNames = reactive({});
 
 watch(tags, (newTags) => {
   if (Array.isArray(newTags)) {
     newTags.forEach((tag) => {
       tagSelection[tag.name] = false;
-      tagCustomName[tag.name] = '';
+      tagCustomNames[tag.name] = [''];
     });
   }
 }, { immediate: true });
 
-let stopWatching = null;
-function handleTagClick(tagName) {
-  if (tagSelection[tagName]) { tagSelection[tagName] = false; return; }
-  actualTagSelected.value = tagName;
-  tagSelection[tagName] = true;
-  showDialog.value = true;
-  if (!stopWatching) {
-    stopWatching = watch(
-      () => tagCustomName[actualTagSelected.value],
-      (v) => { dialogButtonType.value = v?.trim() ? 'primary' : 'deactivated'; },
-    );
-  }
+function dialogHasValue() {
+  return tagCustomNames[actualTagSelected.value]?.some((n) => n.trim());
+}
+
+function addTagName() {
+  tagCustomNames[actualTagSelected.value].push('');
+}
+
+function removeTagName(index) {
+  tagCustomNames[actualTagSelected.value].splice(index, 1);
+  dialogButtonType.value = dialogHasValue() ? 'primary' : 'deactivated';
 }
 
 const tagSubmited = ref(false);
 async function handleTagCustomization() {
   tagSubmited.value = true;
   showDialog.value = false;
-  if (!tagCustomName[actualTagSelected.value]) tagSelection[actualTagSelected.value] = false;
+  // Limpiar entradas vacías; si no queda ninguna, deseleccionar el tag
+  const cleaned = tagCustomNames[actualTagSelected.value].filter((n) => n.trim());
+  if (cleaned.length === 0) {
+    tagSelection[actualTagSelected.value] = false;
+    tagCustomNames[actualTagSelected.value] = [''];
+  } else {
+    tagCustomNames[actualTagSelected.value] = cleaned;
+  }
   await nextTick();
   tagSubmited.value = false;
 }
@@ -380,7 +460,7 @@ async function handleTagCustomization() {
 watch(showDialog, (newVal) => {
   if (!newVal && !tagSubmited.value) {
     tagSelection[actualTagSelected.value] = false;
-    tagCustomName[actualTagSelected.value] = '';
+    tagCustomNames[actualTagSelected.value] = [''];
     tagSubmited.value = false;
   }
 });
@@ -392,6 +472,7 @@ function startNewNode() { showResultDialog.value = false; router.replace({ name:
 
 onMounted(async () => {
   router.isReady().then(() => obtainData());
+  fetchLocations();
 });
 </script>
 
@@ -399,4 +480,55 @@ onMounted(async () => {
 @import '@/assets/styles/_colors.scss';
 @import '@/assets/styles/_typography.scss';
 @import '@/assets/styles/pages/_node_create.scss';
+
+.tag-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &> :first-child {
+    flex: 1;
+  }
+}
+
+.tag-remove-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: transparent;
+  color: var(--border-gray);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: rgba(229, 57, 53, 0.08);
+    color: var(--status-red, #e53935);
+    border-color: rgba(229, 57, 53, 0.3);
+  }
+}
+
+.tag-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  align-self: flex-start;
+  padding: 0.375rem 0.75rem;
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 239, 61, 0.4);
+  background: transparent;
+  color: var(--main-yellow);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 239, 61, 0.07);
+    border-color: rgba(255, 239, 61, 0.7);
+  }
+}
 </style>
