@@ -68,12 +68,27 @@
       <template v-if="editForm.type === 'arrow'">
         <div class="form-group">
           <label>Dirección Relativa:</label>
-          <select v-model="editForm.direction" class="edit-input">
-            <option value="0">Frente</option>
-            <option value="1">Derecha</option>
-            <option value="2">Atrás</option>
-            <option value="3">Izquierda</option>
-          </select>
+          <div class="custom-select-wrapper" @click.stop="toggleDirectionDropdown" v-click-outside="closeDirectionDropdown">
+            <div class="custom-select-trigger edit-input" :class="{ open: directionDropdownOpen }">
+              <span>{{ directionOptions.find(o => o.value === editForm.direction)?.label || 'Seleccionar...' }}</span>
+              <svg class="select-chevron" :class="{ rotated: directionDropdownOpen }" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M2.5 5L7 9.5L11.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <transition name="dropdown-fade">
+              <ul v-show="directionDropdownOpen" class="custom-select-options">
+                <li
+                  v-for="opt in directionOptions"
+                  :key="opt.value"
+                  class="custom-select-option"
+                  :class="{ selected: editForm.direction === opt.value }"
+                  @click.stop="selectDirection(opt.value)"
+                >
+                  {{ opt.label }}
+                </li>
+              </ul>
+            </transition>
+          </div>
         </div>
         <div class="form-group">
           <label>Nodo Destino (Nombre/ID):</label>
@@ -111,7 +126,35 @@ import { useRoute } from "vue-router";
 import UCustomMap from "@/components/UCustomMap.vue";
 import UInputCard from "@/components/UInputCard.vue";
 import UToast from "@/components/UToast.vue";
-import UDialog from "@/components/UDialog.vue"; 
+import UDialog from "@/components/UDialog.vue";
+
+// Directiva personalizada para cerrar el dropdown al hacer click fuera
+const vClickOutside = {
+  mounted(el, binding) {
+    el._clickOutsideHandler = (event) => {
+      if (!el.contains(event.target)) binding.value();
+    };
+    document.addEventListener('click', el._clickOutsideHandler);
+  },
+  unmounted(el) {
+    document.removeEventListener('click', el._clickOutsideHandler);
+  },
+};
+
+// Custom select: Dirección Relativa
+const directionDropdownOpen = ref(false);
+const directionOptions = [
+  { value: '0', label: 'Frente' },
+  { value: '1', label: 'Derecha' },
+  { value: '2', label: 'Atrás' },
+  { value: '3', label: 'Izquierda' },
+];
+const toggleDirectionDropdown = () => { directionDropdownOpen.value = !directionDropdownOpen.value; };
+const closeDirectionDropdown = () => { directionDropdownOpen.value = false; };
+const selectDirection = (val) => {
+  editForm.value.direction = val;
+  directionDropdownOpen.value = false;
+};
 import arrowImg from "../assets/images/arrow-up.png";
 import arrowHighlighted from "../assets/images/arrow-up-highlighted.png";
 import campusMap from "@/assets/images/campus-map.jpg";

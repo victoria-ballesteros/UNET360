@@ -7,8 +7,32 @@
   box-sizing: border-box;
   min-height: 100lvh;
   background: var(--strong-gray-dark);
+  position: relative;
+  overflow: hidden;
+
+  // ── Fondo decorativo global (dot-grid + vignette) ──────────────
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255, 239, 61, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 85% 75% at 50% 40%, transparent 25%, var(--strong-gray-dark) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
   .upper-container {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;

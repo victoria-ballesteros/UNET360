@@ -378,4 +378,9 @@ $RECYCLE.BIN/
 **/node_modules/
 package-lock.json
 
+# Local project files
+analysis_results.md
+skills-lock.json
+.agents/
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux
