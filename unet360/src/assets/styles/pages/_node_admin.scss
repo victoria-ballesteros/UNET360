@@ -17,6 +17,10 @@
   flex: 1;
   min-height: 0;
   background: transparent; // El fondo decorativo viene del layout global
+
+  @media (min-width: 768px) {
+    height: calc(100dvh - 110px);
+  }
 }
 
 // ══════════════════════════════════════════════════

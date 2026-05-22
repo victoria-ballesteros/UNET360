@@ -165,7 +165,7 @@ const goToPage = (p) => {
 // ── Cálculo responsive de pageSize ─────────────────────────────────────────
 const calculatePageSize = () => {
   if (window.innerWidth < 768) { pageSize.value = 10; return; }
-  const offsetHeight   = 320; // Header + toolbar + padding + paginación
+  const offsetHeight   = 380; // Header + toolbar + padding + paginación + footer + layout margins
   const itemHeight     = 65;  // Alto de una fila contraída
   const available      = window.innerHeight - offsetHeight;
   pageSize.value       = Math.max(4, Math.floor(available / itemHeight));
