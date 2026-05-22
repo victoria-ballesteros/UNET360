@@ -79,6 +79,11 @@ function closePanel() {
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
   z-index: 1000;
+
+  // En desktop la navbar reemplaza al sidebar
+  @media (min-width: 768px) {
+    display: none !important;
+  }
 }
 
 .sidebar-panel {
@@ -95,6 +100,11 @@ function closePanel() {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+
+  // En desktop la navbar reemplaza al sidebar
+  @media (min-width: 768px) {
+    display: none !important;
+  }
 
   @media (min-width: 768px) {
     width: 25vw;

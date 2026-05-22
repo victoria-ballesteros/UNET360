@@ -3,7 +3,9 @@
     <div class="upper-container">
       <UHeader
         v-if="route.name != 'Map'"
+        :nav-options="sidebarOptions"
         @isPanelOpen="isPanelOpen = !isPanelOpen"
+        @logout="handleLogout"
         class="provisional-header-container"
       />
       <main class="content-container">
