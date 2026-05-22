@@ -117,3 +117,13 @@ export async function uploadTilesToServer(file) {
     return null;
   }
 }
+
+// OBTAIN ALL LOCATIONS
+export async function getLocations() {
+  try {
+    const response = await api.get("locations/");
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}
