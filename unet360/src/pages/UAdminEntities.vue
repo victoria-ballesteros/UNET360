@@ -9,6 +9,7 @@
       </div>
       <div class="admin-entities-buttons" v-if="entity !== 'tenants'">
         <UButton :text="createButtonText" type="contrast-2" @click="goCreate" />
+        <UButton text="Volver a Editar Nodos" type="tertiary" @click="router.push({ name: 'NodeAdmin' })" />
       </div>
     </div>
 
