@@ -62,7 +62,7 @@
 <script setup>
 import UIcon from "@/components/UIcon.vue"
 import UButton from "@/components/UButton.vue"
-import { ref, onMounted, onBeforeMount } from "vue"
+import { ref, onMounted, onBeforeMount, onUnmounted } from "vue"
 import { getGeneralInfo, getButtonData } from "@/service/global_dialogs"
 import { useAuthStore } from "@/service/stores/auth"
 
@@ -71,16 +71,25 @@ const generalInfo = getGeneralInfo()
 const isAuthenticated = ref(false)
 const button = ref(null)
 const heroRef = ref(null)
-const isMobile = ref(window.innerWidth <= 768)
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 768
+}
 
 onBeforeMount(() => {
+  checkMobile()
   authStore = useAuthStore()
   isAuthenticated.value = authStore.isAuthenticated
   button.value = getButtonData(isAuthenticated.value)
 })
 
 onMounted(() => {
-  // altura manejada por flex del layout
+  window.addEventListener("resize", checkMobile)
+})
+
+onUnmounted(() => {
+  window.removeEventListener("resize", checkMobile)
 })
 </script>
 
@@ -234,8 +243,8 @@ onMounted(() => {
 
   @media (max-width: 768px) {
     order: 1;
-    height: 220px;
-    margin-bottom: 0rem;
+    height: 260px;
+    margin-bottom: 0.5rem;
     justify-content: center;
   }
 }
@@ -245,10 +254,25 @@ onMounted(() => {
   border-radius: 50%;
   border: 1px solid rgba(255, 239, 61, 0.18);
   transform: rotateX(65deg) rotateZ(-15deg);
+  transition: opacity 0.3s ease;
 
-  &.orbit-1 { width: 220px; height: 220px; @media (max-width: 768px) { width: 150px; height: 150px; } }
-  &.orbit-2 { width: 290px; height: 290px; border-color: rgba(255, 239, 61, 0.1); @media (max-width: 768px) { width: 200px; height: 200px; } }
-  &.orbit-3 { width: 360px; height: 360px; border-color: rgba(255, 239, 61, 0.05); @media (max-width: 768px) { width: 260px; height: 260px; } }
+  &.orbit-1 { 
+    width: 220px; height: 220px; 
+    animation: pulseOrbit 3s ease-in-out infinite;
+    @media (max-width: 768px) { width: 160px; height: 160px; } 
+  }
+  &.orbit-2 { 
+    width: 290px; height: 290px; 
+    border-color: rgba(255, 239, 61, 0.1); 
+    animation: pulseOrbit 4.2s ease-in-out infinite 0.4s;
+    @media (max-width: 768px) { width: 210px; height: 210px; } 
+  }
+  &.orbit-3 { 
+    width: 360px; height: 360px; 
+    border-color: rgba(255, 239, 61, 0.05); 
+    animation: pulseOrbit 5.4s ease-in-out infinite 0.8s;
+    @media (max-width: 768px) { width: 260px; height: 260px; } 
+  }
 }
 
 .orbit-icon {
@@ -262,15 +286,55 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  animation: floatIcon 2.4s ease-in-out infinite;
 
-  @media (max-width: 768px) {
-    width: 28px;
-    height: 28px;
+  &:hover {
+    background: rgba(255, 239, 61, 0.25);
+    border-color: var(--main-yellow);
   }
 
-  &.oi-1 { top: 18%; right: 12%; }
-  &.oi-2 { bottom: 22%; right: 8%; }
-  &.oi-3 { top: 40%; left: 6%; }
+  &.oi-1 { 
+    top: 18%; right: 12%; animation-delay: 0s; 
+    @media (max-width: 768px) {
+      top: 10%;
+      right: 15%;
+    }
+  }
+  &.oi-2 { 
+    bottom: 22%; right: 8%; animation-delay: 0.6s; 
+    @media (max-width: 768px) {
+      bottom: 12%;
+      right: 12%;
+    }
+  }
+  &.oi-3 { 
+    top: 40%; left: 6%; animation-delay: 1.2s; 
+    @media (max-width: 768px) {
+      top: 36%;
+      left: 8%;
+    }
+  }
+}
+
+@keyframes pulseOrbit {
+  0%, 100% {
+    opacity: 0.6;
+    transform: rotateX(65deg) rotateZ(-15deg) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: rotateX(63deg) rotateZ(-10deg) scale(1.04);
+  }
+}
+
+@keyframes floatIcon {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .visual-center {

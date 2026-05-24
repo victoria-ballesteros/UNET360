@@ -19,15 +19,9 @@
 
     <!-- ── Lista de nodos ── -->
     <div class="nodes-list-section">
-      <!-- Loader modernizado mientras se cargan los nodos y estados -->
-      <div v-if="isLoading" class="nodes-loading-container">
-        <div class="nodes-spinner"></div>
-        <p class="loading-text">Cargando nodos y estados de red...</p>
-      </div>
-
       <UAdminList
-        v-else
         :items="nodes"
+        :loading="isLoading"
         :search-fields="['name', 'location']"
         :sort-fn="nodeSortFn"
         search-placeholder="Buscar por nombre o ubicación..."
@@ -44,12 +38,20 @@
                 <span class="node-name">{{ node.name }}</span>
               </div>
               <div class="node-actions">
-                <button class="icon-btn" @click.stop="goToMap(node)" title="Ver en mapa 360°">
-                  <UIcon name="icons/image" class="node-action-icon" size="100%" />
-                </button>
-                <button class="icon-btn" @click.stop="editNode(node)">
-                  <UIcon name="icons/edit" class="node-action-icon" size="100%" />
-                </button>
+                <UButton
+                  icon="icons/image"
+                  type="tertiary"
+                  size="md"
+                  @click.stop="goToMap(node)"
+                  title="Ver en mapa 360°"
+                />
+                <UButton
+                  icon="icons/edit"
+                  type="tertiary"
+                  size="md"
+                  @click.stop="editNode(node)"
+                  title="Editar nodo"
+                />
               </div>
             </div>
 

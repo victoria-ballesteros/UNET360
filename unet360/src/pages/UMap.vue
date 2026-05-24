@@ -301,6 +301,7 @@ import {
   adjustAngle,
   getImagePath,
   searchNodeByKeyword,
+  generateRandomStartNode,
 } from "@/service/shared/utils";
 import "@photo-sphere-viewer/core/index.css";
 import "@photo-sphere-viewer/markers-plugin/index.css";
@@ -747,7 +748,7 @@ onMounted(async () => {
   window.addEventListener('trigger-cancel-edit', handleCancelEdit);
   window.addEventListener('trigger-toggle-edit', toggleEditMode);
 
-  setNode(route.query.node || "001");
+  setNode(route.query.node || generateRandomStartNode());
 
   viewer = new Viewer({
     container: viewerContainer.value,

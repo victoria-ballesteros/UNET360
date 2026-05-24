@@ -163,7 +163,7 @@ export function searchNodeByKeyword(keyword) {
 }
 
 export function generateRandomStartNode() {
-    const numero = Math.floor(Math.random() * 109) + 1;
+    const numero = Math.floor(Math.random() * 112) + 1;
     return numero.toString().padStart(3, '0');
 }
 

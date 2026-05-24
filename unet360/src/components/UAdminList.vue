@@ -2,7 +2,7 @@
   <div class="al-root">
 
     <!-- ── Toolbar: Search + Sort ── -->
-    <div v-if="showSearch || showSort" class="al-toolbar">
+    <div v-if="(showSearch || showSort) && !loading" class="al-toolbar">
       <div v-if="showSearch" class="al-search-wrap">
         <svg class="al-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>
@@ -41,8 +41,24 @@
       </div>
     </div>
 
+    <!-- ── Loading state (Skeleton Loader) ── -->
+    <div v-if="loading" class="al-list-wrap al-skeleton-wrap">
+      <div class="al-items-container">
+        <div v-for="n in pageSize" :key="n" class="al-skeleton-item">
+          <div class="al-skeleton-primary">
+            <div class="al-skeleton-icon"></div>
+            <div class="al-skeleton-text"></div>
+          </div>
+          <div class="al-skeleton-actions">
+            <div class="al-skeleton-btn"></div>
+            <div class="al-skeleton-btn"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── Empty state ── -->
-    <div v-if="processedItems.length === 0" class="al-empty">
+    <div v-else-if="processedItems.length === 0" class="al-empty">
       {{ items.length === 0 ? emptyMessage : noResultsMessage }}
     </div>
 
@@ -83,6 +99,9 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 const props = defineProps({
   /** Array de items a mostrar */
   items: { type: Array, default: () => [] },
+
+  /** Indicar si está cargando para mostrar skeleton loader */
+  loading: { type: Boolean, default: false },
 
   /** Campos del objeto a buscar (e.g. ['name', 'email']) */
   searchFields: { type: Array, default: () => ['name'] },
@@ -358,5 +377,67 @@ onUnmounted(() => {
   font-size: 0.75rem;
   min-width: 3.5rem;
   text-align: center;
+}
+
+// ── Skeleton Loader ───────────────────────────────
+.al-skeleton-wrap {
+  pointer-events: none;
+  background: var(--strong-gray-dark, #252932);
+}
+
+.al-skeleton-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.al-skeleton-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.al-skeleton-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  animation: alSkeletonPulse 1.5s ease-in-out infinite;
+}
+
+.al-skeleton-text {
+  width: 130px;
+  height: 16px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  animation: alSkeletonPulse 1.5s ease-in-out infinite;
+}
+
+.al-skeleton-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.al-skeleton-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: alSkeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes alSkeletonPulse {
+  0%, 100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.75;
+  }
 }
 </style>
