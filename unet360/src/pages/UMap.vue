@@ -39,6 +39,15 @@
         Fijar Frente
       </div>
 
+      <div class="tool-btn" :class="{ active: selectedTool === 'rotation' }" @click="selectTool('rotation')">
+        <!-- Rotate / Rotación -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 8C12 10.2091 10.2091 12 8 12C5.79086 12 4 10.2091 4 8C4 5.79086 5.79086 4 8 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M6.5 2L8.5 4L6.5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Rotación
+      </div>
+
     </div>
 
     <div class="map-2d-box">
@@ -94,12 +103,45 @@
           <label>Nodo Destino (Nombre/ID):</label>
           <input type="text" v-model="editForm.targetNode" class="edit-input" placeholder="Ej: 002" />
         </div>
+        <div class="form-group">
+          <label>Peso de Conexión:</label>
+          <input type="text" v-model="editForm.weight" class="edit-input" placeholder="Ej: 1.0" @update:modelValue="(v) => { editForm.weight = v?.replace(/[^0-9.]/g, ''); }" />
+        </div>
       </template>
 
       <template v-if="editForm.type === 'tag'">
         <div class="form-group">
           <label>Categoría del Tag:</label>
-          <input type="text" v-model="editForm.tagName" class="edit-input" placeholder="Ej: Laboratorios" />
+          <div class="custom-select-wrapper" @click.stop="toggleTagDropdown" v-click-outside="closeTagDropdown">
+            <div class="custom-select-trigger edit-input" :class="{ open: tagDropdownOpen }">
+              <span class="selected-tag-display">
+                <UIcon 
+                  v-if="selectedTagIcon" 
+                  :name="selectedTagIcon" 
+                  class="select-tag-icon" 
+                  size="1.1rem" 
+                />
+                <span>{{ editForm.tagName || 'Seleccionar categoría...' }}</span>
+              </span>
+              <svg class="select-chevron" :class="{ rotated: tagDropdownOpen }" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M2.5 5L7 9.5L11.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <transition name="dropdown-fade">
+              <ul v-show="tagDropdownOpen" class="custom-select-options max-height-options">
+                <li
+                  v-for="tag in tagStore.tags"
+                  :key="tag.name"
+                  class="custom-select-option tag-option-item"
+                  :class="{ selected: editForm.tagName === tag.name }"
+                  @click.stop="selectTagName(tag.name)"
+                >
+                  <UIcon :name="tag.icon_name || 'icons/location'" class="tag-option-icon" size="1.1rem" />
+                  <span>{{ tag.name }}</span>
+                </li>
+              </ul>
+            </transition>
+          </div>
         </div>
         <div class="form-group">
           <label>Nombre del Marcador:</label>
@@ -109,6 +151,38 @@
 
       <template v-if="editForm.type === 'forward'">
         <p class="edit-warning">¿Deseas establecer la vista actual (Yaw: {{ editForm.yaw.toFixed(2) }}) como la perspectiva frontal predeterminada de este nodo?</p>
+      </template>
+      <template v-if="editForm.type === 'rotation'">
+        <p class="edit-warning" style="margin-bottom: 1rem; line-height: 1.4;">Establece la rotación a aplicar al llegar a este nodo ({{ currentNodeData.name }}) desde sus vecinos:</p>
+        
+        <div v-for="neighborName in adjacentNeighborNames" :key="neighborName" class="form-group" style="margin-bottom: 1rem;">
+          <label>Al venir desde el Nodo <strong>{{ neighborName }}</strong>:</label>
+          <div class="custom-select-wrapper" @click.stop="toggleNeighborRotationDropdown(neighborName)" v-click-outside="() => closeNeighborRotationDropdown(neighborName)">
+            <div class="custom-select-trigger edit-input" :class="{ open: neighborRotationDropdownOpen[neighborName] }">
+              <span>{{ rotationOptions.find(o => o.value === editForm.rotation_corrections[neighborName])?.label || '0°' }}</span>
+              <svg class="select-chevron" :class="{ rotated: neighborRotationDropdownOpen[neighborName] }" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M2.5 5L7 9.5L11.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <transition name="dropdown-fade">
+              <ul v-show="neighborRotationDropdownOpen[neighborName]" class="custom-select-options">
+                <li
+                  v-for="opt in rotationOptions"
+                  :key="opt.value"
+                  class="custom-select-option"
+                  :class="{ selected: editForm.rotation_corrections[neighborName] === opt.value }"
+                  @click.stop="selectNeighborRotation(neighborName, opt.value)"
+                >
+                  {{ opt.label }}
+                </li>
+              </ul>
+            </transition>
+          </div>
+        </div>
+
+        <div v-if="adjacentNeighborNames.length === 0" class="edit-warning">
+          Este nodo no tiene conexiones adyacentes configuradas para asociar rotación.
+        </div>
       </template>
 
       <div class="edit-actions">
@@ -121,12 +195,13 @@
 
 <script setup>
 import api from '@/axios';
-import { onBeforeUnmount, onMounted, ref, watch, computed } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch, computed, reactive } from "vue";
 import { useRoute } from "vue-router";
 import UCustomMap from "@/components/UCustomMap.vue";
 import UInputCard from "@/components/UInputCard.vue";
 import UToast from "@/components/UToast.vue";
 import UDialog from "@/components/UDialog.vue";
+import UIcon from '@/components/UIcon.vue';
 
 // Directiva personalizada para cerrar el dropdown al hacer click fuera
 const vClickOutside = {
@@ -154,7 +229,67 @@ const closeDirectionDropdown = () => { directionDropdownOpen.value = false; };
 const selectDirection = (val) => {
   editForm.value.direction = val;
   directionDropdownOpen.value = false;
+
+  // Autocomplete info if there's already a connection in that direction
+  const dirIdx = parseInt(val, 10);
+  const existingAdj = currentNodeData.value.adjacent_nodes?.[dirIdx];
+  if (existingAdj && typeof existingAdj === 'object' && Object.keys(existingAdj).length > 0) {
+    const target = Object.keys(existingAdj)[0];
+    const weight = existingAdj[target];
+    editForm.value.targetNode = target;
+    editForm.value.weight = weight !== undefined && weight !== null ? weight.toString() : '1.0';
+  } else {
+    editForm.value.targetNode = '';
+    editForm.value.weight = '1.0';
+  }
 };
+
+
+// Custom select: Categoría del Tag
+const tagDropdownOpen = ref(false);
+const toggleTagDropdown = () => { tagDropdownOpen.value = !tagDropdownOpen.value; };
+const closeTagDropdown = () => { tagDropdownOpen.value = false; };
+const selectTagName = (name) => {
+  editForm.value.tagName = name;
+  tagDropdownOpen.value = false;
+};
+const selectedTagIcon = computed(() => {
+  if (!editForm.value.tagName) return null;
+  const tag = tagStore.tags?.find(t => t.name === editForm.value.tagName);
+  return tag?.icon_name || 'icons/location';
+});
+
+// Custom select: Corrección de Rotación por vecino
+const rotationOptions = [
+  { value: '0', label: '0°' },
+  { value: '90', label: '90°' },
+  { value: '180', label: '180°' },
+  { value: '270', label: '270°' },
+];
+const neighborRotationDropdownOpen = reactive({});
+const toggleNeighborRotationDropdown = (name) => {
+  neighborRotationDropdownOpen[name] = !neighborRotationDropdownOpen[name];
+};
+const closeNeighborRotationDropdown = (name) => {
+  neighborRotationDropdownOpen[name] = false;
+};
+const selectNeighborRotation = (name, val) => {
+  editForm.value.rotation_corrections[name] = val;
+  neighborRotationDropdownOpen[name] = false;
+};
+
+const adjacentNeighborNames = computed(() => {
+  const names = [];
+  if (currentNodeData.value?.adjacent_nodes) {
+    currentNodeData.value.adjacent_nodes.forEach((adj) => {
+      if (adj && Object.keys(adj).length > 0) {
+        const neighborName = Object.keys(adj)[0];
+        names.push(neighborName);
+      }
+    });
+  }
+  return names;
+});
 import arrowImg from "../assets/images/arrow-up.png";
 import arrowHighlighted from "../assets/images/arrow-up-highlighted.png";
 import campusMap from "@/assets/images/campus-map.jpg";
@@ -186,6 +321,7 @@ const isAdmin = computed(() => {
 const isEditMode = ref(false);
 const selectedTool = ref(null);
 const originalNodeDataBackup = ref(null); // Respaldo para "Cancelar"
+const previousNodeData = ref(null); // Respaldo de nodo anterior para corrección de rotación
 
 // Modales
 const showActionModal = ref(false);
@@ -201,8 +337,10 @@ const editForm = ref({
   pitch: 0,
   direction: '0',
   targetNode: '',
+  weight: '1.0',
   tagName: '',
-  tagValue: ''
+  tagValue: '',
+  rotation_corrections: {}
 });
 
 const modalTitle = computed(() => {
@@ -210,8 +348,10 @@ const modalTitle = computed(() => {
   if (editForm.value.type === 'arrow') return 'Configurar Adyacencia';
   if (editForm.value.type === 'tag') return 'Agregar Nuevo Tag';
   if (editForm.value.type === 'forward') return 'Definir Perspectiva Frontal';
+  if (editForm.value.type === 'rotation') return 'Corregir Rotación del Nodo';
   return 'Edición de Nodo';
 });
+
 
 // Activar o desactivar modo edición desde un evento externo (Ej: Sidebar)
 const toggleEditMode = async () => {
@@ -232,6 +372,7 @@ const toggleEditMode = async () => {
         adjacent_nodes: currentNodeData.value.adjacent_nodes,
         arrow_angles: currentNodeData.value.arrow_angles,
         forward_heading: parseFloat(currentNodeData.value.forward_heading) || 0,
+        rotation_correction: currentNodeData.value.rotation_correction || null,
         tags: currentNodeData.value.tags,
       };
 
@@ -286,6 +427,15 @@ const selectTool = (tool) => {
     editForm.value.yaw = viewer.getPosition().yaw;
     editForm.value.pitch = viewer.getPosition().pitch;
     showEditModal.value = true;
+  } else if (tool === 'rotation') {
+    editForm.value.isEditing = false;
+    editForm.value.type = 'rotation';
+    editForm.value.rotation_corrections = {};
+    adjacentNeighborNames.value.forEach((neighborName) => {
+      const rot = (currentNodeData.value.rotation_correction && currentNodeData.value.rotation_correction[neighborName]) || 0;
+      editForm.value.rotation_corrections[neighborName] = rot.toString();
+    });
+    showEditModal.value = true;
   } else {
     toastRefMap.value.showToast(`Herramienta seleccionada. Haz clic en el visor para posicionar.`);
   }
@@ -304,6 +454,12 @@ const openEditForSelectedElement = () => {
   if (data.type === 'arrow') {
     editForm.value.direction = data.index.toString();
     editForm.value.targetNode = data.target;
+    const adj = currentNodeData.value.adjacent_nodes[data.index];
+    let w = 1.0;
+    if (adj && typeof adj === 'object') {
+      w = adj[data.target] ?? 1.0;
+    }
+    editForm.value.weight = w.toString();
   } else if (data.type === 'tag') {
     editForm.value.tagName = data.category;
     editForm.value.tagValue = data.label;
@@ -346,7 +502,8 @@ const saveEditedElement = async () => {
 
   if (editForm.value.type === 'arrow') {
     const dirIdx = parseInt(editForm.value.direction);
-    currentNodeData.value.adjacent_nodes[dirIdx] = { [editForm.value.targetNode]: editForm.value.targetNode };
+    const weightVal = parseFloat(editForm.value.weight) || 1.0;
+    currentNodeData.value.adjacent_nodes[dirIdx] = { [editForm.value.targetNode]: weightVal };
     currentNodeData.value.arrow_angles[dirIdx] = editForm.value.yaw;
   } 
   else if (editForm.value.type === 'tag') {
@@ -356,6 +513,17 @@ const saveEditedElement = async () => {
   }
   else if (editForm.value.type === 'forward') {
     currentNodeData.value.forward_heading = editForm.value.yaw;
+  }
+  else if (editForm.value.type === 'rotation') {
+    const newCorrections = {};
+    for (const [neighborName, rotStr] of Object.entries(editForm.value.rotation_corrections)) {
+      const rot = parseInt(rotStr, 10) || 0;
+      if (rot !== 0) {
+        newCorrections[neighborName] = rot;
+      }
+    }
+    currentNodeData.value.rotation_correction = Object.keys(newCorrections).length > 0 ? newCorrections : null;
+    defineData();
   }
 
   showEditModal.value = false;
@@ -419,7 +587,10 @@ const defineData = async () => {
     const markers = viewer.getPlugin(MarkersPlugin);
     markers.clearMarkers();
 
-    let initialYaw = adjustAngle(currentNodeData.value.forward_heading ?? 0, lastDirection.value);
+    const prevNodeName = previousNodeData.value?.name;
+    const currRot = (currentNodeData.value.rotation_correction && prevNodeName && currentNodeData.value.rotation_correction[prevNodeName]) || 0;
+    const rotCorrection = -currRot * (Math.PI / 180);
+    let initialYaw = adjustAngle((currentNodeData.value.forward_heading ?? 0) + rotCorrection, lastDirection.value);
 
     if (isTravelling.value && actualRoute.value?.route) {
       const nextIndex = currentNodeData.value.adjacent_nodes.findIndex((adyNode) => {
@@ -527,6 +698,7 @@ watch(searchInput, (newValue) => {
 
 watch(searchedNode, (newVal) => {
   if (newVal.trim() !== "") {
+    previousNodeData.value = null;
     setNode(newVal);
     defineData(newVal);
     searchResults.value = null;
@@ -538,6 +710,7 @@ watch(searchedNode, (newVal) => {
 watch(actualRoute, async (newVal) => {
   isTravelling.value = true;
   checkedRouteNodes.value = {};
+  previousNodeData.value = null;
   setNode(newVal.route[0]);
   await defineData();
   varAux.value++;
@@ -569,6 +742,7 @@ onBeforeUnmount(() => {
 });
 
 onMounted(async () => {
+  await tagStore.fetchTags();
   setVh();
   window.addEventListener("resize", setVh);
   
@@ -605,6 +779,7 @@ onMounted(async () => {
     try {
       const markerData = JSON.parse(marker.config.data || marker.data);
       if (markerData.target) {
+        previousNodeData.value = currentNodeData.value;
         setNode(markerData.target);
         defineData();
       }
@@ -637,8 +812,21 @@ onMounted(async () => {
       editForm.value.yaw = data.yaw;
       editForm.value.pitch = data.pitch;
       editForm.value.targetNode = '';
+      editForm.value.weight = '1.0';
       editForm.value.tagName = '';
       editForm.value.tagValue = '';
+      
+      if (selectedTool.value === 'arrow') {
+        editForm.value.direction = '0'; // default Frente
+        const existingAdj = currentNodeData.value.adjacent_nodes?.[0];
+        if (existingAdj && typeof existingAdj === 'object' && Object.keys(existingAdj).length > 0) {
+          const target = Object.keys(existingAdj)[0];
+          const weight = existingAdj[target];
+          editForm.value.targetNode = target;
+          editForm.value.weight = weight !== undefined && weight !== null ? weight.toString() : '1.0';
+        }
+      }
+      
       showEditModal.value = true;
     }
   });
@@ -652,4 +840,29 @@ const getIconNameForTag = (tagName) => {
 
 <style lang="scss">
 @import "@/assets/styles/pages/_map.scss";
+
+.max-height-options {
+  max-height: 200px !important;
+  overflow-y: auto !important;
+}
+.tag-option-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+.tag-option-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  opacity: 0.7;
+}
+.selected-tag-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.select-tag-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--main-blue);
+}
 </style>

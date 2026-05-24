@@ -334,6 +334,14 @@
   }
 }
 
+/* Evitar que el wrapper de UInput herede flex-direction: column del layout de la página */
+:deep(.input-wrapper-default),
+:deep(.input-wrapper-dark) {
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+
 .input-label {
   @include paragraph-small;
   color: rgba(255, 255, 255, 0.55);

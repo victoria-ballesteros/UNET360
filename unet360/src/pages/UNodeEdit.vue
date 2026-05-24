@@ -62,6 +62,12 @@
         <UInput v-model="form.forward_heading" styleType="default" type="text" :inputMode="'numeric'" pattern="-?[0-9]*(\.[0-9]+)?" />
       </div>
 
+      <div class="input-container">
+        <p class="input-label">Corrección de Rotación (grados)</p>
+        <USelect v-model="form.rotation_correction" :options="rotationOptions" styleType="default"
+          placeholder="Selecciona una corrección de rotación" />
+      </div>
+
       <!-- Minimap 2D -->
       <div class="input-container">
         <p class="input-label">Mapa 2D</p>
@@ -144,6 +150,7 @@ import { useRoute, useRouter } from 'vue-router';
 import UInput from '@/components/UInput.vue';
 import UButton from '@/components/UButton.vue';
 import UDialog from '@/components/UDialog.vue';
+import USelect from '@/components/USelect.vue';
 import api from '@/axios';
 import { Viewer } from '@photo-sphere-viewer/core';
 import '@photo-sphere-viewer/core/index.css';
@@ -157,7 +164,10 @@ const form = reactive({
   url_image: '',
   forward_heading: '',
   minimap: { image: '', x: '', y: '' },
+  rotation_correction: '0',
 });
+
+const rotationOptions = ['0', '90', '180', '270'];
 
 const adjacentLabels = ['Frente', 'Derecha', 'Atras', 'Izquierda'];
 const adjacentInputs = reactive([
@@ -301,6 +311,7 @@ async function loadNode() {
       form.location = n.location ?? '';
       form.url_image = n.url_image ?? '';
       form.forward_heading = (n.forward_heading ?? 0).toString();
+      form.rotation_correction = (n.rotation_correction ?? 0).toString();
 
       // Adjacent nodes
       const list = Array.isArray(n.adjacent_nodes) ? n.adjacent_nodes : [null, null, null, null];
@@ -430,6 +441,7 @@ function buildPayload() {
     adjacent_nodes,
     arrow_angles: angles,
     forward_heading: parseFloat(form.forward_heading) || 0,
+    rotation_correction: parseInt(form.rotation_correction, 10) || 0,
     tags: tagsObj,
     ...(function () {
       const image = (form.minimap.image || '').trim();
@@ -498,6 +510,7 @@ watch(() => tags.map(t => t.name), (names) => {
     showTagSuggest[i] = has && list.length > 0;
   });
 });
+
 </script>
 
 <style lang="scss">

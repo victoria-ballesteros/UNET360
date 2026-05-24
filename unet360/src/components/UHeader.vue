@@ -74,11 +74,8 @@ const logoutOption = computed(() => props.navOptions.find(o => o.action === 'log
 
   // ── Desktop: aspecto de navbar completa ───────────────────
   @media (min-width: 768px) {
-    padding: 0 2rem;
+    padding: 1rem 2rem;
     height: 56px;
-    background: var(--strong-gray, #303745);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.25);
   }
 }
 

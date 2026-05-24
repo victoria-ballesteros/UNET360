@@ -5,7 +5,6 @@ import { useAuthStore } from "@/service/stores/auth";
 // Node related pages
 import NodeCreate from "@/pages/UNodeCreate.vue";
 import NodeAdmin from "@/pages/UNodeAdmin.vue";
-import NodeEdit from "@/pages/UNodeEdit.vue";
 
 // Other pages
 import Home from "@/pages/UHome.vue";
@@ -49,13 +48,7 @@ const routes = [
         component: NodeAdmin,
         meta: { requiresAuth: true, requiresAdmin: true },
       },
-      {
-        path: "edit/:name",
-        name: "NodeEdit",
-        component: NodeEdit,
-        meta: { requiresAuth: true, requiresAdmin: true },
-        props: true,
-      },
+
       {
         path: "manage/:entity(tags|locations)",
         name: "AdminEntities",

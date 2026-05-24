@@ -19,7 +19,14 @@
 
     <!-- ── Lista de nodos ── -->
     <div class="nodes-list-section">
+      <!-- Loader modernizado mientras se cargan los nodos y estados -->
+      <div v-if="isLoading" class="nodes-loading-container">
+        <div class="nodes-spinner"></div>
+        <p class="loading-text">Cargando nodos y estados de red...</p>
+      </div>
+
       <UAdminList
+        v-else
         :items="nodes"
         :search-fields="['name', 'location']"
         :sort-fn="nodeSortFn"
@@ -33,7 +40,7 @@
 
             <div class="node-main" @click="toggleNode(node.name)">
               <div class="node-info">
-                <span class="node-status" :style="{ background: getStatusColor(node.status) }" />
+                <span class="node-status" :style="{ background: getStatusColor(node.status), color: getStatusColor(node.status) }" />
                 <span class="node-name">{{ node.name }}</span>
               </div>
               <div class="node-actions">
@@ -47,26 +54,57 @@
             </div>
 
             <div v-if="expandedNode === node.name" class="node-details">
-              <div class="primary-info">
-                <div class="adyacent-info">
-                  <div class="adyacent-title">{{ adyacentTitle }}</div>
-                  <div class="adyacent-nodes">
-                    <div v-for="group in adyacentGroups" :key="group.name" :class="group.class">
-                      <span v-for="adj in group.items" :key="adj.key" class="adyacent-label">
-                        {{ adj.label }}:
-                        <span class="adyacent-value-blue">{{ getAdyacentValue(node, adj.key) }}</span>
-                      </span>
-                    </div>
-                  </div>
+              
+              <!-- Información General -->
+              <div class="info-group">
+                <div class="info-item" v-if="node.location">
+                  <span class="info-label">Ubicación:</span>
+                  <span class="info-value location-text">{{ node.location }}</span>
                 </div>
-                <div class="location-info">
-                  <span class="location-label">{{ locationLabel }}</span>
-                  <span class="location-value">{{ node.location }}</span>
+                <div class="info-item">
+                  <span class="info-label">Orientación Inicial:</span>
+                  <span class="info-value">
+                    <strong class="highlight-yellow">{{ radToDeg(node.forward_heading) }}</strong>
+                    <span class="rad-desc">({{ formatAngleRad(node.forward_heading) }})</span>
+                  </span>
+                </div>
+                <div class="info-item" v-if="node.minimap && node.minimap.image">
+                  <span class="info-label">Mapa 2D:</span>
+                  <span class="info-value code-text">
+                    {{ node.minimap.image }}
+                    <span class="coords-suffix">(X: {{ node.minimap.x ?? 'N/A' }}, Y: {{ node.minimap.y ?? 'N/A' }})</span>
+                  </span>
                 </div>
               </div>
 
+              <!-- Conexiones Existentes (Sin ángulos ni N/As) -->
+              <div class="details-row-section" v-if="getExistingConnections(node).length">
+                <span class="details-section-label">Conexiones:</span>
+                <div class="connections-tags">
+                  <span v-for="conn in getExistingConnections(node)" :key="conn.dir" class="connection-tag-item">
+                    <span class="direction-indicator" :class="conn.dir">
+                      {{ conn.dir === 'frente' ? '↑' : conn.dir === 'derecha' ? '→' : conn.dir === 'atras' ? '↓' : '←' }}
+                    </span>
+                    <span class="conn-dir-label">{{ conn.dir.charAt(0).toUpperCase() + conn.dir.slice(1) }}:</span>
+                    <strong class="conn-neighbor-val">{{ conn.neighbor }}</strong>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Correcciones de Rotación Existentes -->
+              <div class="details-row-section" v-if="node.rotation_correction && Object.keys(node.rotation_correction).length">
+                <span class="details-section-label">Correcciones de Rotación:</span>
+                <div class="rotations-tags">
+                  <span v-for="(deg, neighbor) in node.rotation_correction" :key="neighbor" class="rotation-tag-item">
+                    <span class="rot-label">Desde {{ neighbor }}:</span>
+                    <strong class="rot-val">{{ deg }}°</strong>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Tags del Nodo -->
               <div class="tags-info">
-                <span class="tags-label">{{ tagsLabel }}</span>
+                <span class="tags-label">{{ tagsLabel }}:</span>
                 <div class="tags-list">
                   <span
                     v-if="node.tags && Object.keys(node.tags).length"
@@ -74,21 +112,28 @@
                     :key="tag"
                     class="tag-item"
                   >
-                    {{ tag }}:
-                    <template v-if="Array.isArray(values)">{{ values.join(', ') }}</template>
-                    <template v-else>{{ Object.entries(values)[0][0] }}</template>
+                    <span class="tag-category">{{ tag }}:</span>
+                    <span class="tag-val">
+                      <template v-if="Array.isArray(values)">{{ values.join(', ') }}</template>
+                      <template v-else>{{ Object.entries(values)[0][0] }}</template>
+                    </span>
                   </span>
-                  <span v-else class="tag-item">{{ tagsEmpty }}</span>
+                  <span v-else class="tag-item empty-tags">{{ tagsEmpty }}</span>
                 </div>
               </div>
 
+              <!-- Advertencias de Estado -->
               <div class="reasons" v-if="node.reasons && node.reasons.length">
-                <div class="reasons-title">Advertencias:</div>
+                <div class="reasons-header-container">
+                  <UIcon name="icons/exclamation-circle" class="warning-icon" />
+                  <span class="reasons-title">Advertencias detectadas:</span>
+                </div>
                 <ul class="reasons-list">
                   <li v-for="(r, i) in node.reasons" :key="i">{{ r }}</li>
                 </ul>
               </div>
 
+              <!-- Sección de Eliminación -->
               <div class="delete-section">
                 <button class="delete-node-btn" @click.stop="openDeleteConfirm(node.name)">
                   <UIcon name="icons/trash" class="delete-icon" />
@@ -131,7 +176,7 @@ import { deleteNode as deleteNodeRequest, deleteImageFromServer } from '@/servic
 
 const router    = useRouter();
 const nodeStore = useNodeStore();
-const { nodes } = storeToRefs(nodeStore);
+const { nodes, isLoading } = storeToRefs(nodeStore);
 
 // ── Función de ordenación personalizada (prioridad de estado + alfa) ───────
 const statusPriority = { ERROR: 0, WARNING: 1, OK: 2 };
@@ -171,6 +216,30 @@ const getStatusColor = (status) => ({
   ERROR:   'var(--status-red,    #e53935)',
 }[status] ?? 'rgba(255,255,255,0.25)');
 
+const radToDeg = (rad) => {
+  if (rad === null || rad === undefined || isNaN(rad) || rad === '') return 'N/A';
+  let deg = rad * (180 / Math.PI);
+  deg = (deg % 360 + 360) % 360;
+  return `${deg.toFixed(1)}°`;
+};
+
+const formatAngleRad = (rad) => {
+  if (rad === null || rad === undefined || isNaN(rad) || rad === '') return 'N/A';
+  return `${parseFloat(rad).toFixed(2)} rad`;
+};
+
+const getArrowAngleValue = (node, key) => {
+  const keyMap = { frente: 0, derecha: 1, atras: 2, izquierda: 3 };
+  const neighbor = getAdyacentValue(node, key);
+  if (neighbor === 'N/A') return '—';
+  
+  const idx = keyMap[key];
+  if (Array.isArray(node.arrow_angles) && node.arrow_angles[idx] !== undefined && node.arrow_angles[idx] !== null && node.arrow_angles[idx] !== '') {
+    return radToDeg(node.arrow_angles[idx]);
+  }
+  return 'Predeterminado';
+};
+
 const getAdyacentValue = (node, key) => {
   const keyMap = { frente: 0, atras: 2, izquierda: 3, derecha: 1 };
   if (Array.isArray(node.adjacent_nodes)) {
@@ -179,6 +248,18 @@ const getAdyacentValue = (node, key) => {
     return 'N/A';
   }
   return node.adjacent_nodes?.[key] || 'N/A';
+};
+
+const getExistingConnections = (node) => {
+  const directions = ['frente', 'derecha', 'atras', 'izquierda'];
+  const existings = [];
+  for (const dir of directions) {
+    const val = getAdyacentValue(node, dir);
+    if (val && val !== 'N/A') {
+      existings.push({ dir, neighbor: val });
+    }
+  }
+  return existings;
 };
 
 // ── Navegación ─────────────────────────────────────────────────────────────

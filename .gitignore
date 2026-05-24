@@ -382,5 +382,6 @@ package-lock.json
 analysis_results.md
 skills-lock.json
 .agents/
+.antigravitycli/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux

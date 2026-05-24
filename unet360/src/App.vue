@@ -6,7 +6,6 @@
         :nav-options="sidebarOptions"
         @isPanelOpen="isPanelOpen = !isPanelOpen"
         @logout="handleLogout"
-        class="provisional-header-container"
       />
       <main class="content-container">
         <router-view />

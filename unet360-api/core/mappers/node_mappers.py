@@ -72,6 +72,7 @@ async def transform_node_to_node_out_dto(node_db_obj: Node) -> NodeOutDTO:
         adjacent_nodes=adjacent_nodes_with_weights,
         arrow_angles=getattr(node_db_obj, "arrow_angles", [0, 1.5707963267948966, 3.141592653589793, -1.5707963267948966]),
         forward_heading=getattr(node_db_obj, "forward_heading", 0.0),
+        rotation_correction=getattr(node_db_obj, "rotation_correction", None),
         tags=tags_dict,
         minimap=getattr(node_db_obj, "minimap", None)
     )
@@ -98,6 +99,9 @@ async def update_db_obj(node_db_obj: Node, new_data: dict) -> None:
 
     if 'forward_heading' in new_data:
         node_db_obj.forward_heading = float(new_data['forward_heading'])
+
+    if 'rotation_correction' in new_data:
+        node_db_obj.rotation_correction = dict(new_data['rotation_correction']) if new_data['rotation_correction'] is not None else None
 
     if 'tags' in new_data:
         # Validate tag names exist; values are dict[valueName -> headingFloat]

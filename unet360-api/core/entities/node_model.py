@@ -1,5 +1,5 @@
 from beanie import Document, Link, Indexed
-from pydantic import Field
+from pydantic import Field, field_validator
 from typing import Optional, Dict, List, Annotated, Union
 import math
 
@@ -31,6 +31,17 @@ class Node(Document):
     )
 
     forward_heading: float = Field(default=0.0, description="Heading of the image front")
+    rotation_correction: Optional[Dict[str, int]] = Field(
+        default=None,
+        description="Corrección de rotación dependiente del nodo de origen: {nombre_nodo_origen: grados}"
+    )
+
+    @field_validator('rotation_correction', mode='before')
+    @classmethod
+    def validate_rotation_correction(cls, v):
+        if isinstance(v, (int, float)):
+            return None
+        return v
 
     tags: Optional[Dict[str, Union[Dict[str, float], List[str]]]] = Field(
         default=None,

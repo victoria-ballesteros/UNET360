@@ -65,6 +65,7 @@ class NodeService:
             adjacent_nodes=adjacent_nodes,
             arrow_angles=new_node.arrow_angles,
             forward_heading=new_node.forward_heading,
+            rotation_correction=new_node.rotation_correction if new_node.rotation_correction is not None else None,
             tags=tags_dict,
             minimap=new_node.minimap if new_node.minimap is not None else {"image": "missing.png", "x": 0, "y": 0}
         )
@@ -87,6 +88,7 @@ class NodeService:
             adjacent_nodes=new_node_db_obj.adjacent_nodes,
             arrow_angles=new_node_db_obj.arrow_angles,
             forward_heading=new_node_db_obj.forward_heading,
+            rotation_correction=new_node_db_obj.rotation_correction,
             tags=new_node_db_obj.tags,
             minimap=getattr(new_node_db_obj, "minimap", None)
         )

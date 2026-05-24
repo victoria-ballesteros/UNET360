@@ -15,6 +15,7 @@ class NodeCreateDTO(BaseModel):
         description="Angles to position arrows on the 360 image; allow nulls for missing arrows"
     )
     forward_heading: float = Field(default=0.0, description="Heading (radians) of the image front")
+    rotation_correction: Optional[Dict[str, int]] = Field(default_factory=dict, description="rotation correction conditional dictionary")
     tags: Optional[Dict[str, Dict[str, float]]] = Field(
         default_factory=dict,
         description="Dictionary of tags with per-value heading"
@@ -31,6 +32,7 @@ class NodeUpdateDTO(BaseModel):
     adjacent_nodes: Optional[list[Optional[Dict[str, float]]]] = None
     arrow_angles: Optional[List[Optional[float]]] = None
     forward_heading: Optional[float] = None
+    rotation_correction: Optional[Dict[str, int]] = None
     tags: Optional[Dict[str, Dict[str, float]]] = None
     minimap: Optional[dict] = Field(
         default=None,
@@ -42,9 +44,9 @@ class NodeOutDTO(BaseModel):
     location: Optional[str]
     url_image: str
     adjacent_nodes: list[Optional[Dict[str, float]]]
-    # New fields
     arrow_angles: List[Optional[float]]
     forward_heading: float
+    rotation_correction: Optional[Dict[str, int]] = None
     tags: Dict[str, Dict[str, float]]
     minimap: Optional[dict] = Field(
         default=None,
