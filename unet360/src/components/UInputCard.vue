@@ -85,6 +85,7 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/service/stores/auth";
 import { searchNodeByKeyword } from '@/service/shared/utils';
 import { fetchShortestPath } from '@/service/requests/graph';
+import { useNodeStore } from "@/service/stores/nodes";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -245,10 +246,74 @@ function toggleRouteSearcher() {
     emit('update:searchSource', sourceValue.value);
 }
 
+const resolveNodeId = (typedValue) => {
+    if (!typedValue) return null;
+    const cleanVal = typedValue.trim();
+    const lowerVal = cleanVal.toLowerCase();
+
+    // 1. "Posición actual" -> props.actualNode.name
+    if (lowerVal === "posición actual" || lowerVal === "posicion actual" || lowerVal === "posicion_actual") {
+        return props.actualNode?.name || null;
+    }
+
+    const nodeStore = useNodeStore();
+
+    // 2. Coincidencia exacta por nombre de nodo (ej: "003")
+    const exactNode = nodeStore.nodes.find(n => n.name.toLowerCase() === lowerVal);
+    if (exactNode) return exactNode.name;
+
+    // 3. Coincidencia por nombre de nodo corto/sin ceros (ej: "3" -> "003")
+    const paddedNode = nodeStore.nodes.find(n => n.name.toLowerCase() === lowerVal.padStart(3, '0'));
+    if (paddedNode) return paddedNode.name;
+
+    // 4. Coincidencia exacta por nombre de ubicación (ej: "Edificio A")
+    const exactLocationNode = nodeStore.nodes.find(n => n.location && n.location.toLowerCase() === lowerVal);
+    if (exactLocationNode) return exactLocationNode.name;
+
+    // 5. Coincidencia exacta por identificador o etiquetas de Tag
+    for (const n of nodeStore.nodes) {
+        if (n.tags && Object.keys(n.tags).length > 0) {
+            for (const [_, tagObj] of Object.entries(n.tags)) {
+                for (const [tagKey, customNames] of Object.entries(tagObj)) {
+                    if (tagKey.toLowerCase() === lowerVal) {
+                        return n.name;
+                    }
+                    if (Array.isArray(customNames)) {
+                        if (customNames.some(name => String(name).toLowerCase() === lowerVal)) {
+                            return n.name;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 6. Coincidencia parcial usando la función de palabras clave del sistema
+    const matches = searchNodeByKeyword(cleanVal);
+    const firstMatchKey = Object.keys(matches)[0];
+    if (firstMatchKey) {
+        return matches[firstMatchKey];
+    }
+
+    return null;
+}
+
 const searchPath = async () => {
-    route.value = await fetchShortestPath(routeSearcherResult.value?.[sourceValue.value], routeSearcherTargetResult.value?.[targetValue.value])
+    const sourceId = resolveNodeId(props.searchSource);
+    const targetId = resolveNodeId(props.searchTarget);
+
+    if (!sourceId || !targetId) {
+        notify();
+        return;
+    }
+
+    route.value = await fetchShortestPath(sourceId, targetId);
     if (route.value.status == true && route.value.response_obj.total_weight != 0) {
-        emit('update:actualRoute', { 'route': route.value.response_obj.path, 'weight': parseFloat(route.value.response_obj.total_weight) * 10, 'targetTag': targetValue.value })
+        emit('update:actualRoute', { 
+            'route': route.value.response_obj.path, 
+            'weight': parseFloat(route.value.response_obj.total_weight) * 10, 
+            'targetTag': props.searchTarget 
+        });
     } else {
         notify();
     }

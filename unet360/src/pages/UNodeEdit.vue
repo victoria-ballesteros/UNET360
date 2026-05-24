@@ -125,7 +125,7 @@
   </div>
 
   <!-- Dialogo para asignar direcciones / frente -->
-  <UDialog v-model="showDirectionDialog" :headerTitle="directionDialogTitle">
+  <UBaseModal v-model="showDirectionDialog" :title="directionDialogTitle" size="lg">
     <div class="direction-dialog">
       <p class="direction-instructions" v-if="directionMode === 'arrow'">
         Clic para capturar orientación: <strong>{{ arrowOrder[currentArrowIndex] }}</strong> (orden: Frente, Derecha, Atras, Izquierda).
@@ -134,12 +134,12 @@
         Clic para capturar yaw del Frente de la imagen.
       </p>
       <div ref="directionViewerContainer" class="direction-viewer"></div>
-      <div class="direction-footer">
-        <UButton text="Reiniciar" type="tertiary" @click="resetCurrentDirectionSequence" />
-        <UButton text="Cerrar" type="secondary" @click="closeDirectionDialog" />
-      </div>
     </div>
-  </UDialog>
+    <template #footer>
+      <UButton text="Reiniciar" type="secondary" @click="resetCurrentDirectionSequence" />
+      <UButton text="Cerrar"    type="tertiary"  @click="closeDirectionDialog" />
+    </template>
+  </UBaseModal>
 </template>
 
 <script setup>
@@ -149,7 +149,7 @@ defineProps({ name: { type: String, required: false } });
 import { useRoute, useRouter } from 'vue-router';
 import UInput from '@/components/UInput.vue';
 import UButton from '@/components/UButton.vue';
-import UDialog from '@/components/UDialog.vue';
+import UBaseModal from '@/components/UBaseModal.vue';
 import USelect from '@/components/USelect.vue';
 import api from '@/axios';
 import { Viewer } from '@photo-sphere-viewer/core';

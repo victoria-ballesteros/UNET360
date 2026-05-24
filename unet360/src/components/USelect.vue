@@ -220,7 +220,7 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
     }
 
     .uselect-dropdown {
-        background: #1a1a1a;
+        background: var(--strong-gray-dark, #252932);
         border-color: rgba(255, 255, 255, 0.1);
     }
 

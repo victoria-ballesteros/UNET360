@@ -11,8 +11,8 @@
           <p v-if="entity === 'tenants'" class="header-overline">Panel de control</p>
           <h2>{{ title }}</h2>
         </div>
-        <div v-if="entity !== 'tenants'" class="admin-entities-buttons">
-          <UButton :text="createButtonText" type="contrast-2" @click="goCreate" />
+        <div class="admin-entities-buttons">
+          <UButton v-if="entity !== 'tenants'" :text="createButtonText" type="contrast-2" @click="goCreate" />
           <UButton text="Volver a nodos"   type="tertiary"   @click="router.push({ name: 'NodeAdmin' })" />
         </div>
       </div>
@@ -22,9 +22,9 @@
         <UAdminList
           :items="items"
           :search-fields="entity === 'tenants' ? ['name', 'email'] : ['name']"
-          :show-search="entity === 'tenants'"
-          :show-sort="entity === 'tenants'"
-          search-placeholder="Buscar por nombre o email..."
+          :show-search="true"
+          :show-sort="true"
+          :search-placeholder="entity === 'tenants' ? 'Buscar por nombre o email...' : 'Buscar...'"
           :empty-message="`No hay ${entityLabelPlural}.`"
           :no-results-message="`No se encontraron ${entityLabelPlural}.`"
           item-key-field="name"
@@ -37,52 +37,72 @@
                   v-else-if="entity === 'tags' && it.icon_name"
                   :name="`icons/${it.icon_name}`"
                   class="item-left-icon"
+                  size="22"
                   :color="'var(--status-green, #4caf50)'"
                 />
                 <span class="item-name">{{ it.name }}</span>
               </div>
 
               <div class="item-actions">
-                <button v-if="entity === 'tags'" class="icon-btn" @click="editItem(it)">
-                  <UIcon name="icons/edit" class="entity-action-icon" />
-                </button>
-                <button v-if="entity === 'tenants'" class="icon-btn" @click="openRoleDialog(it)">
-                  <UIcon name="icons/journal-text" class="entity-action-icon" :color="'var(--full-white)'" />
-                </button>
-                <button class="icon-btn" @click="confirmDelete(it)">
-                  <UIcon name="icons/trash" class="entity-action-icon" />
-                </button>
+                <UButton
+                  v-if="entity === 'tags'"
+                  icon="icons/edit"
+                  type="tertiary"
+                  size="md"
+                  @click="editItem(it)"
+                />
+                <UButton
+                  v-if="entity === 'tenants'"
+                  icon="icons/journal-text"
+                  type="tertiary"
+                  size="md"
+                  @click="openRoleDialog(it)"
+                />
+                <UButton
+                  icon="icons/trash"
+                  type="tertiary"
+                  size="md"
+                  @click="confirmDelete(it)"
+                  class="delete-entity-btn"
+                />
               </div>
             </div>
           </template>
         </UAdminList>
       </div>
 
-      <!-- ── Dialog: eliminar ── -->
-      <UDialog v-model="showDeleteDialog" :headerTitle="''">
-        <div class="delete-dialog-content">
-          <div class="delete-dialog-header">¿Eliminar {{ entityLabel }} {{ itemToDelete?.name }}?</div>
-          <div class="delete-dialog-actions">
-            <UButton text="Cancelar" type="tertiary"   @click="showDeleteDialog = false" />
-            <UButton text="Eliminar" type="danger"     @click="doDelete" />
-          </div>
-        </div>
-      </UDialog>
+      <!-- ── Modal: eliminar ── -->
+      <UBaseModal
+        v-model="showDeleteDialog"
+        title="Confirmar eliminación"
+        size="sm"
+        :danger="true"
+      >
+        <p class="modal-confirm-text">¿Seguro que quieres eliminar {{ entityLabel }} <strong>{{ itemToDelete?.name }}</strong>?</p>
+        <template #footer>
+          <UButton text="Cancelar" type="tertiary"   @click="showDeleteDialog = false" />
+          <UButton text="Eliminar" type="danger"     @click="doDelete" />
+        </template>
+      </UBaseModal>
 
-      <!-- ── Dialog: cambiar rol ── -->
-      <UDialog v-model="showRoleDialog" :headerTitle="' '">
-        <div class="delete-dialog-content">
-          <div class="delete-dialog-header">Usuario: {{ userForRole?.name }}</div>
-          <div style="display:flex; gap:.5rem; align-items:center;">
-            <label><input type="radio" value="viewer" v-model="selectedRole"> Viewer</label>
-            <label><input type="radio" value="admin"  v-model="selectedRole"> Admin</label>
-          </div>
-          <div class="delete-dialog-actions">
-            <UButton text="Cancelar" type="tertiary"   @click="showRoleDialog = false" />
-            <UButton text="Guardar"  type="contrast-2" @click="saveRole" />
+      <!-- ── Modal: cambiar rol ── -->
+      <UBaseModal
+        v-model="showRoleDialog"
+        title="Cambiar rol de usuario"
+        size="sm"
+      >
+        <div class="modal-role-body">
+          <p class="modal-confirm-text">Usuario: <strong>{{ userForRole?.name }}</strong></p>
+          <div class="modal-radio-group">
+            <label class="modal-radio-label"><input type="radio" value="viewer" v-model="selectedRole"> Viewer</label>
+            <label class="modal-radio-label"><input type="radio" value="admin"  v-model="selectedRole"> Admin</label>
           </div>
         </div>
-      </UDialog>
+        <template #footer>
+          <UButton text="Cancelar" type="tertiary"   @click="showRoleDialog = false" />
+          <UButton text="Guardar"  type="contrast-2" @click="saveRole" />
+        </template>
+      </UBaseModal>
     </template>
 
   </div>
@@ -92,7 +112,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import UButton    from '@/components/UButton.vue';
-import UDialog    from '@/components/UDialog.vue';
+import UBaseModal from '@/components/UBaseModal.vue';
 import UIcon      from '@/components/UIcon.vue';
 import ULoader    from '@/components/ULoader.vue';
 import UAdminList from '@/components/UAdminList.vue';

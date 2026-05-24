@@ -68,7 +68,7 @@ const logoutOption = computed(() => props.navOptions.find(o => o.action === 'log
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.125rem;
+  padding: 0.625rem 1.125rem;
   z-index: 100;
   position: relative;
 

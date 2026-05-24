@@ -46,95 +46,96 @@
         <input type="file" accept=".zip" ref="fileInput" style="display:none" @change="handleFileChange" />
       </div>
 
-      <!-- right: form -->
-      <div class="card-form">
-        <!-- Identificación con tags inline -->
-        <div class="identification-section">
-          <p class="form-section-label">Identificación</p>
+      <div class="card-form-wrapper">
+        <div class="card-form">
+          <!-- Identificación con tags inline -->
+          <div class="identification-section">
+            <p class="form-section-label">Identificación</p>
 
-          <div class="id-tags-row">
-            <div class="id-input-wrapper" :class="{ 'has-error': inputErrors['Identificación'] }">
-              <p class="input-label">Id. del nodo</p>
-              <UInput v-model="inputModels['Identificación']" styleType="dark" placeholder="Ej: 003" icon="arrow-up"
-                @update:modelValue="() => {
-                  inputTouched['Identificación'] = true;
-                }" />
-              <p v-if="inputErrors['Identificación']" class="error-msg">
-                {{ inputErrors['Identificación'] }}
-              </p>
+            <div class="id-tags-row">
+              <div class="id-input-wrapper" :class="{ 'has-error': inputErrors['Identificación'] }">
+                <p class="input-label">Id. del nodo</p>
+                <UInput v-model="inputModels['Identificación']" styleType="dark" placeholder="Ej: 003" icon="arrow-up"
+                  @update:modelValue="() => {
+                    inputTouched['Identificación'] = true;
+                  }" />
+                <p v-if="inputErrors['Identificación']" class="error-msg">
+                  {{ inputErrors['Identificación'] }}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="divider" />
+          <div class="divider" />
 
-        <p class="form-section-label">Conexiones</p>
+          <p class="form-section-label">Conexiones</p>
 
-        <!-- Nodos adyacentes en grid 2x2 -->
-        <div class="connections-grid">
-          <div v-for="(label, index) in adjacentLabels" :key="label" class="input-wrapper"
-            :class="{ 'has-error': inputErrors[label] }">
-            <p class="input-label">{{ label }}</p>
-            <div class="adjacent-row">
-              <UInput v-model="inputModels[label]" styleType="dark" :placeholder="inputPlaceholders[label]"
-                icon="arrow-up" :iconRotation="index * 90" @update:modelValue="() => {
+          <!-- Nodos adyacentes en grid 2x2 -->
+          <div class="connections-grid">
+            <div v-for="(label, index) in adjacentLabels" :key="label" class="input-wrapper"
+              :class="{ 'has-error': inputErrors[label] }">
+              <p class="input-label">{{ label }}</p>
+              <div class="adjacent-row">
+                <UInput v-model="inputModels[label]" styleType="dark" :placeholder="inputPlaceholders[label]"
+                  icon="arrow-up" :iconRotation="index * 90" @update:modelValue="() => {
+                    inputTouched[label] = true;
+                  }" />
+
+                <UInput v-model="inputWeightModels[label]" styleType="dark" placeholder="Peso" @update:modelValue="(value) => {
                   inputTouched[label] = true;
+                  inputWeightModels[label] = value
+                    ?.replace(',', '.')
+                    ?.replace(/[^0-9.]/g, '');
                 }" />
-
-              <UInput v-model="inputWeightModels[label]" styleType="dark" placeholder="Peso" @update:modelValue="(value) => {
-                inputTouched[label] = true;
-                inputWeightModels[label] = value
-                  ?.replace(',', '.')
-                  ?.replace(/[^0-9.]/g, '');
-              }" />
+              </div>
+              <p v-if="inputErrors[label]" class="error-msg">{{ inputErrors[label] }}</p>
             </div>
-            <p v-if="inputErrors[label]" class="error-msg">{{ inputErrors[label] }}</p>
+          </div>
+
+          <div class="divider" />
+
+          <!-- Ubicación -->
+          <p class="form-section-label">Ubicación</p>
+          <div class="input-wrapper">
+            <p class="input-label">Ubicación del nodo</p>
+            <USelect v-model="selectedLocation" :options="locationOptions" styleType="dark"
+              placeholder="Selecciona una ubicación" />
+          </div>
+
+          <div class="divider" />
+
+          <!-- Minimapa -->
+          <p class="form-section-label">Minimapa</p>
+          <div class="input-wrapper">
+            <p class="input-label">Nombre del minimapa</p>
+            <USelect v-model="selectedMinimap" :options="MINIMAP_OPTIONS" styleType="dark"
+              placeholder="Selecciona un minimapa" />
+          </div>
+          <div class="adjacent-row">
+            <div class="input-wrapper" style="flex: 1">
+              <p class="input-label">Coordenada X</p>
+              <UInput v-model="minimapX" styleType="dark" placeholder="Ej: 120"
+                @update:modelValue="(v) => { minimapX = v?.replace(/[^0-9-]/g, ''); }" />
+            </div>
+            <div class="input-wrapper" style="flex: 1">
+              <p class="input-label">Coordenada Y</p>
+              <UInput v-model="minimapY" styleType="dark" placeholder="Ej: 240"
+                @update:modelValue="(v) => { minimapY = v?.replace(/[^0-9-]/g, ''); }" />
+            </div>
           </div>
         </div>
 
-        <div class="divider" />
-
-        <!-- Ubicación -->
-        <p class="form-section-label">Ubicación</p>
-        <div class="input-wrapper">
-          <p class="input-label">Ubicación del nodo</p>
-          <USelect v-model="selectedLocation" :options="locationOptions" styleType="dark"
-            placeholder="Selecciona una ubicación" />
-        </div>
-
-        <div class="divider" />
-
-        <!-- Minimapa -->
-        <p class="form-section-label">Minimapa</p>
-        <div class="input-wrapper">
-          <p class="input-label">Nombre del minimapa</p>
-          <USelect v-model="selectedMinimap" :options="MINIMAP_OPTIONS" styleType="dark"
-            placeholder="Selecciona un minimapa" />
-        </div>
-        <div class="adjacent-row">
-          <div class="input-wrapper" style="flex: 1">
-            <p class="input-label">Coordenada X</p>
-            <UInput v-model="minimapX" styleType="dark" placeholder="Ej: 120"
-              @update:modelValue="(v) => { minimapX = v?.replace(/[^0-9-]/g, ''); }" />
-          </div>
-          <div class="input-wrapper" style="flex: 1">
-            <p class="input-label">Coordenada Y</p>
-            <UInput v-model="minimapY" styleType="dark" placeholder="Ej: 240"
-              @update:modelValue="(v) => { minimapY = v?.replace(/[^0-9-]/g, ''); }" />
-          </div>
-        </div>
-
-        <!-- Buttons -->
+        <!-- Footer de la card: botones de acción -->
         <div class="form-actions">
-          <UButton text="Cancelar" type="tertiary" @click="handleCancelEvent" />
+          <UButton text="Cancelar"   type="tertiary"    @click="handleCancelEvent" />
           <UButton text="Crear nodo" :type="buttonType" @click.stop="handleFormSubmit" />
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Dialogs... -->
-  <UDialog v-model="showDialog" headerTitle="Identificación del tag">
+  <!-- Modal: identificación del tag -->
+  <UBaseModal v-model="showDialog" title="Identificación del tag" size="sm">
     <div class="tag-dialog-content">
       <div v-for="(_, index) in tagCustomNames[actualTagSelected]" :key="index" class="tag-name-row">
         <UInput v-model="tagCustomNames[actualTagSelected][index]" styleType="dark" placeholder="Baño oeste" />
@@ -148,27 +149,23 @@
         <UIcon name="icons/plus" size="14" color="var(--main-yellow)" />
         Agregar otro
       </button>
-
-      <UButton style="align-self:flex-end" text="Aceptar" @click="handleTagCustomization" :type="dialogButtonType" />
     </div>
-  </UDialog>
+    <template #footer>
+      <UButton text="Aceptar" @click="handleTagCustomization" :type="dialogButtonType" />
+    </template>
+  </UBaseModal>
 
-  <UDialog v-model="showResultDialog" :headerTitle="''">
-    <div class="result-dialog">
-      <div class="result-icon">
-        <UIcon :name="resultSuccess ? 'icons/check-square-fill' : 'icons/close-session'" size="48"
-          :color="resultSuccess ? 'var(--status-green, #4caf50)' : 'var(--status-red, #e53935)'" />
-      </div>
-      <div class="result-text">
-        <p class="upper-paragraph">{{ resultTitle }}</p>
-        <p class="lower-paragraph">{{ resultMessage }}</p>
-      </div>
-      <div class="result-actions">
-        <UButton text="Ver nodos" type="contrast-2" @click="navigateToNodes" />
-        <UButton text="Crear Nuevo Nodo" type="contrast-2" @click="startNewNode" />
-      </div>
-    </div>
-  </UDialog>
+  <!-- Modal: resultado de creación -->
+  <UResultDialog
+    v-model="showResultDialog"
+    :success="resultSuccess"
+    :title="resultTitle"
+    :message="resultMessage"
+    primary-btn-text="Ver nodos"
+    secondary-btn-text="Crear Nuevo Nodo"
+    @primary-click="navigateToNodes"
+    @secondary-click="startNewNode"
+  />
 </template>
 <script setup>
 import {
@@ -178,7 +175,8 @@ import UButton from '@/components/UButton.vue';
 import UInput from '@/components/UInput.vue';
 import USelect from '@/components/USelect.vue';
 import UIcon from '@/components/UIcon.vue';
-import UDialog from '@/components/UDialog.vue';
+import UBaseModal    from '@/components/UBaseModal.vue';
+import UResultDialog from '@/components/UResultDialog.vue';
 import ULoader from '@/components/ULoader.vue';
 
 import { useNodeStore } from '../service/stores/nodes';

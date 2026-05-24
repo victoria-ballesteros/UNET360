@@ -292,93 +292,11 @@
   .edit-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 1rem;
-
-    button {
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .btn-cancel {
-      background: transparent;
-      color: rgba(255, 255, 255, 0.5);
-
-      &:hover {
-        color: white;
-        background: rgba(255, 255, 255, 0.1);
-      }
-    }
-
-    .btn-save {
-      background: var(--main-blue, #2196f3);
-      color: white;
-
-      &:hover {
-        background: #1976d2;
-      }
-    }
+    gap: 0.75rem;
   }
 }
 
-// ═══  Modal: Acciones de Marcador Existente  ═══
+// ═══  Modal: Acciones de Marcador  ═══
 .action-modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem 0 0.5rem;
-  text-align: center;
-
-  p {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 1rem;
-    margin: 0;
-  }
-
-  .action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    
-    button {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 10px 18px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s, transform 0.1s;
-
-      &:hover {
-        transform: scale(1.05);
-      }
-    }
-
-    .btn-delete-element {
-      background: rgba(229, 57, 53, 0.15);
-      color: #ff5252;
-      border: 1px solid rgba(229, 57, 53, 0.4);
-
-      &:hover {
-        background: rgba(229, 57, 53, 0.3);
-      }
-    }
-
-    .btn-edit-element {
-      background: var(--main-blue, #2196f3);
-      color: white;
-
-      &:hover {
-        background: #1976d2;
-      }
-    }
-  }
+  padding: 0.25rem 0;
 }

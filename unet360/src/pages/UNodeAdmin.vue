@@ -149,16 +149,19 @@
 
   </div>
 
-  <!-- ── Dialog de confirmación de borrado ── -->
-  <UDialog v-model="showDeleteDialog" :headerTitle="''">
-    <div class="delete-dialog-content">
-      <div class="delete-dialog-header">¿Desea eliminar el nodo {{ nodeToDelete }}?</div>
-      <div class="delete-dialog-actions">
-        <UButton text="Cancelar"  type="tertiary" @click="showDeleteDialog = false" />
-        <UButton text="Continuar" type="danger"   @click="confirmDelete" />
-      </div>
-    </div>
-  </UDialog>
+  <!-- ── Modal de confirmación de borrado ── -->
+  <UBaseModal
+    v-model="showDeleteDialog"
+    title="Eliminar nodo"
+    size="sm"
+    :danger="true"
+  >
+    <p class="modal-confirm-text">¿Seguro que deseas eliminar el nodo <strong>{{ nodeToDelete }}</strong>? Esta acción no se puede deshacer.</p>
+    <template #footer>
+      <UButton text="Cancelar"  type="tertiary" @click="showDeleteDialog = false" />
+      <UButton text="Eliminar"  type="danger"   @click="confirmDelete" />
+    </template>
+  </UBaseModal>
 </template>
 
 <script setup>
@@ -169,7 +172,7 @@ import { storeToRefs } from 'pinia';
 
 import UIcon    from '@/components/UIcon.vue';
 import UButton  from '@/components/UButton.vue';
-import UDialog  from '@/components/UDialog.vue';
+import UBaseModal from '@/components/UBaseModal.vue';
 import UAdminList from '@/components/UAdminList.vue';
 
 import { deleteNode as deleteNodeRequest, deleteImageFromServer } from '@/service/requests/requests.js';
@@ -294,7 +297,7 @@ onMounted(async () => {
 </script>
 
 <script>
-export default { components: { UIcon, UButton, UDialog, UAdminList } };
+export default { components: { UIcon, UButton, UBaseModal, UAdminList } };
 </script>
 
 <style lang="scss" scoped>

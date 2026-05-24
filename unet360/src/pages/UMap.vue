@@ -58,21 +58,17 @@
   
   <UToast ref="toastRefMap" />
 
-  <UDialog v-model="showActionModal" headerTitle="Opciones del Marcador">
+  <UBaseModal v-model="showActionModal" title="Opciones del Marcador" size="sm">
     <div class="action-modal-content">
-      <p>¿Qué deseas hacer con este elemento?</p>
-      <div class="action-buttons">
-        <button class="btn-delete-element" @click="deleteSelectedElement">
-          🗑️ Eliminar
-        </button>
-        <button class="btn-edit-element" @click="openEditForSelectedElement">
-          ✏️ Editar
-        </button>
-      </div>
+      <p class="modal-confirm-text">¿Qué deseas hacer con este elemento?</p>
     </div>
-  </UDialog>
+    <template #footer>
+      <UButton text="Eliminar" type="danger"   icon="icons/trash"  @click="deleteSelectedElement" />
+      <UButton text="Editar"   type="contrast-2" icon="icons/edit" @click="openEditForSelectedElement" />
+    </template>
+  </UBaseModal>
 
-  <UDialog v-model="showEditModal" :headerTitle="modalTitle">
+  <UBaseModal v-model="showEditModal" :title="modalTitle" size="md">
     <div class="edit-form-content">
       <template v-if="editForm.type === 'arrow'">
         <div class="form-group">
@@ -186,11 +182,11 @@
       </template>
 
       <div class="edit-actions">
-        <button class="btn-cancel" @click="showEditModal = false">Cancelar</button>
-        <button class="btn-save" @click="saveEditedElement">Aplicar</button>
+        <UButton text="Cancelar" type="tertiary"    @click="showEditModal = false" />
+        <UButton text="Aplicar"  type="contrast-2" @click="saveEditedElement" />
       </div>
     </div>
-  </UDialog>
+  </UBaseModal>
 </template>
 
 <script setup>
@@ -200,7 +196,8 @@ import { useRoute } from "vue-router";
 import UCustomMap from "@/components/UCustomMap.vue";
 import UInputCard from "@/components/UInputCard.vue";
 import UToast from "@/components/UToast.vue";
-import UDialog from "@/components/UDialog.vue";
+import UBaseModal from "@/components/UBaseModal.vue";
+import UButton from '@/components/UButton.vue';
 import UIcon from '@/components/UIcon.vue';
 
 // Directiva personalizada para cerrar el dropdown al hacer click fuera

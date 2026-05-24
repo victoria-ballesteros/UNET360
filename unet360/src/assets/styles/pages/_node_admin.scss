@@ -19,7 +19,7 @@
   background: transparent; // El fondo decorativo viene del layout global
 
   @media (min-width: 768px) {
-    height: calc(100dvh - 110px);
+    height: calc(100dvh - var(--header-height, 56px) - 35px);
   }
 }
 
@@ -466,23 +466,15 @@
   height: 0.9rem;
 }
 
-// ── Dialog de confirmación ──
-.delete-dialog-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
+// ── Modal confirm text (UBaseModal) ──
+.modal-confirm-text {
+  @include paragraph-small;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  line-height: 1.55;
+  font-size: 0.9rem;
 
-.delete-dialog-header {
-  font-weight: 600;
-  color: var(--full-white);
-  @include paragraph-medium;
-}
-
-.delete-dialog-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
+  strong { color: var(--full-white); font-weight: 700; }
 }
 
 // ── Contenedor de Carga ──

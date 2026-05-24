@@ -1,5 +1,5 @@
 <template>
-  <UDialog :modelValue="modelValue" @update:modelValue="emit('update:modelValue', $event)" :headerTitle="''">
+  <UBaseModal :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" size="sm">
     <div class="result-dialog" :class="{ 'success-theme': success, 'error-theme': !success }">
       
       <!-- Premium interactive SVG animations -->
@@ -41,12 +41,12 @@
       </div>
       
     </div>
-  </UDialog>
+  </UBaseModal>
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from 'vue';
-import UDialog from './UDialog.vue';
+import UBaseModal from './UBaseModal.vue';
 import UButton from './UButton.vue';
 
 const props = defineProps({
