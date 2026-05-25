@@ -53,6 +53,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const headerHeight = ref(0);
+const footerHeight = ref(0);
 const isPanelOpen = ref(false);
 
 const sidebarOptions = computed(() =>
@@ -94,6 +95,16 @@ onMounted(async () => {
   document.documentElement.style.setProperty(
     "--header-height",
     `${headerHeight.value}px`
+  );
+
+  const footerEl = document.querySelector(".footer-container");
+  if (footerEl) {
+    footerHeight.value = footerEl.getBoundingClientRect().height;
+  }
+
+  document.documentElement.style.setProperty(
+    "--footer-height",
+    `${footerHeight.value}px`
   );
 });
 </script>

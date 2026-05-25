@@ -6,8 +6,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: calc(100dvh - var(--header-height, 56px) - 35px);
-  max-height: calc(100dvh - var(--header-height, 56px) - 35px);
+  height: calc(100dvh - var(--header-height, 56px) - var(--footer-height, 39.2px));
+  max-height: calc(100dvh - var(--header-height, 56px) - var(--footer-height, 39.2px));
   color: var(--full-white);
   padding: 1.5rem;
   box-sizing: border-box;

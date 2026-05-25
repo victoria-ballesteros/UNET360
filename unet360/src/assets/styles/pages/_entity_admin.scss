@@ -21,7 +21,8 @@
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
-    height: calc(100dvh - var(--header-height, 56px) - 35px);
+    height: calc(100dvh - var(--header-height, 88px) - var(--footer-height, 39.2px));
+    max-height: calc(100dvh - var(--header-height, 88px) - var(--footer-height, 39.2px));
   }
 }
 

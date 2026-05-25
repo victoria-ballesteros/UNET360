@@ -196,7 +196,7 @@ const handleLogout = () => {
 .hero {
   position: relative;
   background: var(--strong-gray-dark);
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - var(--header-height, 60px));
   display: flex;
   align-items: center;
   justify-content: center;
