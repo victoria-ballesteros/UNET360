@@ -127,3 +127,16 @@ export async function getLocations() {
     return null;
   }
 }
+
+// FIX ASYMMETRIC WEIGHTS
+export async function fixAsymmetricWeights() {
+  try {
+    const authStore = useAuthStore();
+    const token = authStore.token;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const response = await api.post("nodes/fix-weights", {}, { headers });
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}

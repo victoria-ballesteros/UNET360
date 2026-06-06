@@ -260,3 +260,49 @@ class NodeService:
             return NodeStatusDTO(name=n.name, status=status, reasons=reasons if reasons else None)
 
         return [compute_status(n) for n in nodes]
+
+    async def fix_asymmetric_weights(self) -> int:
+        nodes = await self.repository.get_all()
+        node_map = {n.name: n for n in nodes}
+        modified_nodes = {}
+
+        for node in nodes:
+            for idx, adj in enumerate(node.adjacent_nodes or []):
+                if isinstance(adj, dict) and len(adj) > 0:
+                    neighbor_name = list(adj.keys())[0]
+                    weight_ab = adj[neighbor_name]
+                    
+                    neighbor_node = node_map.get(neighbor_name)
+                    if neighbor_node:
+                        # Find the back connection pointing to node.name
+                        for b_idx, b_adj in enumerate(neighbor_node.adjacent_nodes or []):
+                            if isinstance(b_adj, dict) and len(b_adj) > 0 and list(b_adj.keys())[0] == node.name:
+                                weight_ba = b_adj[node.name]
+                                
+                                try:
+                                    w_ab = float(weight_ab)
+                                    w_ba = float(weight_ba)
+                                except (TypeError, ValueError):
+                                    continue
+                                
+                                if w_ab != w_ba:
+                                    w_avg = (w_ab + w_ba) / 2.0
+                                    # Update in-memory objects
+                                    adj[neighbor_name] = w_avg
+                                    b_adj[node.name] = w_avg
+                                    
+                                    modified_nodes[node.name] = node
+                                    modified_nodes[neighbor_node.name] = neighbor_node
+                                break
+        
+        # Save all modified nodes
+        for node in modified_nodes.values():
+            await self.repository.update(node)
+            
+        if modified_nodes and self.graph_adapter is not None:
+            try:
+                await self.graph_adapter.refresh_graph()
+            except Exception:
+                pass
+                
+        return len(modified_nodes)

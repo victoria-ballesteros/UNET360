@@ -188,3 +188,27 @@ async def delete_node(name: str, _: str = Depends(get_current_admin_user)):
             status=False,
             response_obj={"message": f"An unexpected error occurred: {str(e)}"},
         )
+
+
+@router.post("/fix-weights", response_model=GeneralResponse)
+async def fix_asymmetric_weights(_: str = Depends(get_current_admin_user)):
+    try:
+        updated_count = await service.fix_asymmetric_weights()
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj={
+                "updated_count": updated_count,
+                "message": f"Successfully fixed weights for {updated_count} nodes."
+            }
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code, status=False, response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"},
+        )

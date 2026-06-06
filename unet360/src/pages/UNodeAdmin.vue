@@ -10,6 +10,7 @@
 
       <div class="button-section">
         <UButton text="Crear Nuevo Nodo" type="contrast-2" @click="router.push({ name: 'NodeCreate' })" />
+        <UButton text="Corregir Pesos" type="contrast-2" :loading="isFixing" @click="fixWeights" />
         <div class="admin-entities-buttons">
           <UButton text="Tags"      type="secondary" @click="router.push({ name: 'AdminEntities', params: { entity: 'tags' } })" />
           <UButton text="Locations" type="secondary" @click="router.push({ name: 'AdminEntities', params: { entity: 'locations' } })" />
@@ -164,6 +165,7 @@
       <UButton text="Eliminar"  type="danger"   @click="confirmDelete" />
     </template>
   </UBaseModal>
+  <UToast ref="toastRef" />
 </template>
 
 <script setup>
@@ -176,8 +178,9 @@ import UIcon    from '@/components/UIcon.vue';
 import UButton  from '@/components/UButton.vue';
 import UBaseModal from '@/components/UBaseModal.vue';
 import UAdminList from '@/components/UAdminList.vue';
+import UToast from '@/components/UToast.vue';
 
-import { deleteNode as deleteNodeRequest, deleteImageFromServer } from '@/service/requests/requests.js';
+import { deleteNode as deleteNodeRequest, deleteImageFromServer, fixAsymmetricWeights } from '@/service/requests/requests.js';
 
 const router    = useRouter();
 const nodeStore = useNodeStore();
@@ -292,6 +295,40 @@ const confirmDelete = async () => {
   showDeleteDialog.value = false;
 };
 
+const isFixing = ref(false);
+const toastRef = ref(null);
+
+const fixWeights = async () => {
+  isFixing.value = true;
+  try {
+    const resp = await fixAsymmetricWeights();
+    isFixing.value = false; // Detener estado de carga inmediatamente al terminar la petición
+    if (resp?.status) {
+      const count = resp.response_obj?.updated_count ?? 0;
+      if (toastRef.value) {
+        toastRef.value.showToast(`Éxito: se corrigieron los pesos de ${count} nodos.`);
+      } else {
+        console.log(`Éxito: se corrigieron los pesos de ${count} nodos.`);
+      }
+      nodeStore.fetchNodes(); // Cargar nodos asincrónicamente en background
+    } else {
+      const msg = resp?.response_obj?.message || "No se pudieron corregir los pesos del grafo.";
+      if (toastRef.value) {
+        toastRef.value.showToast(`Error: ${msg}`);
+      } else {
+        console.error(`Error: ${msg}`);
+      }
+    }
+  } catch (error) {
+    isFixing.value = false;
+    if (toastRef.value) {
+      toastRef.value.showToast("Error al intentar corregir los pesos.");
+    } else {
+      console.error("Error al intentar corregir los pesos:", error);
+    }
+  }
+};
+
 // ── Carga inicial ──────────────────────────────────────────────────────────
 onMounted(async () => {
   await nodeStore.fetchNodes();
@@ -299,7 +336,7 @@ onMounted(async () => {
 </script>
 
 <script>
-export default { components: { UIcon, UButton, UBaseModal, UAdminList } };
+export default { components: { UIcon, UButton, UBaseModal, UAdminList, UToast } };
 </script>
 
 <style lang="scss" scoped>

@@ -40,37 +40,111 @@
                 </template>
             </div>
             
-            <div v-else class="route-searcher">
-                <div class="route-icons-container">
-                    <UIcon name="icons/dot-inside-dot" size="20" />
-                    <div class="three-dots-container">
-                        <span>•</span>
-                        <span>•</span>
-                        <span>•</span>
+            <div v-else>
+                <div class="route-searcher">
+                    <div class="route-icons-container">
+                        <UIcon name="icons/dot-inside-dot" size="20" />
+                        <div class="three-dots-container">
+                            <span>•</span>
+                            <span>•</span>
+                            <span>•</span>
+                        </div>
+                        <UIcon name="icons/point-sign" size="20" />
                     </div>
-                    <UIcon name="icons/point-sign" size="20" />
+
+                    <div class="route-inputs-container">
+                        <!-- Origen Input con Dropdown Custom -->
+                        <div class="custom-select-container">
+                            <input
+                                ref="sourceInputRef"
+                                :value="searchSource"
+                                type="text"
+                                class="route-input"
+                                placeholder="Ingresa el origen"
+                                @input="handleSource"
+                                @focus="showSourceSuggestions = true"
+                                @blur="showSourceSuggestions = false"
+                                @keyup.enter="searchPath"
+                            />
+                            <button
+                                type="button"
+                                class="dropdown-arrow-btn"
+                                @mousedown.prevent="toggleSourceDropdown"
+                                @touchstart.prevent="toggleSourceDropdown"
+                            >
+                                <UIcon
+                                    name="icons/chevron-down"
+                                    size="12"
+                                    color="var(--strong-gray)"
+                                    :rotation="showSourceSuggestions ? 180 : 0"
+                                />
+                            </button>
+                            <ul
+                                v-if="showSourceSuggestions && Object.keys(sourceSuggestionsToDisplay).length > 0"
+                                class="custom-suggestions-list"
+                            >
+                                <li
+                                    v-for="(nodeName, displayName) in sourceSuggestionsToDisplay"
+                                    :key="nodeName"
+                                    class="suggestion-item"
+                                    @mousedown.prevent="selectSource(displayName)"
+                                    @touchstart.prevent="selectSource(displayName)"
+                                >
+                                    {{ displayName }}
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Destino Input con Dropdown Custom -->
+                        <div class="custom-select-container">
+                            <input
+                                ref="targetInputRef"
+                                :value="searchTarget"
+                                type="text"
+                                class="route-input"
+                                placeholder="Ingresa el destino"
+                                @input="handleTarget"
+                                @focus="showTargetSuggestions = true"
+                                @blur="showTargetSuggestions = false"
+                                @keyup.enter="searchPath"
+                            />
+                            <button
+                                type="button"
+                                class="dropdown-arrow-btn"
+                                @mousedown.prevent="toggleTargetDropdown"
+                                @touchstart.prevent="toggleTargetDropdown"
+                            >
+                                <UIcon
+                                    name="icons/chevron-down"
+                                    size="12"
+                                    color="var(--strong-gray)"
+                                    :rotation="showTargetSuggestions ? 180 : 0"
+                                />
+                            </button>
+                            <ul
+                                v-if="showTargetSuggestions && Object.keys(targetSuggestionsToDisplay).length > 0"
+                                class="custom-suggestions-list"
+                            >
+                                <li
+                                    v-for="(nodeName, displayName) in targetSuggestionsToDisplay"
+                                    :key="nodeName"
+                                    class="suggestion-item"
+                                    @mousedown.prevent="selectTarget(displayName)"
+                                    @touchstart.prevent="selectTarget(displayName)"
+                                >
+                                    {{ displayName }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="route-inputs-container">
-                    <input :value="searchSource" type="text" class="route-input" placeholder="Ingresa el origen"
-                        @input="handleSource" list="source-suggestions" />
-
-                    <datalist id="source-suggestions">
-                        <option v-for="(value, key) in routeSearcherResult" :key="key" :value="key" :label="value">
-                            {{ value }}
-                        </option>
-                    </datalist>
-
-                    <input :value="searchTarget" type="text" class="route-input" placeholder="Ingresa el destino"
-                        @input="handleTarget" list="source-suggestions-2" />
-
-                    <datalist id="source-suggestions-2">
-                        <option v-for="(value, key) in routeSearcherTargetResult" :key="key" :value="key" :label="value">
-                            {{ value }}
-                        </option>
-                    </datalist>
+                <div class="route-button-container">
+                    <button type="button" class="btn-start-route" @click="searchPath">
+                        <UIcon name="icons/route" size="18" color="var(--fill-white)" />
+                        <span>Comenzar viaje</span>
+                    </button>
                 </div>
-                <UIcon name="icons/check-square-fill" size="23" @click="searchPath" />
             </div>
         </div>
     </div>
@@ -129,8 +203,10 @@ const listIconRotation = ref(0)
 const routeSearcherActive = ref(false)
 const searcherInputPlaceholder = ref("Ej. Edificio A");
 
-const routeSearcherResult = ref({});
-const routeSearcherTargetResult = ref({});
+const showSourceSuggestions = ref(false);
+const showTargetSuggestions = ref(false);
+const sourceInputRef = ref(null);
+const targetInputRef = ref(null);
 
 const sourceValue = ref(null);
 const targetValue = ref(null);
@@ -174,18 +250,109 @@ const props = defineProps({
 
 const emit = defineEmits(['update:searchSource', 'update:searchTarget', 'update:searchBar', 'update:searchedNode', 'update:actualRoute'])
 
+const nodeStore = useNodeStore();
+
+// Genera un listado ordenado de sugerencias de ubicaciones y tags del sistema
+const allSuggestionsList = computed(() => {
+    const suggestions = {};
+    if (!nodeStore.nodes) return suggestions;
+
+    for (const node of nodeStore.nodes) {
+        if (node.location && node.location.trim() !== '') {
+            suggestions[node.location.trim()] = node.name;
+        }
+
+        if (node.tags && Object.keys(node.tags).length > 0) {
+            for (const [_, value] of Object.entries(node.tags)) {
+                for (const [tagKey, _] of Object.entries(value)) {
+                    if (tagKey && tagKey.trim() !== '') {
+                        suggestions[tagKey.trim()] = node.name;
+                    }
+                }
+            }
+        }
+    }
+
+    const sorted = {};
+    Object.keys(suggestions)
+        .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+        .forEach(key => {
+            sorted[key] = suggestions[key];
+        });
+
+    return sorted;
+});
+
+// Filtra las sugerencias del origen
+const sourceSuggestionsToDisplay = computed(() => {
+    const query = props.searchSource || '';
+    const queryClean = query.trim().toLowerCase();
+
+    if (queryClean === '') {
+        const list = { ...allSuggestionsList.value };
+        if (props.actualNode && props.actualNode.name) {
+            const sortedList = { "Posición actual": props.actualNode.name };
+            Object.assign(sortedList, list);
+            return sortedList;
+        }
+        return list;
+    }
+
+    const matches = searchNodeByKeyword(query);
+    if (props.actualNode && props.actualNode.name && "posición actual".includes(queryClean)) {
+        return { "Posición actual": props.actualNode.name, ...matches };
+    }
+    return matches;
+});
+
+// Filtra las sugerencias del destino
+const targetSuggestionsToDisplay = computed(() => {
+    const query = props.searchTarget || '';
+    const queryClean = query.trim().toLowerCase();
+
+    if (queryClean === '') {
+        return allSuggestionsList.value;
+    }
+
+    return searchNodeByKeyword(query);
+});
+
+const selectSource = (displayName) => {
+    emit('update:searchSource', displayName);
+    sourceValue.value = displayName;
+    showSourceSuggestions.value = false;
+};
+
+const selectTarget = (displayName) => {
+    emit('update:searchTarget', displayName);
+    targetValue.value = displayName;
+    showTargetSuggestions.value = false;
+};
+
+const toggleSourceDropdown = () => {
+    showSourceSuggestions.value = !showSourceSuggestions.value;
+    if (showSourceSuggestions.value) {
+        sourceInputRef.value?.focus();
+    }
+};
+
+const toggleTargetDropdown = () => {
+    showTargetSuggestions.value = !showTargetSuggestions.value;
+    if (showTargetSuggestions.value) {
+        targetInputRef.value?.focus();
+    }
+};
+
 const handleSource = (event) => {
     emit('update:searchSource', event.target.value);
-    routeSearcherResult.value = searchNodeByKeyword(event.target.value);
-    routeSearcherResult.value["Posición actual"] = props.actualNode.name;
-    routeSearcherResult.value = { ...routeSearcherResult.value };
     sourceValue.value = event.target.value;
+    showSourceSuggestions.value = true;
 }
 
 const handleTarget = (event) => {
-    emit('update:searchTarget', event.target.value)
-    routeSearcherTargetResult.value = searchNodeByKeyword(event.target.value);
+    emit('update:searchTarget', event.target.value);
     targetValue.value = event.target.value;
+    showTargetSuggestions.value = true;
 }
 
 const handleSearchBar = (event) => {
@@ -241,7 +408,6 @@ function toggleRouteSearcher() {
     menuVisible.value = true
     routeSearcherActive.value = !routeSearcherActive.value
     searcherInputPlaceholder.value = "Ruta"
-    routeSearcherResult.value["Posición actual"] = props.actualNode.name;
     sourceValue.value = "Posición actual";
     emit('update:searchSource', sourceValue.value);
 }
@@ -255,8 +421,6 @@ const resolveNodeId = (typedValue) => {
     if (lowerVal === "posición actual" || lowerVal === "posicion actual" || lowerVal === "posicion_actual") {
         return props.actualNode?.name || null;
     }
-
-    const nodeStore = useNodeStore();
 
     // 2. Coincidencia exacta por nombre de nodo (ej: "003")
     const exactNode = nodeStore.nodes.find(n => n.name.toLowerCase() === lowerVal);
@@ -321,8 +485,6 @@ const searchPath = async () => {
     targetValue.value = null;
     emit('update:searchSource', '');
     emit('update:searchTarget', '');
-    routeSearcherResult.value = {};
-    routeSearcherTargetResult.value = {};
 }
 
 watch(
