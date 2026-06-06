@@ -26,6 +26,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/auth/login",
             "/auth/forgot-password",
             "/auth/reset-password",
+            "/auth/google",
             "/docs",
             "/redoc",
             "/openapi.json",
@@ -64,6 +65,17 @@ class AuthMiddleware(BaseHTTPMiddleware):
                                 request.state.user_id
                             )
                         )
+                        if not tenant_profile:
+                            email = user_response.user.email
+                            tenant_name = email.split('@')[0] if email else f"user_{request.state.user_id[:8]}"
+                            from core.dtos.tenant_dto import TenantCreateDTO
+                            tenant_create_dto_instance = TenantCreateDTO(
+                                name=tenant_name,
+                                supabase_user_id=request.state.user_id,
+                                role="viewer"
+                            )
+                            tenant_profile = await self.tenant_service.create_tenant(tenant_create_dto_instance)
+
                         request.state.user_role = (
                             tenant_profile.role if tenant_profile else None
                         )
@@ -138,16 +150,15 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
             if not tenant_profile:
-                return JSONResponse(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    content=GeneralResponse(
-                        http_code=status.HTTP_403_FORBIDDEN,
-                        status=False,
-                        response_obj={
-                            "message": "User profile not found in application database. Access denied."
-                        },
-                    ).model_dump(),
+                email = user_response.user.email
+                tenant_name = email.split('@')[0] if email else f"user_{user_id[:8]}"
+                from core.dtos.tenant_dto import TenantCreateDTO
+                tenant_create_dto_instance = TenantCreateDTO(
+                    name=tenant_name,
+                    supabase_user_id=user_id,
+                    role="viewer"
                 )
+                tenant_profile = await self.tenant_service.create_tenant(tenant_create_dto_instance)
 
             user_role = tenant_profile.role
 

@@ -133,16 +133,42 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   try {
     const auth = useAuthStore();
+
+    // 1. Detectar e interceptar hash de Supabase antes de evaluar autenticación
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+      const params = new URLSearchParams(hash.substring(1));
+      const accessToken = params.get('access_token');
+      const type = params.get('type');
+      
+      if (accessToken) {
+        // Guardar el token en las cookies para persistencia y en el store
+        document.cookie = `auth=${accessToken}; path=/`;
+        auth.token = accessToken;
+        auth.isAuthenticated = true;
+        
+        if (type === 'signup') {
+          sessionStorage.setItem('supabase_signup', 'true');
+          auth.successState = true;
+          // Limpiar hash de la URL
+          window.history.replaceState(null, null, window.location.pathname + window.location.search);
+          return next({ name: 'SuccessConfirmation' });
+        } else if (type === 'recovery') {
+          // Dejar el hash para que la vista NewPassword lo lea del navegador
+          return next({ name: 'NewPassword', hash });
+        } else {
+          // Login OAuth (Google) - limpiar hash de la URL
+          window.history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
+      }
+    }
+
     auth.checkAuthCookie();
 
-    const authOnlyRoutes = ["Login", "Signup", "Recovery", "NewPassword", "SuccessNewPassword", "SuccessPrePassword"];
+    const authOnlyRoutes = ["Login", "Signup", "Recovery", "SuccessNewPassword", "SuccessPrePassword"];
     const isAuthRoute = authOnlyRoutes.includes(to.name);
 
-    const hash = window.location.hash;
-    let isSupabaseSignup = hash.includes('access_token') && hash.includes('type=signup');
-    if (!isSupabaseSignup && sessionStorage.getItem('supabase_signup') === 'true') {
-      isSupabaseSignup = true;
-    }
+    let isSupabaseSignup = sessionStorage.getItem('supabase_signup') === 'true';
 
     const isAuthenticated = await auth.validateToken();
 
@@ -176,25 +202,5 @@ router.beforeEach(async (to, from, next) => {
     next({ name: "Login" });
   }
 });
-
-
-// Detecta el hash de Supabase y redirige a success-confirmation si corresponde
-function handleSupabaseRedirect(router) {
-  const hash = window.location.hash;
-  // Confirmación de registro
-  if (hash.includes('access_token') && hash.includes('type=signup')) {
-    sessionStorage.setItem('supabase_signup', 'true');
-    import('@/service/stores/auth').then(mod => {
-      mod.useAuthStore().successState = true;
-      router.replace({ name: 'SuccessConfirmation' });
-    });
-  }
-  // Recuperación de contraseña
-  if (hash.includes('access_token') && hash.includes('type=recovery')) {
-    router.replace({ name: 'NewPassword', hash });
-  }
-}
-
-setTimeout(() => handleSupabaseRedirect(router), 0);
 
 export default router;

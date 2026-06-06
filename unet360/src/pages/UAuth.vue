@@ -51,6 +51,24 @@
         />
       </div>
 
+      <!-- Divider social (solo en Login y Signup) -->
+      <div v-if="currentMode === 'Login' || currentMode === 'Signup'" class="social-divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">o</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- Botón de Google (solo en Login y Signup) -->
+      <div v-if="currentMode === 'Login' || currentMode === 'Signup'" class="social-button-container">
+        <UButton
+          text="Iniciar sesión con Google"
+          type="primary"
+          icon="icons/google"
+          :full="true"
+          @click="loginWithGoogle"
+        />
+      </div>
+
       <!-- Link para cambiar entre login y registro -->
       <div class="text-container">
         <p class="register-link" style="margin:0;">
@@ -77,6 +95,7 @@ import { useRoute, useRouter, RouterLink } from "vue-router";
 import { reactive, computed, ref, watch } from "vue";
 
 import { useAuthStore } from '@/service/stores/auth';
+import api from "@/axios";
 
 import UInput from "@/components/UInput.vue";
 import UButton from "@/components/UButton.vue";
@@ -274,6 +293,26 @@ async function handleSubmit() {
     return;
   }
 
+}
+
+/**
+ * Inicia el flujo de Google OAuth solicitando la URL de redirección al Backend
+ */
+async function loginWithGoogle() {
+  try {
+    isLoading.value = true;
+    const redirectUrl = `${window.location.origin}/360-map`;
+    const { data } = await api.get(`auth/google?redirect_to=${encodeURIComponent(redirectUrl)}`);
+    if (data?.status && data.response_obj?.url) {
+      window.location.href = data.response_obj.url;
+    } else {
+      inputErrors.email = "No se pudo iniciar sesión con Google.";
+      isLoading.value = false;
+    }
+  } catch (e) {
+    inputErrors.email = "Error de conexión con el servidor.";
+    isLoading.value = false;
+  }
 }
 
 

@@ -167,3 +167,34 @@
     margin: 0;
   }
 }
+
+// ── Social Login ──
+.social-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0 0.5rem;
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .divider-text {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+}
+
+.social-button-container {
+  display: flex;
+  flex-direction: column;
+  
+  :deep(.ub) {
+    gap: 0.6rem;
+  }
+}

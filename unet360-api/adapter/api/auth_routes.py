@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Request, Depends
 import logging
 import traceback
+import os
+import urllib.parse
 
 from core.dtos.responses_dto import GeneralResponse
 
@@ -204,3 +206,31 @@ async def logout_user(
             status=False,
             response_obj={"message": f"An unexpected error occurred: {str(e)}"},
         )
+
+
+@router.get("/google", response_model=GeneralResponse)
+async def get_google_auth_url(request: Request, redirect_to: str = "http://localhost:5173/360-map"):
+    try:
+        supabase_url = os.getenv("SUPABASE_URL")
+        if not supabase_url:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="SUPABASE_URL is not configured on the server."
+            )
+        auth_url = f"{supabase_url}/auth/v1/authorize?provider=google&redirect_to={urllib.parse.quote(redirect_to)}"
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj={"url": auth_url}
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code, status=False, response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": str(e)}
+        )
+
