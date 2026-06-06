@@ -19,11 +19,7 @@
             <slot name="header">
               <h2 class="um-title">{{ title }}</h2>
             </slot>
-            <button v-if="closable" class="um-close" @click="close" aria-label="Cerrar">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-            </button>
+            <UButton v-if="closable" class="um-close" icon="x-lg" type="tertiary" size="sm" @click="close" />
           </div>
 
           <!-- ── Body ──────────────────────────────────── -->
@@ -43,6 +39,7 @@
 
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
+import UButton from './UButton.vue';
 
 const props = defineProps({
   modelValue: { type: Boolean, required: true },
@@ -151,21 +148,21 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown));
 // ── Close button ──────────────────────────────────────────
 .um-close {
   flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.45);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.09);
-    color: var(--full-white);
+  :deep(.ub) {
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.45);
+    padding: 0;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--full-white);
+      transform: none;
+    }
   }
 }
 

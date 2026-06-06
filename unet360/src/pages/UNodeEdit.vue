@@ -16,13 +16,14 @@
         <div class="autosuggest">
           <UInput v-model="form.location" styleType="default" placeholder="Nombre de ubicación" />
           <div v-if="showLocationSuggest && locationSuggestions.length" class="suggestions">
-            <button
+            <UButton
               v-for="opt in locationSuggestions"
               :key="opt"
               class="sugg-item"
-              type="button"
+              type="tertiary"
+              :text="opt"
               @mousedown.prevent="selectLocation(opt)"
-            >{{ opt }}</button>
+            />
           </div>
         </div>
       </div>
@@ -86,13 +87,14 @@
               <div class="autosuggest">
                 <UInput v-model="tag.name" styleType="default" :placeholder="'Nombre del tag'" />
                 <div v-if="showTagSuggest[tagIdx] && getTagSuggestions(tagIdx).length" class="suggestions">
-                  <button
+                  <UButton
                     v-for="opt in getTagSuggestions(tagIdx)"
                     :key="opt"
                     class="sugg-item"
-                    type="button"
+                    type="tertiary"
+                    :text="opt"
                     @mousedown.prevent="selectTagName(tagIdx, opt)"
-                  >{{ opt }}</button>
+                  />
                 </div>
               </div>
               <UButton text="Eliminar" type="danger" @click="removeTag(tagIdx)" />

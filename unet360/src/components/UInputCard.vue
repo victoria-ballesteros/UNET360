@@ -66,19 +66,16 @@
                                 @blur="showSourceSuggestions = false"
                                 @keyup.enter="searchPath"
                             />
-                            <button
-                                type="button"
+                            <UButton
+                                icon="chevron-down"
+                                type="tertiary"
+                                size="sm"
+                                iconColor="rgba(255, 255, 255, 0.6)"
                                 class="dropdown-arrow-btn"
+                                :class="{ 'dropdown-open': showSourceSuggestions }"
                                 @mousedown.prevent="toggleSourceDropdown"
                                 @touchstart.prevent="toggleSourceDropdown"
-                            >
-                                <UIcon
-                                    name="icons/chevron-down"
-                                    size="12"
-                                    color="rgba(255, 255, 255, 0.6)"
-                                    :rotation="showSourceSuggestions ? 180 : 0"
-                                />
-                            </button>
+                            />
                             <ul
                                 v-if="showSourceSuggestions && Object.keys(sourceSuggestionsToDisplay).length > 0"
                                 class="custom-suggestions-list"
@@ -108,19 +105,16 @@
                                 @blur="showTargetSuggestions = false"
                                 @keyup.enter="searchPath"
                             />
-                            <button
-                                type="button"
+                            <UButton
+                                icon="chevron-down"
+                                type="tertiary"
+                                size="sm"
+                                iconColor="rgba(255, 255, 255, 0.6)"
                                 class="dropdown-arrow-btn"
+                                :class="{ 'dropdown-open': showTargetSuggestions }"
                                 @mousedown.prevent="toggleTargetDropdown"
                                 @touchstart.prevent="toggleTargetDropdown"
-                            >
-                                <UIcon
-                                    name="icons/chevron-down"
-                                    size="12"
-                                    color="rgba(255, 255, 255, 0.6)"
-                                    :rotation="showTargetSuggestions ? 180 : 0"
-                                />
-                            </button>
+                            />
                             <ul
                                 v-if="showTargetSuggestions && Object.keys(targetSuggestionsToDisplay).length > 0"
                                 class="custom-suggestions-list"
@@ -140,10 +134,14 @@
                 </div>
 
                 <div class="route-button-container">
-                    <button type="button" class="btn-start-route" @click="searchPath">
-                        <UIcon name="icons/route" size="18" color="var(--fill-white)" />
-                        <span>Comenzar viaje</span>
-                    </button>
+                    <UButton
+                        icon="route"
+                        text="Comenzar viaje"
+                        type="contrast"
+                        iconColor="var(--fill-white)"
+                        class="btn-start-route"
+                        @click="searchPath"
+                    />
                 </div>
             </div>
         </div>
@@ -154,6 +152,7 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue'
 import UIcon from './UIcon.vue'
+import UButton from './UButton.vue'
 import UToast from './UToast.vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/service/stores/auth";
@@ -544,5 +543,69 @@ watch(
 
 .text-danger {
     color: var(--main-red, #e53935);
+}
+// UButton overrides for dropdown arrow buttons
+.dropdown-arrow-btn:deep(.ub) {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 4px;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+
+    &:hover:not(:disabled) {
+        transform: none;
+        background: transparent;
+    }
+
+    &:active:not(:disabled) {
+        transform: none;
+    }
+}
+
+.dropdown-arrow-btn {
+    :deep(.ub-icon) {
+        transition: transform 0.2s ease;
+    }
+
+    &.dropdown-open :deep(.ub-icon) {
+        transform: rotate(180deg);
+    }
+}
+
+// UButton overrides for start-route button
+.btn-start-route:deep(.ub) {
+    background: linear-gradient(135deg, var(--main-blue) 0%, var(--main-blue) 100%);
+    color: var(--fill-white);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 11px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--main-blue) 0%, var(--main-blue) 100%);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: var(--shadow-sm);
+    }
+}
+
+.btn-start-route :deep(.ub-label) {
+    color: var(--fill-white);
+}
+
+.btn-start-route :deep(.ub-icon) {
+    transition: transform 0.2s ease;
+}
+
+.btn-start-route:hover :deep(.ub-icon) {
+    transform: translateX(3px);
 }
 </style>

@@ -174,12 +174,21 @@ function closePanel() {
       &:hover {
         color: var(--fill-white);
         background: rgba(255, 255, 255, 0.07);
+        transform: none; // Override UButton hover transform
       }
 
       &.router-link-active,
       &.active {
         color: var(--fill-white);
         background: rgba(255, 255, 255, 0.1);
+      }
+
+      // Override UButton scoped styles when used as nav-item
+      :deep(.ub-label) {
+        font-size: inherit;
+        font-weight: inherit;
+        letter-spacing: inherit;
+        text-transform: inherit;
       }
     }
   }

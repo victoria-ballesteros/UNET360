@@ -28,13 +28,13 @@
       >
         {{ option.label }}
       </RouterLink>
-      <button
+      <UButton
         v-else-if="option.action === 'logout'"
         class="nav-item"
+        type="tertiary"
+        :text="option.label"
         @click="handleLogout"
-      >
-        {{ option.label }}
-      </button>
+      />
     </template>
   </USidebar>
 </template>
@@ -42,6 +42,7 @@
 <script setup>
 import USidebar from "./components/USidebar.vue";
 import UHeader from "./components/UHeader.vue";
+import UButton from "./components/UButton.vue";
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getSidebarOptions } from "./service/global_dialogs";

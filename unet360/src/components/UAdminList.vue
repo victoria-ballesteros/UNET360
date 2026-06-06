@@ -16,28 +16,20 @@
       </div>
 
       <div v-if="showSort" class="al-sort-toggle">
-        <button
+        <UButton
           class="al-sort-btn"
           :class="{ active: sortOrder === 'asc' }"
+          text="A–Z"
           @click="sortOrder = 'asc'"
           title="A → Z"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 6h18M3 12h12M3 18h6"/><path d="m17 14 3 3 3-3"/><path d="M20 17V8"/>
-          </svg>
-          A–Z
-        </button>
-        <button
+        />
+        <UButton
           class="al-sort-btn"
           :class="{ active: sortOrder === 'desc' }"
+          text="Z–A"
           @click="sortOrder = 'desc'"
           title="Z → A"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 6h18M3 12h12M3 18h6"/><path d="m17 10-3-3-3 3"/><path d="M14 7v9"/>
-          </svg>
-          Z–A
-        </button>
+        />
       </div>
     </div>
 
@@ -72,21 +64,23 @@
       </div>
 
       <div v-if="totalPages > 1" class="al-pagination">
-        <button
+        <UButton
           class="al-page-btn"
+          type="secondary"
+          size="sm"
+          text="← Anterior"
           :disabled="currentPage === 1"
           @click="goToPage(currentPage - 1)"
-        >
-          ← Anterior
-        </button>
+        />
         <span class="al-page-info">{{ currentPage }} / {{ totalPages }}</span>
-        <button
+        <UButton
           class="al-page-btn"
+          type="secondary"
+          size="sm"
+          text="Siguiente →"
           :disabled="currentPage === totalPages"
           @click="goToPage(currentPage + 1)"
-        >
-          Siguiente →
-        </button>
+        />
       </div>
     </div>
 
@@ -95,6 +89,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import UButton from './UButton.vue';
 
 const props = defineProps({
   /** Array de items a mostrar */
@@ -269,32 +264,41 @@ onUnmounted(() => {
 }
 
 .al-sort-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.55rem 0.85rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: none;
-  color: rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  transition: background 0.15s ease, color 0.15s ease;
+  // Override UButton scoped styles via :deep()
+  :deep(.ub) {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.85rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    border-radius: 0;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    transition: background 0.15s ease, color 0.15s ease;
+    box-shadow: none;
 
-  svg {
-    width: 0.9rem;
-    height: 0.9rem;
-    flex-shrink: 0;
+    &:hover:not(:disabled) {
+      transform: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
   }
 
-  &:first-child { border-right: 1px solid rgba(255, 255, 255, 0.08); }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.7);
+  &:first-child :deep(.ub) {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  &.active {
+  &.active :deep(.ub) {
     background: rgba(255, 239, 61, 0.1);
     color: var(--main-yellow);
   }
@@ -359,17 +363,36 @@ onUnmounted(() => {
 }
 
 .al-page-btn {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--full-white);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.75rem;
-  transition: background 0.15s ease;
+  // Override UButton scoped styles via :deep()
+  :deep(.ub) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--full-white);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 400;
+    transition: background 0.15s ease;
+    box-shadow: none;
 
-  &:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
-  &:disabled             { opacity: 0.25; cursor: not-allowed; }
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+      transform: none;
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--full-white);
+      box-shadow: none;
+    }
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
+
+    &:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+  }
 }
 
 .al-page-info {
