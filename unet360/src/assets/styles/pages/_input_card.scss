@@ -1,10 +1,10 @@
 .menu-wrapper {
     position: relative;
     background-color: var(--strong-gray);
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     width: 100%;
     color: var(--fill-white);
-    border-radius: 24px !important;
+    border-radius: var(--radius-xl) !important;
 }
 
 .search-wrapper {
@@ -48,12 +48,12 @@
     align-items: center;
     gap: 0.6rem;
     padding: 0.3rem 0.4rem;
-    border-radius: 0.4rem;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: background 0.2s;
 
     &:hover {
-        background-color: #374151;
+        background-color: var(--strong-gray-dark);
     }
 }
 
@@ -84,7 +84,7 @@
     align-items: center;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     transition: all 0.2s ease;
     box-sizing: border-box;
 
@@ -180,12 +180,12 @@ input::placeholder {
     overflow-y: auto;
     background-color: var(--strong-gray-dark);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     z-index: 1000;
     list-style: none;
     margin: 0;
     padding: 6px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-lg);
     box-sizing: border-box;
 
     &::-webkit-scrollbar {
@@ -206,7 +206,7 @@ input::placeholder {
 .suggestion-item {
     padding: 8px 12px;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     color: rgba(255, 255, 255, 0.75);
     font-size: 0.875rem;
     transition: background-color 0.15s ease, color 0.15s ease;
@@ -231,15 +231,15 @@ input::placeholder {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: linear-gradient(135deg, var(--main-blue) 0%, #1a73e8 100%);
+    background: linear-gradient(135deg, var(--main-blue) 0%, var(--main-blue) 100%);
     color: var(--fill-white);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 11px 20px;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(66, 133, 244, 0.25);
+    box-shadow: var(--shadow-sm);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
 
@@ -248,8 +248,8 @@ input::placeholder {
     }
 
     &:hover {
-        background: linear-gradient(135deg, #5193f5 0%, var(--main-blue) 100%);
-        box-shadow: 0 6px 14px rgba(66, 133, 244, 0.35);
+        background: linear-gradient(135deg, var(--main-blue) 0%, var(--main-blue) 100%);
+        box-shadow: var(--shadow-md);
         transform: translateY(-1px);
 
         :deep(svg), :deep(img) {
@@ -259,6 +259,6 @@ input::placeholder {
 
     &:active {
         transform: translateY(0);
-        box-shadow: 0 2px 6px rgba(66, 133, 244, 0.2);
+        box-shadow: var(--shadow-sm);
     }
 }

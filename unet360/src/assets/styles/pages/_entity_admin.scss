@@ -132,7 +132,7 @@
 
 .delete-entity-btn {
   &:hover:not(:disabled) {
-    color: var(--main-red, #D33124) !important;
+    color: var(--main-red) !important;
     background: rgba(211, 49, 36, 0.1) !important;
   }
 }
@@ -149,9 +149,9 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
-.status-ok   { background: var(--status-green,  #4caf50) !important; }
-.status-warn { background: var(--status-yellow, #ffb300) !important; }
-.status-err  { background: var(--status-red,    #e53935) !important; }
+.status-ok   { background: var(--status-green) !important; }
+.status-warn { background: var(--status-yellow) !important; }
+.status-err  { background: var(--status-red) !important; }
 
 // ══════════════════════════════════════════════════
 // ═══  Dialogs  ═══

@@ -9,4 +9,26 @@
     --main-blue: #4285F4;
     --main-yellow: #FFEF3D;
     --warning-yellow: #EDD202;
+
+    /* Colores Semánticos de Administración */
+    --status-green: #4caf50;
+    --status-yellow: #ffb300;
+    --status-red: #e53935;
+
+    /* Colores de Brújula (Direcciones del Mapa) */
+    --dir-frente: #81c784;
+    --dir-derecha: #64b5f6;
+    --dir-atras: #e57373;
+    --dir-izquierda: #ffb74d;
+
+    /* Escala de Radio de Bordes (Border Radius) */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    /* Escala de Sombras (Box Shadow) */
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
 }

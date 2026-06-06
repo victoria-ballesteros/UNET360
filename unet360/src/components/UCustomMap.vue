@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-map-box" style="position: relative;">
+  <div class="custom-map-box">
     <div class="map-image-wrapper" :style="mapTransformStyle">
       <img
         :src="mapUrl"
@@ -10,7 +10,7 @@
     </div>
     <!-- Icono siempre centrado en el área visible -->
     <div v-if="iconUrl" class="location-icon-overlay" :style="iconOverlayStyle">
-      <img :src="iconUrl" alt="Ubicación" style="width: 30px; height: 30px; pointer-events: none;" />
+      <img :src="iconUrl" alt="Ubicación" class="location-icon-img" />
     </div>
   </div>
 </template>
@@ -113,14 +113,16 @@ function move(dir) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/assets/styles/_colors.scss';
+
 .custom-map-box {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: 0.5rem;
-  background: rgba(40,40,40,0.8);
+  border-radius: var(--radius-md);
+  background: var(--strong-gray-dark, rgba(40, 40, 40, 0.8));
 }
 .map-image-wrapper {
   position: absolute;
@@ -145,6 +147,11 @@ function move(dir) {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
+}
+.location-icon-img {
+  width: 30px;
+  height: 30px;
   pointer-events: none;
 }
 </style>

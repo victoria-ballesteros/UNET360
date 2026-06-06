@@ -71,7 +71,7 @@
 
       <!-- Link para cambiar entre login y registro -->
       <div class="text-container">
-        <p class="register-link" style="margin:0;">
+        <p class="register-link">
           <template v-if="currentMode === 'Login'">
             ¿No tienes cuenta?
             <RouterLink :to="{ name: 'Signup' }">
@@ -333,6 +333,10 @@ watch(currentMode, resetForm);
 
 <style scoped lang="scss">
 @import "@/assets/styles/pages/_user_auth.scss";
+
+.register-link {
+  margin: 0;
+}
 </style>
 
 

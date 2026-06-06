@@ -113,7 +113,7 @@
       <router-link to="/" class="nav-item">Inicio</router-link>
       <router-link to="/360-map" class="nav-item">Mapa 360°</router-link>
       <router-link to="/about" class="nav-item">Acerca de</router-link>
-      <button class="nav-item" @click="handleLogout">Cerrar sesión</button>
+      <UButton type="tertiary" class="nav-item" text="Cerrar sesión" @click="handleLogout" />
     </USidebar>
   </div>
 </template>
