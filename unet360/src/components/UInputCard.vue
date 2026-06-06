@@ -13,8 +13,8 @@
 
         <div v-if="menuVisible" class="dropdown-menu-wrapper">
             <div v-if="Object.keys(searchResults ?? {}).length > 0" class="dropdown-menu">
-                <div v-for="[key, value] in Object.entries(searchResults)" :key="label" class="menu-item"
-                    @click="handleSearchClick(value)">
+                <div v-for="[key, value] in Object.entries(searchResults)" :key="key" class="menu-item"
+                    @click="handleSearchClick(value, key)">
                     <span>{{ key }}</span>
                 </div>
             </div>
@@ -85,7 +85,7 @@
                             >
                                 <li
                                     v-for="(nodeName, displayName) in sourceSuggestionsToDisplay"
-                                    :key="nodeName"
+                                    :key="displayName"
                                     class="suggestion-item"
                                     @mousedown.prevent="selectSource(displayName)"
                                     @touchstart.prevent="selectSource(displayName)"
@@ -127,7 +127,7 @@
                             >
                                 <li
                                     v-for="(nodeName, displayName) in targetSuggestionsToDisplay"
-                                    :key="nodeName"
+                                    :key="displayName"
                                     class="suggestion-item"
                                     @mousedown.prevent="selectTarget(displayName)"
                                     @touchstart.prevent="selectTarget(displayName)"
@@ -298,11 +298,17 @@ const sourceSuggestionsToDisplay = computed(() => {
         return list;
     }
 
-    const matches = searchNodeByKeyword(query);
+    const filtered = {};
     if (props.actualNode && props.actualNode.name && "posición actual".includes(queryClean)) {
-        return { "Posición actual": props.actualNode.name, ...matches };
+        filtered["Posición actual"] = props.actualNode.name;
     }
-    return matches;
+
+    for (const [displayName, nodeName] of Object.entries(allSuggestionsList.value)) {
+        if (displayName.toLowerCase().includes(queryClean)) {
+            filtered[displayName] = nodeName;
+        }
+    }
+    return filtered;
 });
 
 // Filtra las sugerencias del destino
@@ -314,7 +320,13 @@ const targetSuggestionsToDisplay = computed(() => {
         return allSuggestionsList.value;
     }
 
-    return searchNodeByKeyword(query);
+    const filtered = {};
+    for (const [displayName, nodeName] of Object.entries(allSuggestionsList.value)) {
+        if (displayName.toLowerCase().includes(queryClean)) {
+            filtered[displayName] = nodeName;
+        }
+    }
+    return filtered;
 });
 
 const selectSource = (displayName) => {
@@ -359,8 +371,8 @@ const handleSearchBar = (event) => {
     emit('update:searchBar', event.target.value)
 }
 
-const handleSearchClick = (value) => {
-    emit('update:searchedNode', value)
+const handleSearchClick = (value, displayName) => {
+    emit('update:searchedNode', `${value}|${displayName}`)
 }
 
 function notify() {

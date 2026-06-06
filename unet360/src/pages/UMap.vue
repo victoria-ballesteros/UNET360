@@ -558,6 +558,46 @@ const searchedNode = ref("");
 const actualRoute = ref({});
 const checkedRouteNodes = ref({});
 const isTravelling = ref(false);
+const activeSearchTargetTag = ref("");
+
+// Helper para buscar el yaw de un tag en un nodo según el query de búsqueda del usuario
+const findMatchingTagYaw = (node, targetQuery) => {
+  if (!node || !node.tags || !targetQuery) return null;
+  const cleanQuery = targetQuery.trim().toLowerCase();
+
+  // 1. Coincidencia exacta por valor/nombre de la etiqueta
+  for (const tagName in node.tags) {
+    const tagData = node.tags[tagName];
+    for (const key in tagData) {
+      if (key.toLowerCase() === cleanQuery) {
+        return tagData[key];
+      }
+    }
+  }
+
+  // 2. Coincidencia parcial por valor/nombre de la etiqueta
+  for (const tagName in node.tags) {
+    const tagData = node.tags[tagName];
+    for (const key in tagData) {
+      if (key.toLowerCase().includes(cleanQuery)) {
+        return tagData[key];
+      }
+    }
+  }
+
+  // 3. Coincidencia por categoría de etiqueta (tagName)
+  for (const tagName in node.tags) {
+    if (tagName.toLowerCase() === cleanQuery) {
+      const tagData = node.tags[tagName];
+      const firstKey = Object.keys(tagData)[0];
+      if (firstKey) {
+        return tagData[firstKey];
+      }
+    }
+  }
+
+  return null;
+};
 const toastRefMap = ref(null);
 
 const setVh = () => {
@@ -602,6 +642,17 @@ const defineData = async () => {
 
     await viewer.setPanorama(tilesConfig, { position: { yaw: initialYaw, pitch: 0 }, transition: { rotation: false, effect: "fade" } });
     await addMarkersFromCurrentNode();
+
+    // Rotación del buscador directo
+    if (activeSearchTargetTag.value) {
+      const tagYaw = findMatchingTagYaw(currentNodeData.value, activeSearchTargetTag.value);
+      if (tagYaw !== null) {
+        setTimeout(() => {
+          viewer.animate({ yaw: tagYaw, pitch: 0, speed: '8rpm' });
+        }, 300);
+      }
+      activeSearchTargetTag.value = ""; // Reset
+    }
   }
 
   currentImage.value = currentNodeData.value.url_image;
@@ -667,6 +718,15 @@ const addMarkersFromCurrentNode = async () => {
   if (!flag && isTravelling.value === true) {
     isTravelling.value = false;
     notifyTravelEnd();
+
+    if (actualRoute.value?.targetTag) {
+      const tagYaw = findMatchingTagYaw(currentNodeData.value, actualRoute.value.targetTag);
+      if (tagYaw !== null) {
+        setTimeout(() => {
+          viewer.animate({ yaw: tagYaw, pitch: 0, speed: '8rpm' });
+        }, 300);
+      }
+    }
   }
 
   // Tags
@@ -696,9 +756,18 @@ watch(searchInput, (newValue) => {
 
 watch(searchedNode, (newVal) => {
   if (newVal.trim() !== "") {
+    let nodeName = newVal;
+    let targetTag = "";
+    if (newVal.includes('|')) {
+      const parts = newVal.split('|');
+      nodeName = parts[0];
+      targetTag = parts[1];
+    }
+
+    activeSearchTargetTag.value = targetTag;
     previousNodeData.value = null;
-    setNode(newVal);
-    defineData(newVal);
+    setNode(nodeName);
+    defineData();
     searchResults.value = null;
     searchInput.value = "";
     varAux.value++;
