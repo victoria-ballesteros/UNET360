@@ -24,7 +24,7 @@
 
           <div class="button-container">
             <RouterLink :to="{ name: button.route }" class="no-underline-link">
-              <UButton :text="button.label" type="contrast" />
+              <UButton :text="button.label" type="contrast" size="lg" />
             </RouterLink>
           </div>
         </div>
@@ -36,13 +36,11 @@
           <div class="orbit orbit-1"></div>
 
           <div class="orbit-icon oi-1">
-            <UIcon name="icons/search" size="16" color="var(--main-yellow)" />
+            <UIcon name="icons/search" size="16" color="var(--contrast-blue)" />
           </div>
-          <div class="orbit-icon oi-2">
-            <UIcon name="icons/route-arrow" size="16" color="var(--main-yellow)" />
-          </div>
+
           <div class="orbit-icon oi-3">
-            <UIcon name="icons/camera" size="16" color="var(--main-yellow)" />
+            <UIcon name="icons/camera" size="16" color="var(--contrast-blue)" />
           </div>
 
           <div class="visual-center">
@@ -111,7 +109,6 @@ onUnmounted(() => {
 /* ─── HERO ──────────────────────────────────────────────── */
 .hero {
   position: relative;
-  background: var(--strong-gray-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,23 +119,6 @@ onUnmounted(() => {
   @media (max-width: 768px) {
     align-items: center;
     padding: 1rem;
-  }
-
-  .hero-dots {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(255, 239, 61, 0.1) 1px, transparent 1px);
-    background-size: 24px 24px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .hero-vignette {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 20%, var(--strong-gray-dark) 100%);
-    pointer-events: none;
-    z-index: 1;
   }
 }
 
@@ -174,8 +154,8 @@ onUnmounted(() => {
 }
 
 .hero-eyebrow {
-  @include paragraph-small;
-  color: rgba(255, 255, 255, 0.4);
+  @include paragraph-medium;
+  color: var(--contrast-blue);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -187,7 +167,7 @@ onUnmounted(() => {
   .eyebrow-dot {
     width: 4px;
     height: 4px;
-    background: var(--main-yellow);
+    background: var(--contrast-blue);
     border-radius: 50%;
   }
 }
@@ -201,7 +181,7 @@ onUnmounted(() => {
 
   em {
     font-style: normal;
-    color: var(--main-yellow);
+    color: var(--contrast-blue);
   }
 
   @media (max-width: 768px) {
@@ -291,7 +271,7 @@ onUnmounted(() => {
 
   &:hover {
     background: rgba(255, 239, 61, 0.25);
-    border-color: var(--main-yellow);
+    border-color: var(--contrast-blue);
   }
 
   &.oi-1 { 

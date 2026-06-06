@@ -72,11 +72,7 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
   justify-content: center;
   gap: 0.45rem;
   border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  border-radius: var(--radius-xl);
   white-space: nowrap;
   overflow: hidden;
   transition:
@@ -90,18 +86,11 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
   text-decoration: none;
   -webkit-font-smoothing: antialiased;
 
+  @include paragraph-medium;
+
   &:focus-visible {
     outline: 2px solid rgba(255, 239, 61, 0.7);
     outline-offset: 3px;
-  }
-
-  &:hover:not(:disabled) {
-    transform: translateY(-1.5px);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0.5px) scale(0.98);
-    transition-duration: 0.06s;
   }
 }
 
@@ -109,7 +98,6 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
 .ub--sm {
   padding: 0.4rem 0.875rem;
   font-size: 0.75rem;
-  border-radius: 8px;
   .ub-spinner svg { width: 13px; height: 13px; }
 }
 .ub--md {
@@ -120,7 +108,6 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
 .ub--lg {
   padding: 0.75rem 1.625rem;
   font-size: 1rem;
-  border-radius: 12px;
   .ub-spinner svg { width: 17px; height: 17px; }
 }
 
@@ -161,9 +148,9 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
 
 // ── Primary: dark glass / minimalist ───────────
 .ub--primary {
+
   background: var(--strong-gray, #303745);
   color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 
   &:hover:not(:disabled) {
@@ -177,7 +164,6 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
 .ub--secondary {
   background: transparent;
   color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 
   &:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.06);
@@ -203,14 +189,22 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
 // ── Contrast / Contrast-2: amarillo UNET ──────
 .ub--contrast,
 .ub--contrast-2 {
-  background: var(--main-yellow, #FFEF3D);
-  color: #1a1d24;
+  background: var(--contrast-blue);
+  color: white;
   border: 1px solid transparent;
-  box-shadow: 0 1px 2px rgba(255, 239, 61, 0.1);
+  
+  background: linear-gradient(
+    to right, 
+    var(--contrast-blue) 50%,
+    var(--main-blue) 50%
+  );
+  
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: background-position 0.3s ease-out;
 
   &:hover:not(:disabled) {
-    background: #fbe624;
-    box-shadow: 0 4px 12px rgba(255, 239, 61, 0.2);
+    background-position: left bottom;
   }
 }
 

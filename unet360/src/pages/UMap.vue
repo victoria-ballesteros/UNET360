@@ -1,6 +1,7 @@
 <template>
   <div class="viewer-wrapper">
-    <div class="viewer-container" ref="viewerContainer"></div>
+    <!-- NO TOCAR ESTA LÍNEA POR NINGUNA RAZÓN PORQUE EL VISOR DEPENDE DE ESTO -->
+    <div class="viewer-container" ref="viewerContainer" style="width: 100vw; height: 100vh; background: grey"></div>
 
     <div class="top-controls">
       <UInputCard v-model:searchBar="searchInput" v-model:searchSource="searchSource"
