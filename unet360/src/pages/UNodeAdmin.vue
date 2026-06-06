@@ -138,10 +138,13 @@
 
               <!-- Sección de Eliminación -->
               <div class="delete-section">
-                <button class="delete-node-btn" @click.stop="openDeleteConfirm(node.name)">
-                  <UIcon name="icons/trash" class="delete-icon" />
-                  {{ deleteLabel }}
-                </button>
+                <UButton
+                  class="delete-node-btn"
+                  type="danger"
+                  icon="icons/trash"
+                  :text="deleteLabel"
+                  @click.stop="openDeleteConfirm(node.name)"
+                />
               </div>
             </div>
 

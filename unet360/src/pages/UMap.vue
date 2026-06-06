@@ -1,6 +1,6 @@
 <template>
   <div class="viewer-wrapper">
-    <div class="viewer-container" ref="viewerContainer" style="width: 100vw; height: 100vh; background: grey"></div>
+    <div class="viewer-container" ref="viewerContainer"></div>
 
     <div class="top-controls">
       <UInputCard v-model:searchBar="searchInput" v-model:searchSource="searchSource"
@@ -54,6 +54,11 @@
       <UCustomMap v-if="currentNodeData && visualMapCoords" :key="customMapUrl" :mapUrl="customMapUrl"
         :iconUrl="customIconUrl" :node="visualMapCoords" />
     </div>
+
+    <!-- Chip de Nodo actual para Administradores -->
+    <div v-if="isAdmin && currentNodeData && currentNodeData.name" class="admin-node-chip">
+      <span class="node-name-text">{{ currentNodeData.name }}</span>
+    </div>
   </div>
   
   <UToast ref="toastRefMap" />
@@ -73,35 +78,25 @@
       <template v-if="editForm.type === 'arrow'">
         <div class="form-group">
           <label>Dirección Relativa:</label>
-          <div class="custom-select-wrapper" @click.stop="toggleDirectionDropdown" v-click-outside="closeDirectionDropdown">
-            <div class="custom-select-trigger edit-input" :class="{ open: directionDropdownOpen }">
-              <span>{{ directionOptions.find(o => o.value === editForm.direction)?.label || 'Seleccionar...' }}</span>
-              <svg class="select-chevron" :class="{ rotated: directionDropdownOpen }" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M2.5 5L7 9.5L11.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <transition name="dropdown-fade">
-              <ul v-show="directionDropdownOpen" class="custom-select-options">
-                <li
-                  v-for="opt in directionOptions"
-                  :key="opt.value"
-                  class="custom-select-option"
-                  :class="{ selected: editForm.direction === opt.value }"
-                  @click.stop="selectDirection(opt.value)"
-                >
-                  {{ opt.label }}
-                </li>
-              </ul>
-            </transition>
-          </div>
+          <USelect
+            styleType="dark"
+            v-model="directionLabel"
+            :options="['Frente', 'Derecha', 'Atrás', 'Izquierda']"
+            placeholder="Seleccionar..."
+          />
         </div>
         <div class="form-group">
           <label>Nodo Destino (Nombre/ID):</label>
-          <input type="text" v-model="editForm.targetNode" class="edit-input" placeholder="Ej: 002" />
+          <UInput styleType="dark" v-model="editForm.targetNode" placeholder="Ej: 002" />
         </div>
         <div class="form-group">
           <label>Peso de Conexión:</label>
-          <input type="text" v-model="editForm.weight" class="edit-input" placeholder="Ej: 1.0" @update:modelValue="(v) => { editForm.weight = v?.replace(/[^0-9.]/g, ''); }" />
+          <UInput
+            styleType="dark"
+            v-model="editForm.weight"
+            placeholder="Ej: 1.0"
+            pattern="[0-9.]*"
+          />
         </div>
       </template>
 
@@ -141,7 +136,11 @@
         </div>
         <div class="form-group">
           <label>Nombre del Marcador:</label>
-          <input type="text" v-model="editForm.tagValue" class="edit-input" placeholder="Ej: Lab de Física" />
+          <UInput
+            styleType="dark"
+            v-model="editForm.tagValue"
+            placeholder="Ej: Lab de Física"
+          />
         </div>
       </template>
 
@@ -149,9 +148,9 @@
         <p class="edit-warning">¿Deseas establecer la vista actual (Yaw: {{ editForm.yaw.toFixed(2) }}) como la perspectiva frontal predeterminada de este nodo?</p>
       </template>
       <template v-if="editForm.type === 'rotation'">
-        <p class="edit-warning" style="margin-bottom: 1rem; line-height: 1.4;">Establece la rotación a aplicar al llegar a este nodo ({{ currentNodeData.name }}) desde sus vecinos:</p>
+        <p class="edit-warning">Establece la rotación a aplicar al llegar a este nodo ({{ currentNodeData.name }}) desde sus vecinos:</p>
         
-        <div v-for="neighborName in adjacentNeighborNames" :key="neighborName" class="form-group" style="margin-bottom: 1rem;">
+        <div v-for="neighborName in adjacentNeighborNames" :key="neighborName" class="form-group neighbor-rotation-group">
           <label>Al venir desde el Nodo <strong>{{ neighborName }}</strong>:</label>
           <div class="custom-select-wrapper" @click.stop="toggleNeighborRotationDropdown(neighborName)" v-click-outside="() => closeNeighborRotationDropdown(neighborName)">
             <div class="custom-select-trigger edit-input" :class="{ open: neighborRotationDropdownOpen[neighborName] }">
@@ -199,6 +198,8 @@ import UToast from "@/components/UToast.vue";
 import UBaseModal from "@/components/UBaseModal.vue";
 import UButton from '@/components/UButton.vue';
 import UIcon from '@/components/UIcon.vue';
+import UInput from '@/components/UInput.vue';
+import USelect from '@/components/USelect.vue';
 
 // Directiva personalizada para cerrar el dropdown al hacer click fuera
 const vClickOutside = {
@@ -214,18 +215,14 @@ const vClickOutside = {
 };
 
 // Custom select: Dirección Relativa
-const directionDropdownOpen = ref(false);
 const directionOptions = [
   { value: '0', label: 'Frente' },
   { value: '1', label: 'Derecha' },
   { value: '2', label: 'Atrás' },
   { value: '3', label: 'Izquierda' },
 ];
-const toggleDirectionDropdown = () => { directionDropdownOpen.value = !directionDropdownOpen.value; };
-const closeDirectionDropdown = () => { directionDropdownOpen.value = false; };
 const selectDirection = (val) => {
   editForm.value.direction = val;
-  directionDropdownOpen.value = false;
 
   // Autocomplete info if there's already a connection in that direction
   const dirIdx = parseInt(val, 10);
@@ -240,6 +237,19 @@ const selectDirection = (val) => {
     editForm.value.weight = '1.0';
   }
 };
+
+const directionLabel = computed({
+  get() {
+    const opt = directionOptions.find(o => o.value === editForm.value.direction);
+    return opt ? opt.label : '';
+  },
+  set(newValue) {
+    const opt = directionOptions.find(o => o.label === newValue);
+    if (opt) {
+      selectDirection(opt.value);
+    }
+  }
+});
 
 
 // Custom select: Categoría del Tag
@@ -931,5 +941,34 @@ const getIconNameForTag = (tagName) => {
   width: 1.1rem;
   height: 1.1rem;
   color: var(--main-blue);
+}
+
+.admin-node-chip {
+  position: absolute;
+  bottom: 2rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  background: rgba(48, 55, 69, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 40px;
+  padding: 6px 8px 6px 8px;
+  z-index: 20;
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.3),
+    0 8px 10px -6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.4s ease-out forwards;
+  pointer-events: auto;
+}
+
+.node-name-text {
+  color: var(--fill-white);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  letter-spacing: 0.05em;
 }
 </style>

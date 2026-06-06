@@ -37,13 +37,16 @@
             <p class="zip-name">{{ imageFile?.name }}</p>
             <p class="zip-size">{{ formatFileSize(imageFile?.size) }}</p>
           </div>
-          <button class="change-zip-btn" @click="openUploadFileDialog">
-            <UIcon name="icons/edit" size="16" color="var(--main-yellow)" />
-            Cambiar ZIP
-          </button>
+           <UButton
+            type="tertiary"
+            class="change-zip-btn"
+            text="Cambiar ZIP"
+            icon="icons/edit"
+            @click="openUploadFileDialog"
+          />
         </div>
 
-        <input type="file" accept=".zip" ref="fileInput" style="display:none" @change="handleFileChange" />
+        <input type="file" accept=".zip" ref="fileInput" class="hidden-file-input" @change="handleFileChange" />
       </div>
 
       <div class="card-form-wrapper">
@@ -112,12 +115,12 @@
               placeholder="Selecciona un minimapa" />
           </div>
           <div class="adjacent-row">
-            <div class="input-wrapper" style="flex: 1">
+            <div class="input-wrapper coordinate-input">
               <p class="input-label">Coordenada X</p>
               <UInput v-model="minimapX" styleType="dark" placeholder="Ej: 120"
                 @update:modelValue="(v) => { minimapX = v?.replace(/[^0-9-]/g, ''); }" />
             </div>
-            <div class="input-wrapper" style="flex: 1">
+            <div class="input-wrapper coordinate-input">
               <p class="input-label">Coordenada Y</p>
               <UInput v-model="minimapY" styleType="dark" placeholder="Ej: 240"
                 @update:modelValue="(v) => { minimapY = v?.replace(/[^0-9-]/g, ''); }" />
@@ -139,16 +142,22 @@
     <div class="tag-dialog-content">
       <div v-for="(_, index) in tagCustomNames[actualTagSelected]" :key="index" class="tag-name-row">
         <UInput v-model="tagCustomNames[actualTagSelected][index]" styleType="dark" placeholder="Baño oeste" />
-        <button v-if="tagCustomNames[actualTagSelected].length > 1" class="tag-remove-btn"
-          @click="removeTagName(index)">
-          <UIcon name="icons/close" size="14" color="currentColor" />
-        </button>
+        <UButton
+          v-if="tagCustomNames[actualTagSelected].length > 1"
+          type="tertiary"
+          class="tag-remove-btn"
+          icon="icons/close"
+          @click="removeTagName(index)"
+        />
       </div>
 
-      <button class="tag-add-btn" @click="addTagName">
-        <UIcon name="icons/plus" size="14" color="var(--main-yellow)" />
-        Agregar otro
-      </button>
+      <UButton
+        type="tertiary"
+        class="tag-add-btn"
+        icon="icons/plus"
+        text="Agregar otro"
+        @click="addTagName"
+      />
     </div>
     <template #footer>
       <UButton text="Aceptar" @click="handleTagCustomization" :type="dialogButtonType" />
@@ -528,5 +537,13 @@ onMounted(async () => {
     background: rgba(255, 239, 61, 0.07);
     border-color: rgba(255, 239, 61, 0.7);
   }
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.coordinate-input {
+  flex: 1;
 }
 </style>
