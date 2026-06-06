@@ -136,30 +136,70 @@ router.beforeEach(async (to, from, next) => {
 
     // 1. Detectar e interceptar hash de Supabase antes de evaluar autenticación
     const hash = window.location.hash;
-    if (hash && hash.includes('access_token')) {
+
+    if (hash && hash.includes("access_token")) {
       const params = new URLSearchParams(hash.substring(1));
-      const accessToken = params.get('access_token');
-      const type = params.get('type');
-      
+
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
+      const type = params.get("type");
+
       if (accessToken) {
-        // Guardar el token en las cookies para persistencia y en el store
+
+        // CONFIRMACIÓN DE CUENTA
+        if (type === "signup") {
+
+          document.cookie = `auth=${accessToken}; path=/`;
+
+          auth.token = accessToken;
+          auth.isAuthenticated = true;
+
+          sessionStorage.setItem("supabase_signup", "true");
+
+          window.history.replaceState(
+            null,
+            null,
+            window.location.pathname
+          );
+
+          return next({ name: "SuccessConfirmation" });
+        }
+
+        // RECUPERACIÓN DE CONTRASEÑA
+        if (type === "recovery") {
+
+          sessionStorage.setItem(
+            "recovery_access_token",
+            accessToken
+          );
+
+          sessionStorage.setItem(
+            "recovery_refresh_token",
+            refreshToken || ""
+          );
+
+          window.history.replaceState(
+            null,
+            null,
+            "/user/newpassword"
+          );
+
+          return next({
+            name: "NewPassword"
+          });
+        }
+
+        // LOGIN GOOGLE
         document.cookie = `auth=${accessToken}; path=/`;
+
         auth.token = accessToken;
         auth.isAuthenticated = true;
-        
-        if (type === 'signup') {
-          sessionStorage.setItem('supabase_signup', 'true');
-          auth.successState = true;
-          // Limpiar hash de la URL
-          window.history.replaceState(null, null, window.location.pathname + window.location.search);
-          return next({ name: 'SuccessConfirmation' });
-        } else if (type === 'recovery') {
-          // Dejar el hash para que la vista NewPassword lo lea del navegador
-          return next({ name: 'NewPassword', hash });
-        } else {
-          // Login OAuth (Google) - limpiar hash de la URL
-          window.history.replaceState(null, null, window.location.pathname + window.location.search);
-        }
+
+        window.history.replaceState(
+          null,
+          null,
+          window.location.pathname
+        );
       }
     }
 

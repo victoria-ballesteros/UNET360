@@ -51,24 +51,6 @@
         />
       </div>
 
-      <!-- Divider social (solo en Login y Signup) -->
-      <div v-if="currentMode === 'Login' || currentMode === 'Signup'" class="social-divider">
-        <span class="divider-line"></span>
-        <span class="divider-text">o</span>
-        <span class="divider-line"></span>
-      </div>
-
-      <!-- Botón de Google (solo en Login y Signup) -->
-      <div v-if="currentMode === 'Login' || currentMode === 'Signup'" class="social-button-container">
-        <UButton
-          text="Iniciar sesión con Google"
-          type="primary"
-          icon="icons/google"
-          :full="true"
-          @click="loginWithGoogle"
-        />
-      </div>
-
       <!-- Link para cambiar entre login y registro -->
       <div class="text-container">
         <p class="register-link">
@@ -268,11 +250,17 @@ async function handleSubmit() {
     return;
   }
   // ═══════════════ NEW PASSWORD FLOW ═══════════════
-  if (currentMode.value === 'NewPassword') {
-    // Extrae los tokens del hash
-    const hash = window.location.hash;
-    const access_token = hash.match(/access_token=([^&]+)/)?.[1] || '';
-    const refresh_token = hash.match(/refresh_token=([^&]+)/)?.[1] || '';
+    if (currentMode.value === 'NewPassword') {
+      // Extrae los tokens del hash
+      const access_token =
+    sessionStorage.getItem(
+      "recovery_access_token"
+    ) || "";
+
+  const refresh_token =
+    sessionStorage.getItem(
+      "recovery_refresh_token"
+    ) || "";
     if (!access_token || !refresh_token) {
       inputErrors.password = 'Enlace inválido o expirado.';
       isLoading.value = false;
@@ -283,36 +271,28 @@ async function handleSubmit() {
       refresh_token,
       new_password: inputModels.password
     });
-    if (result.success) {
-      authStore.successState = true;
-      router.push({ name: 'SuccessNewPassword' });
-    } else {
+  if (result.success) {
+
+    sessionStorage.removeItem(
+      "recovery_access_token"
+    );
+
+    sessionStorage.removeItem(
+      "recovery_refresh_token"
+    );
+
+    authStore.successState = true;
+
+    router.push({
+      name: "SuccessNewPassword"
+    });
+  }else {
       inputErrors.password = result.message;
       isLoading.value = false;
     }
     return;
   }
 
-}
-
-/**
- * Inicia el flujo de Google OAuth solicitando la URL de redirección al Backend
- */
-async function loginWithGoogle() {
-  try {
-    isLoading.value = true;
-    const redirectUrl = `${window.location.origin}/360-map`;
-    const { data } = await api.get(`auth/google?redirect_to=${encodeURIComponent(redirectUrl)}`);
-    if (data?.status && data.response_obj?.url) {
-      window.location.href = data.response_obj.url;
-    } else {
-      inputErrors.email = "No se pudo iniciar sesión con Google.";
-      isLoading.value = false;
-    }
-  } catch (e) {
-    inputErrors.email = "Error de conexión con el servidor.";
-    isLoading.value = false;
-  }
 }
 
 
@@ -338,7 +318,6 @@ watch(currentMode, resetForm);
   margin: 0;
 }
 </style>
-
 
 
 
