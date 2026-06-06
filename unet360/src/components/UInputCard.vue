@@ -56,7 +56,7 @@
                         @input="handleSource" list="source-suggestions" />
 
                     <datalist id="source-suggestions">
-                        <option v-for="(value, key) in routeSearcherResult" :key="key" :value="key">
+                        <option v-for="(value, key) in routeSearcherResult" :key="key" :value="key" :label="value">
                             {{ value }}
                         </option>
                     </datalist>
@@ -65,7 +65,7 @@
                         @input="handleTarget" list="source-suggestions-2" />
 
                     <datalist id="source-suggestions-2">
-                        <option v-for="(value, key) in routeSearcherTargetResult" :key="key" :value="key">
+                        <option v-for="(value, key) in routeSearcherTargetResult" :key="key" :value="key" :label="value">
                             {{ value }}
                         </option>
                     </datalist>
