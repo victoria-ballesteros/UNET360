@@ -82,21 +82,34 @@
     width: 100%;
     display: flex;
     align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+
+    &:hover {
+        border-color: rgba(255, 239, 61, 0.3);
+    }
+
+    &:focus-within {
+        border-color: var(--main-yellow);
+        box-shadow: 0 0 0 2px rgba(255, 239, 61, 0.1);
+    }
 }
 
 .route-input {
     all: unset;
     width: 100%;
-    padding: 0.5rem 2.2rem 0.5rem 0.5rem; // Espacio a la derecha para el botón chevron
-    background-color: var(--fill-gray);
+    padding: 0.7rem 2.2rem 0.7rem 0.8rem; // Espacio a la derecha para el botón chevron
+    background-color: transparent;
     @include paragraph-small();
-    border-radius: 12px;
-    color: var(--strong-gray);
+    color: var(--fill-white);
     box-sizing: border-box;
 }
 
 input::placeholder {
-    color: var(--border-gray);
+    color: rgba(255, 255, 255, 0.35);
 }
 
 .route-inputs-container {
@@ -160,19 +173,19 @@ input::placeholder {
 
 .custom-suggestions-list {
     position: absolute;
-    top: calc(100% + 4px);
+    top: calc(100% + 6px);
     left: 0;
     right: 0;
     max-height: 180px;
     overflow-y: auto;
-    background-color: var(--fill-white);
-    border: 1px solid var(--border-gray);
+    background-color: var(--strong-gray-dark);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     z-index: 1000;
     list-style: none;
     margin: 0;
     padding: 6px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
 
     &::-webkit-scrollbar {
@@ -182,10 +195,10 @@ input::placeholder {
         background: transparent;
     }
     &::-webkit-scrollbar-thumb {
-        background: var(--border-gray);
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 3px;
         &:hover {
-            background: #b0b0b0;
+            background: rgba(255, 255, 255, 0.2);
         }
     }
 }
@@ -194,14 +207,14 @@ input::placeholder {
     padding: 8px 12px;
     cursor: pointer;
     border-radius: 8px;
-    color: var(--strong-gray-dark);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 0.875rem;
     transition: background-color 0.15s ease, color 0.15s ease;
     text-align: left;
 
     &:hover {
-        background-color: var(--fill-gray);
-        color: var(--main-blue);
+        background-color: rgba(66, 133, 244, 0.15);
+        color: var(--fill-white);
     }
 }
 
@@ -209,6 +222,8 @@ input::placeholder {
     padding: 12px 24px 18px 24px;
     width: 100%;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
 }
 
 .btn-start-route {
@@ -220,13 +235,12 @@ input::placeholder {
     color: var(--fill-white);
     border: none;
     border-radius: 12px;
-    padding: 11px 16px;
+    padding: 11px 20px;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(66, 133, 244, 0.25);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 100%;
     box-sizing: border-box;
 
     :deep(svg), :deep(img) {

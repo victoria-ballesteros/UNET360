@@ -75,7 +75,7 @@
                                 <UIcon
                                     name="icons/chevron-down"
                                     size="12"
-                                    color="var(--strong-gray)"
+                                    color="rgba(255, 255, 255, 0.6)"
                                     :rotation="showSourceSuggestions ? 180 : 0"
                                 />
                             </button>
@@ -117,7 +117,7 @@
                                 <UIcon
                                     name="icons/chevron-down"
                                     size="12"
-                                    color="var(--strong-gray)"
+                                    color="rgba(255, 255, 255, 0.6)"
                                     :rotation="showTargetSuggestions ? 180 : 0"
                                 />
                             </button>
