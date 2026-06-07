@@ -9,8 +9,8 @@
       </div>
 
       <div class="button-section">
-        <UButton text="Crear Nuevo Nodo" type="contrast-2" @click="router.push({ name: 'NodeCreate' })" />
-        <UButton text="Corregir Pesos" type="contrast-2" :loading="isFixing" @click="fixWeights" />
+        <UButton text="Crear nuevo nodo" type="contrast-2" @click="router.push({ name: 'NodeCreate' })" />
+        <UButton text="Corregir pesos" type="contrast-2" :loading="isFixing" @click="fixWeights" />
         <div class="admin-entities-buttons">
           <UButton text="Tags"      type="secondary" @click="router.push({ name: 'AdminEntities', params: { entity: 'tags' } })" />
           <UButton text="Locations" type="secondary" @click="router.push({ name: 'AdminEntities', params: { entity: 'locations' } })" />
@@ -210,12 +210,6 @@ const toggleNode = (name) => {
 };
 
 // ── Labels y grupos de adyacencia ─────────────────────────────────────────
-const adyacentTitle = 'Adyacentes';
-const adyacentGroups = [
-  { name: 'group1', class: 'adyacent-node-group-1', items: [{ label: 'Fre', key: 'frente'    }, { label: 'Atr', key: 'atras'    }] },
-  { name: 'group2', class: 'adyacent-node-group-2', items: [{ label: 'Izq', key: 'izquierda' }, { label: 'Der', key: 'derecha'  }] },
-];
-const locationLabel = 'Ubicación';
 const tagsLabel     = 'Tags';
 const tagsEmpty     = 'Sin tags';
 const deleteLabel   = 'Eliminar nodo';
@@ -237,18 +231,6 @@ const radToDeg = (rad) => {
 const formatAngleRad = (rad) => {
   if (rad === null || rad === undefined || isNaN(rad) || rad === '') return 'N/A';
   return `${parseFloat(rad).toFixed(2)} rad`;
-};
-
-const getArrowAngleValue = (node, key) => {
-  const keyMap = { frente: 0, derecha: 1, atras: 2, izquierda: 3 };
-  const neighbor = getAdyacentValue(node, key);
-  if (neighbor === 'N/A') return '—';
-  
-  const idx = keyMap[key];
-  if (Array.isArray(node.arrow_angles) && node.arrow_angles[idx] !== undefined && node.arrow_angles[idx] !== null && node.arrow_angles[idx] !== '') {
-    return radToDeg(node.arrow_angles[idx]);
-  }
-  return 'Predeterminado';
 };
 
 const getAdyacentValue = (node, key) => {

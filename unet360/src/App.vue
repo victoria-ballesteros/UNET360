@@ -4,6 +4,7 @@
       <UHeader
         v-if="route.name != 'Map'"
         :nav-options="sidebarOptions"
+        :is-auth-ready="!authStore.isLoading"
         @isPanelOpen="isPanelOpen = !isPanelOpen"
         @logout="handleLogout"
       />

@@ -75,13 +75,7 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
   border-radius: var(--radius-xl);
   white-space: nowrap;
   overflow: hidden;
-  transition:
-    background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.2s ease;
+  
   outline: none;
   text-decoration: none;
   -webkit-font-smoothing: antialiased;
@@ -201,10 +195,15 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
   
   background-size: 200% 100%;
   background-position: right bottom;
-  transition: background-position 0.3s ease-out;
+  
+  transition: background-position 0.3s ease-out, transform 0.1s ease;
 
   &:hover:not(:disabled) {
     background-position: left bottom;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
   }
 }
 
@@ -225,12 +224,9 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
 .ub--danger {
   background: var(--main-red, #D33124);
   color: #fff;
-  border: 1px solid transparent;
-  box-shadow: 0 1px 2px rgba(211, 49, 36, 0.15);
 
   &:hover:not(:disabled) {
     background: #c2291d;
-    box-shadow: 0 4px 12px rgba(211, 49, 36, 0.25);
   }
 }
 

@@ -179,7 +179,7 @@ const goToPage = (p) => {
 // ── Cálculo responsive de pageSize ─────────────────────────────────────────
 const calculatePageSize = () => {
   if (window.innerWidth < 768) { pageSize.value = 10; return; }
-  const offsetHeight   = 380; // Header + toolbar + padding + paginación + footer + layout margins
+  const offsetHeight   = 420; // Header + toolbar + padding + paginación + footer + layout margins
   const itemHeight     = 65;  // Alto de una fila contraída
   const available      = window.innerHeight - offsetHeight;
   pageSize.value       = Math.max(4, Math.floor(available / itemHeight));
@@ -321,7 +321,7 @@ onUnmounted(() => {
   min-height: 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
-  overflow-y: auto;
+  overflow-y: hidden;
   background: var(--strong-gray-dark, #252932); // Superpuesto sobre el fondo decorativo
 
   // Scrollbar sutil

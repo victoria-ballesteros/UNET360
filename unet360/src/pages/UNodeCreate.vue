@@ -171,7 +171,7 @@
     :title="resultTitle"
     :message="resultMessage"
     primary-btn-text="Ver nodos"
-    secondary-btn-text="Crear Nuevo Nodo"
+    secondary-btn-text="Crear nuevo nodo"
     @primary-click="navigateToNodes"
     @secondary-click="startNewNode"
   />

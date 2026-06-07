@@ -1,14 +1,6 @@
 // ═══════════════   Layout related dialogs  ═══════════════
 
 export const getSidebarOptions = (authState, isAdmin = null) => {
-  if (!authState) {
-    return [
-      { label: "Inicia sesión", to: { name: "Login" } },
-      { label: "Regístrate", to: { name: "Signup" } },
-      { label: "Acerca de", to: { name: "About" } },
-    ];
-  }
-
   if (isAdmin == "admin") {
     return [
       { label: "Administrar nodos", to: { name: "NodeAdmin" } },
@@ -19,9 +11,9 @@ export const getSidebarOptions = (authState, isAdmin = null) => {
   }
 
   return [
+    { label: "Inicia sesión", to: { name: "Login" } },
+    { label: "Regístrate", to: { name: "Signup" } },
     { label: "Acerca de", to: { name: "About" } },
-    { label: "Mapa 360", to: { name: "Map" } },
-    { label: "Cerrar sesión", action: "logout" },
   ];
 };
 

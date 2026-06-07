@@ -21,7 +21,7 @@
       <UButton
         v-if="logoutOption"
         class="nav-logout-btn"
-        icon="close-session"
+        icon="logout"
         :text="logoutOption.label"
         type="danger"
         size="sm"
