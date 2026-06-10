@@ -107,6 +107,34 @@ class NodeService:
         nodes = await self.repository.get_all()
         return [await transform_node_to_node_out_dto(node) for node in nodes]
     
+    async def get_paginated_nodes(self, page: int, page_size: int, search: Optional[str] = None) -> dict:
+        import math
+        skip = (page - 1) * page_size
+        nodes, total = await self.repository.get_paginated(skip, page_size, search)
+        nodes_out_dtos = [await transform_node_to_node_out_dto(node) for node in nodes]
+        total_pages = math.ceil(total / page_size) if page_size > 0 else 0
+        return {
+            "items": [node_dto.model_dump() for node_dto in nodes_out_dtos],
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "pages": total_pages
+        }
+    
+    async def get_keyset_nodes(self, page: int, page_size: int, sort: str = "asc", search: Optional[str] = None) -> dict:
+        nodes, total = await self.repository.get_keyset_paginated(page, page_size, sort, search)
+        nodes_out_dtos = [await transform_node_to_node_out_dto(node) for node in nodes]
+        import math
+        total_pages = math.ceil(total / page_size) if page_size > 0 else 0
+        return {
+            "items": [node_dto.model_dump() for node_dto in nodes_out_dtos],
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "pages": total_pages,
+            "sort": sort
+        }
+    
 
     async def search_nodes(self, keywords: list[str]) -> list[NodeOutDTO]:
         all_nodes = await self.repository.get_all()

@@ -21,11 +21,13 @@
     <!-- ── Lista de nodos ── -->
     <div class="nodes-list-section">
       <UAdminList
-        :items="nodes"
-        :loading="isLoading"
-        :search-fields="['name', 'location']"
-        :sort-fn="nodeSortFn"
-        search-placeholder="Buscar por nombre o ubicación..."
+        :items="paginatedNodes"
+        :loading="isListLoading"
+        :server-side="true"
+        :total-items="totalNodesCount"
+        :extra-offset="67"
+        @change="handleListChange"
+        search-placeholder="Buscar por nombre..."
         empty-message="No hay nodos registrados."
         no-results-message="No se encontraron nodos."
         item-key-field="name"
@@ -172,10 +174,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useNodeStore } from '@/service/stores/nodes.js';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
+import api from '@/axios';
 
 import UIcon    from '@/components/UIcon.vue';
 import UButton  from '@/components/UButton.vue';
@@ -189,18 +192,66 @@ const router    = useRouter();
 const nodeStore = useNodeStore();
 const { nodes, isLoading } = storeToRefs(nodeStore);
 
-// ── Función de ordenación personalizada (prioridad de estado + alfa) ───────
-const statusPriority = { ERROR: 0, WARNING: 1, OK: 2 };
+// ── Estado de paginación de servidor ───────────────────────────────────────
+const rawPaginatedNodes = ref([]);
+const totalNodesCount   = ref(0);
+const isListLoading     = ref(false);
+const currentListParams = ref({ page: 1, pageSize: 10, search: '', sort: 'asc' });
 
-const nodeSortFn = (items, dir) =>
-  [...items].sort((a, b) => {
+// Mapeo y ordenación reactiva de nodos usando computeds (evita condiciones de carrera y fallos de status)
+const paginatedNodes = computed(() => {
+  const mapped = rawPaginatedNodes.value.map(n => {
+    const storeNode = nodes.value.find(sn => sn.name === n.name);
+    return {
+      ...n,
+      status: storeNode?.status || null,
+      reasons: storeNode?.reasons || null,
+    };
+  });
+  
+  // Ordenar localmente la página actual por prioridad de estado
+  const statusPriority = { ERROR: 0, WARNING: 1, OK: 2 };
+  return [...mapped].sort((a, b) => {
     const pa = statusPriority[a.status] ?? 3;
     const pb = statusPriority[b.status] ?? 3;
     if (pa !== pb) return pa - pb;
     const na = a.name?.toLowerCase() ?? '';
     const nb = b.name?.toLowerCase() ?? '';
-    return dir === 'asc' ? na.localeCompare(nb) : nb.localeCompare(na);
+    return currentListParams.value.sort === 'asc' 
+      ? na.localeCompare(nb, undefined, { numeric: true }) 
+      : nb.localeCompare(na, undefined, { numeric: true });
   });
+});
+
+const handleListChange = async (params) => {
+  currentListParams.value = params;
+  isListLoading.value = true;
+  
+  try {
+    const { data } = await api.get('nodes/', {
+      params: {
+        page: params.page,
+        page_size: params.pageSize,
+        search: params.search || undefined,
+        sort: params.sort || 'asc'
+      }
+    });
+    
+    if (data?.status && data.response_obj) {
+      const res = data.response_obj;
+      rawPaginatedNodes.value = res.items || [];
+      totalNodesCount.value = res.total || 0;
+    }
+  } catch (error) {
+    console.error("Error al obtener nodos paginados:", error);
+  } finally {
+    isListLoading.value = false;
+  }
+};
+
+const triggerRefetch = async () => {
+  await handleListChange(currentListParams.value);
+};
 
 // ── Estado expandible ──────────────────────────────────────────────────────
 const expandedNode = ref(null);
@@ -270,12 +321,14 @@ const openDeleteConfirm = (name) => {
 
 const confirmDelete = async () => {
   if (!nodeToDelete.value) return;
-  const currentNode = nodes.value.find(obj => obj.name === nodeToDelete.value);
+  const currentNode = paginatedNodes.value.find(obj => obj.name === nodeToDelete.value) || 
+                      nodes.value.find(obj => obj.name === nodeToDelete.value);
   const resp = await deleteNodeRequest(nodeToDelete.value);
   if (resp?.status) {
     const index = nodes.value.findIndex(obj => obj.name === nodeToDelete.value);
     if (index !== -1) nodes.value.splice(index, 1);
     if (currentNode?.url_image) await deleteImageFromServer(currentNode.url_image);
+    await triggerRefetch();
   }
   showDeleteDialog.value = false;
 };
@@ -295,7 +348,8 @@ const fixWeights = async () => {
       } else {
         console.log(`Éxito: se corrigieron los pesos de ${count} nodos.`);
       }
-      nodeStore.fetchNodes(); // Cargar nodos asincrónicamente en background
+      await nodeStore.fetchNodes(); // Cargar nodos asincrónicamente en background
+      await triggerRefetch(); // Refrescar vista paginada
     } else {
       const msg = resp?.response_obj?.message || "No se pudieron corregir los pesos del grafo.";
       if (toastRef.value) {
