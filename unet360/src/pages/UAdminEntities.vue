@@ -16,8 +16,12 @@
     <!-- ── Lista ── -->
     <div class="list-section">
       <UAdminList
+        :key="entity"
         :items="items"
-        :loading="isLoading"
+        :loading="entity === 'tenants' ? isListLoading : isLoading"
+        :server-side="entity === 'tenants'"
+        :total-items="entity === 'tenants' ? totalUsersCount : items.length"
+        @change="handleListChange"
         :search-fields="entity === 'tenants' ? ['name', 'email'] : ['name']"
         :show-search="true"
         :show-sort="true"
@@ -127,6 +131,11 @@ const isLoading      = ref(false);
 const showDeleteDialog = ref(false);
 const itemToDelete   = ref(null);
 
+// ── Paginación del Servidor (Solo para tenants / usuarios) ─────────────────
+const totalUsersCount   = ref(0);
+const isListLoading     = ref(false);
+const currentListParams = ref(null);
+
 // ── Labels ────────────────────────────────────────────────────────────────
 const entityLabel      = computed(() => ({ tags: 'tag', tenants: 'usuario', locations: 'location' }[entity.value] ?? entity.value));
 const entityLabelPlural = computed(() => ({ tags: 'tags', tenants: 'usuarios', locations: 'locations' }[entity.value] ?? entity.value));
@@ -135,12 +144,12 @@ const createButtonText = computed(() => ({ tags: 'Crear Tag', locations: 'Crear 
 
 // ── Fetch ─────────────────────────────────────────────────────────────────
 async function fetchItems() {
+  if (entity.value === 'tenants') return; // Se maneja por el servidor mediante handleListChange
   isLoading.value = true;
   try {
     const { data } = await api.get(`${entity.value}/`);
     if (data?.status && Array.isArray(data.response_obj)) {
       items.value = data.response_obj;
-      if (entity.value === 'tenants') await fetchTenantStatuses();
     } else {
       items.value = [];
     }
@@ -148,6 +157,32 @@ async function fetchItems() {
     items.value = [];
   } finally {
     isLoading.value = false;
+  }
+}
+
+async function handleListChange(params) {
+  if (entity.value !== 'tenants') return;
+  currentListParams.value = params;
+  isListLoading.value = true;
+  try {
+    const { data } = await api.get('tenants/', {
+      params: {
+        page: params.page,
+        page_size: params.pageSize,
+        search: params.search || undefined,
+        sort: params.sort || 'asc'
+      }
+    });
+    if (data?.status && data.response_obj) {
+      const res = data.response_obj;
+      items.value = res.items || [];
+      totalUsersCount.value = res.total || 0;
+      await fetchTenantStatuses();
+    }
+  } catch (error) {
+    console.error("Error al obtener usuarios paginados:", error);
+  } finally {
+    isListLoading.value = false;
   }
 }
 
@@ -186,7 +221,13 @@ async function doDelete() {
     if (entity.value === 'tenants' && !key) return;
     const { data } = await api.delete(`${entity.value}/${encodeURIComponent(key)}`);
     if (data?.status) {
-      items.value = items.value.filter(i => itemKey(i) !== key);
+      if (entity.value === 'tenants') {
+        if (currentListParams.value) {
+          await handleListChange(currentListParams.value);
+        }
+      } else {
+        items.value = items.value.filter(i => itemKey(i) !== key);
+      }
     }
   } catch (e) { console.error(e?.response?.data || e); }
   showDeleteDialog.value = false;
@@ -219,8 +260,18 @@ async function saveRole() {
 }
 
 // ── Ciclo de vida ─────────────────────────────────────────────────────────
-onMounted(fetchItems);
-watch(entity, fetchItems);
+onMounted(() => {
+  if (entity.value !== 'tenants') {
+    fetchItems();
+  }
+});
+watch(entity, (newEntity) => {
+  items.value = [];
+  totalUsersCount.value = 0;
+  if (newEntity !== 'tenants') {
+    fetchItems();
+  }
+});
 </script>
 
 <style lang="scss" scoped>

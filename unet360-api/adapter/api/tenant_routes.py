@@ -1,6 +1,6 @@
 # unet360-api/adapter/api/tenant_routes.py
 
-from fastapi import APIRouter, HTTPException, status, Depends, Request
+from fastapi import APIRouter, HTTPException, status, Depends, Request, Query
 from typing import List, Optional, Any
 from supabase import Client as SupabaseClient
 
@@ -98,10 +98,25 @@ async def get_tenant(supabase_user_id: str, service: TenantService = Depends(get
         )
 
 @router.get("/", response_model=GeneralResponse)
-async def get_all_tenants(service: TenantService = Depends(get_tenant_service)):
+async def get_all_tenants(
+    page: Optional[int] = Query(None, description="Page number for pagination"),
+    page_size: Optional[int] = Query(None, description="Number of items per page"),
+    search: Optional[str] = Query(None, description="Search keyword for filtering tenants"),
+    sort: str = Query("asc", description="Sorting direction: 'asc' or 'desc'"),
+    service: TenantService = Depends(get_tenant_service)
+):
     try:
-        tenants_out_dtos = await service.get_all_tenants()
+        if page is not None and page_size is not None:
+            p = max(1, page)
+            ps = max(1, page_size)
+            result = await service.get_keyset_tenants(page=p, page_size=ps, sort=sort, search=search)
+            return GeneralResponse(
+                http_code=status.HTTP_200_OK,
+                status=True,
+                response_obj=result
+            )
 
+        tenants_out_dtos = await service.get_all_tenants()
         tenants_data_list = [tenant_dto.model_dump() for tenant_dto in tenants_out_dtos]
         return GeneralResponse(
             http_code=status.HTTP_200_OK,

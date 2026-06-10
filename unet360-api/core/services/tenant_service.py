@@ -108,6 +108,20 @@ class TenantService:
         tenants = await self.repository.get_all()
         return [TenantOutDTO(**tenant.model_dump()) for tenant in tenants]
 
+    async def get_keyset_tenants(self, page: int, page_size: int, sort: str = "asc", search: Optional[str] = None) -> dict:
+        tenants, total = await self.repository.get_keyset_paginated(page, page_size, sort, search)
+        tenants_out_dtos = [TenantOutDTO(**tenant.model_dump()) for tenant in tenants]
+        import math
+        total_pages = math.ceil(total / page_size) if page_size > 0 else 0
+        return {
+            "items": [tenant_dto.model_dump() for tenant_dto in tenants_out_dtos],
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "pages": total_pages,
+            "sort": sort
+        }
+
     async def update_tenant(self, supabase_user_id: str, dto: TenantUpdateDTO) -> TenantOutDTO:
         tenant = await self.repository.get_by_supabase_user_id(supabase_user_id)
         if not tenant:
