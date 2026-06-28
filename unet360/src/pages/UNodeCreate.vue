@@ -415,6 +415,7 @@ const MINIMAP_OPTIONS = [
   'map-A3.jpg',
   'map-A4.jpg',
   'map-C1.jpg',
+  'map_c_floors_2_3.jpg',
 ];
 
 const selectedMinimap = ref('');
@@ -475,7 +476,46 @@ watch(showDialog, (newVal) => {
 // ═══════════════  Lifecycle  ═══════════════
 function handleCancelEvent() { router.push({ name: 'NodeAdmin' }); }
 function navigateToNodes() { showResultDialog.value = false; router.push({ name: 'NodeAdmin' }); }
-function startNewNode() { showResultDialog.value = false; router.replace({ name: 'NodeCreate' }); }
+
+function resetForm() {
+  isUploading.value = false;
+  uploadProgress.value = 0;
+  buttonType.value = 'deactivated';
+  showDialog.value = false;
+  actualTagSelected.value = '';
+  dialogButtonType.value = 'deactivated';
+
+  isImageLoaded.value = false;
+  imageFile.value = null;
+  if (fileInput.value) {
+    fileInput.value.value = '';
+  }
+
+  allLabels.forEach((label) => {
+    inputModels[label] = '';
+    inputWeightModels[label] = '';
+    inputErrors[label] = '';
+    inputTouched[label] = false;
+  });
+
+  selectedLocation.value = '';
+  selectedMinimap.value = '';
+  minimapX.value = '';
+  minimapY.value = '';
+
+  if (Array.isArray(tags.value)) {
+    tags.value.forEach((tag) => {
+      tagSelection[tag.name] = false;
+      tagCustomNames[tag.name] = [''];
+    });
+  }
+}
+
+function startNewNode() {
+  showResultDialog.value = false;
+  resetForm();
+  router.replace({ name: 'NodeCreate' });
+}
 
 onMounted(async () => {
   router.isReady().then(() => obtainData());
