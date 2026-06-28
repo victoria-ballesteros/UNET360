@@ -1,5 +1,5 @@
 <template>
-  <div class="viewer-wrapper">
+  <div class="viewer-wrapper" :class="{ 'moving-mode-active': movingMarkerData }">
     <!-- NO TOCAR ESTA LÍNEA POR NINGUNA RAZÓN PORQUE EL VISOR DEPENDE DE ESTO -->
     <div class="viewer-container" ref="viewerContainer" style="width: 100vw; height: 100vh; background: grey"></div>
 
@@ -70,6 +70,7 @@
     </div>
     <template #footer>
       <UButton text="Eliminar" type="danger"   icon="icons/trash"  @click="deleteSelectedElement" />
+      <UButton text="Mover"    type="secondary" icon="icons/route-arrow" @click="startMovingElement" title="Reubicar este elemento en otra posición del visor" />
       <UButton text="Editar"   type="contrast-2" icon="icons/edit" @click="openEditForSelectedElement" />
     </template>
   </UBaseModal>
@@ -337,6 +338,7 @@ const showActionModal = ref(false);
 const showEditModal = ref(false);
 
 const selectedMarkerData = ref(null); // Datos del marcador cliqueado
+const movingMarkerData = ref(null);   // Marcador en proceso de reubicación
 
 const editForm = ref({
   isEditing: false, 
@@ -419,6 +421,7 @@ const handleCancelEdit = () => {
     currentNodeData.value = JSON.parse(JSON.stringify(originalNodeDataBackup.value));
     isEditMode.value = false;
     selectedTool.value = null;
+    movingMarkerData.value = null;
     originalNodeDataBackup.value = null;
     addMarkersFromCurrentNode();
     toastRefMap.value.showToast("Cambios cancelados y restaurados.");
@@ -429,6 +432,7 @@ const handleCancelEdit = () => {
 };
 
 const selectTool = (tool) => {
+  movingMarkerData.value = null; // Cancelar movimiento activo al cambiar de herramienta
   selectedTool.value = tool;
   if (tool === 'forward') {
     editForm.value.isEditing = false;
@@ -495,6 +499,12 @@ const deleteSelectedElement = async () => {
   selectedMarkerData.value = null;
   toastRefMap.value.showToast("Elemento eliminado localmente.");
   await addMarkersFromCurrentNode();
+};
+
+const startMovingElement = () => {
+  movingMarkerData.value = selectedMarkerData.value;
+  showActionModal.value = false;
+  toastRefMap.value.showToast("Haz clic en la nueva posición del visor 360° para reubicar este elemento.");
 };
 
 // Aplica guardado/creación en el JSON local del nodo
@@ -883,29 +893,51 @@ onMounted(async () => {
   }, { once: true });
   
   viewer.addEventListener("click", ({ data }) => {
-    if (isAdmin.value && isEditMode.value && selectedTool.value && selectedTool.value !== 'forward') {
-      editForm.value.isEditing = false;
-      editForm.value.originalData = null;
-      editForm.value.type = selectedTool.value;
-      editForm.value.yaw = data.yaw;
-      editForm.value.pitch = data.pitch;
-      editForm.value.targetNode = '';
-      editForm.value.weight = '1.0';
-      editForm.value.tagName = '';
-      editForm.value.tagValue = '';
-      
-      if (selectedTool.value === 'arrow') {
-        editForm.value.direction = '0'; // default Frente
-        const existingAdj = currentNodeData.value.adjacent_nodes?.[0];
-        if (existingAdj && typeof existingAdj === 'object' && Object.keys(existingAdj).length > 0) {
-          const target = Object.keys(existingAdj)[0];
-          const weight = existingAdj[target];
-          editForm.value.targetNode = target;
-          editForm.value.weight = weight !== undefined && weight !== null ? weight.toString() : '1.0';
+    if (isAdmin.value && isEditMode.value) {
+      if (movingMarkerData.value) {
+        const origData = movingMarkerData.value;
+        const newYaw = data.yaw;
+        
+        if (origData.type === 'arrow') {
+          currentNodeData.value.arrow_angles[origData.index] = newYaw;
+          toastRefMap.value.showToast(`Flecha de ${POSITION_LABELS[origData.index] || 'adyacencia'} reubicada (Guarda para confirmar).`);
+        } else if (origData.type === 'tag') {
+          if (currentNodeData.value.tags && currentNodeData.value.tags[origData.category]) {
+            currentNodeData.value.tags[origData.category][origData.label] = newYaw;
+            toastRefMap.value.showToast(`Marcador '${origData.label}' reubicado (Guarda para confirmar).`);
+          }
         }
+        
+        movingMarkerData.value = null;
+        selectedMarkerData.value = null;
+        addMarkersFromCurrentNode();
+        return;
       }
-      
-      showEditModal.value = true;
+
+      if (selectedTool.value && selectedTool.value !== 'forward') {
+        editForm.value.isEditing = false;
+        editForm.value.originalData = null;
+        editForm.value.type = selectedTool.value;
+        editForm.value.yaw = data.yaw;
+        editForm.value.pitch = data.pitch;
+        editForm.value.targetNode = '';
+        editForm.value.weight = '1.0';
+        editForm.value.tagName = '';
+        editForm.value.tagValue = '';
+        
+        if (selectedTool.value === 'arrow') {
+          editForm.value.direction = '0'; // default Frente
+          const existingAdj = currentNodeData.value.adjacent_nodes?.[0];
+          if (existingAdj && typeof existingAdj === 'object' && Object.keys(existingAdj).length > 0) {
+            const target = Object.keys(existingAdj)[0];
+            const weight = existingAdj[target];
+            editForm.value.targetNode = target;
+            editForm.value.weight = weight !== undefined && weight !== null ? weight.toString() : '1.0';
+          }
+        }
+        
+        showEditModal.value = true;
+      }
     }
   });
 });
@@ -971,5 +1003,11 @@ const getIconNameForTag = (tagName) => {
   font-weight: 600;
   font-family: 'SF Mono', Monaco, Consolas, monospace;
   letter-spacing: 0.05em;
+}
+
+.viewer-wrapper.moving-mode-active {
+  .viewer-container, .psv-container, .psv-canvas {
+    cursor: crosshair !important;
+  }
 }
 </style>

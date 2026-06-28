@@ -46,11 +46,15 @@
       <div class="input-container">
         <div class="label-row">
           <p class="input-label">Dirección de las flechas</p>
-          <UButton text="Asignar" type="contrast-2" @click="openArrowDirectionAssignment" />
+          <UButton text="Asignar secuencia" type="contrast-2" @click="openArrowDirectionAssignment" title="Asignar las 4 flechas de forma secuencial" />
         </div>
         <div class="angles-grid">
           <div v-for="(label, idx) in adjacentLabels" :key="'ang-'+idx" class="angle-row">
-            <UInput v-model="arrowAngles[idx]" styleType="default" type="text" :inputMode="'numeric'" pattern="-?[0-9]*(\.[0-9]+)?" :placeholder="label + ' - dirección'" />
+            <div class="angle-row-content">
+              <span class="angle-row-label">{{ label }}</span>
+              <UInput v-model="arrowAngles[idx]" styleType="default" type="text" :inputMode="'numeric'" pattern="-?[0-9]*(\.[0-9]+)?" :placeholder="label + ' - dirección'" />
+              <UButton text="Ajustar" type="secondary" size="md" @click="openSingleArrowAssignment(idx)" title="Ajustar esta flecha individualmente en el visor" />
+            </div>
           </div>
         </div>
       </div>
@@ -132,6 +136,9 @@
       <p class="direction-instructions" v-if="directionMode === 'arrow'">
         Clic para capturar orientación: <strong>{{ arrowOrder[currentArrowIndex] }}</strong> (orden: Frente, Derecha, Atras, Izquierda).
       </p>
+      <p class="direction-instructions" v-else-if="directionMode === 'singleArrow'">
+        Clic para mover/ajustar la flecha de <strong>{{ arrowOrder[currentArrowIndex] }}</strong>.
+      </p>
       <p class="direction-instructions" v-else>
         Clic para capturar yaw del Frente de la imagen.
       </p>
@@ -156,6 +163,9 @@ import USelect from '@/components/USelect.vue';
 import api from '@/axios';
 import { Viewer } from '@photo-sphere-viewer/core';
 import '@photo-sphere-viewer/core/index.css';
+import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+import '@photo-sphere-viewer/markers-plugin/index.css';
+import arrowImg from '../assets/images/arrow-up.png';
 
 const route = useRoute();
 const router = useRouter();
@@ -189,6 +199,9 @@ const directionViewerContainer = ref(null);
 let directionViewer = null;
 const directionDialogTitle = computed(() => {
   if (directionMode.value === 'arrow') return 'Asignar direcciones de flecha';
+  if (directionMode.value === 'singleArrow') {
+    return `Ajustar dirección: ${arrowOrder[currentArrowIndex.value]}`;
+  }
   if (directionMode.value === 'front') return 'Asignar frente de la imagen';
   return 'Asignar ángulo de tag';
 });
@@ -201,6 +214,14 @@ async function openArrowDirectionAssignment() {
   if (!form.url_image) return; // necesita imagen
   directionMode.value = 'arrow';
   currentArrowIndex.value = 0;
+  showDirectionDialog.value = true;
+  await nextTick();
+  initDirectionViewer();
+}
+async function openSingleArrowAssignment(idx) {
+  if (!form.url_image) return;
+  directionMode.value = 'singleArrow';
+  currentArrowIndex.value = idx;
   showDirectionDialog.value = true;
   await nextTick();
   initDirectionViewer();
@@ -225,33 +246,100 @@ function resetCurrentDirectionSequence() {
   if (directionMode.value === 'arrow') {
     for (let i = 0; i < 4; i++) arrowAngles[i] = '';
     currentArrowIndex.value = 0;
+    updateMarkersInViewer();
+  } else if (directionMode.value === 'singleArrow') {
+    arrowAngles[currentArrowIndex.value] = '';
+    updateMarkersInViewer();
   } else {
     form.forward_heading = '';
   }
 }
 function closeDirectionDialog() { showDirectionDialog.value = false; }
 
+// Destruir el visor 360 cuando se cierra el modal
+watch(showDirectionDialog, (newVal) => {
+  if (!newVal && directionViewer) {
+    directionViewer.destroy();
+    directionViewer = null;
+  }
+});
+
+onBeforeUnmount(() => {
+  if (directionViewer) {
+    directionViewer.destroy();
+    directionViewer = null;
+  }
+});
+
+function updateMarkersInViewer() {
+  if (!directionViewer) return;
+  const markersPlugin = directionViewer.getPlugin(MarkersPlugin);
+  if (!markersPlugin) return;
+
+  markersPlugin.clearMarkers();
+
+  arrowAngles.forEach((angleStr, i) => {
+    const yaw = parseFloat(angleStr);
+    if (!isNaN(yaw)) {
+      const label = arrowOrder[i];
+      const isCurrent = (directionMode.value === 'singleArrow' || directionMode.value === 'arrow') && currentArrowIndex.value === i;
+      
+      markersPlugin.addMarker({
+        id: `arrow-${i}`,
+        position: { yaw: yaw, pitch: -0.20 },
+        html: `<div class="arrow-marker-container ${isCurrent ? 'current-active' : ''}">
+                 <img src="${arrowImg}" class="arrow-marker-img" />
+                 <span class="arrow-marker-label">${label}</span>
+               </div>`,
+        tooltip: {
+          content: label,
+          position: 'top',
+        },
+        data: { index: i }
+      });
+    }
+  });
+}
+
 function initDirectionViewer() {
   if (!directionViewerContainer.value) return; // aún no montado
   if (directionViewer) { directionViewer.destroy(); directionViewer = null; }
   try {
-    directionViewer = new Viewer({
+    const currentAngle = parseFloat(arrowAngles[currentArrowIndex.value]);
+    const viewerConfig = {
       container: directionViewerContainer.value,
       panorama: form.url_image,
       navbar: false,
       mousewheel: false,
       keyboard: false,
-    });
+      plugins: [[MarkersPlugin, {}]]
+    };
+
+    if (directionMode.value === 'singleArrow' && !isNaN(currentAngle)) {
+      viewerConfig.defaultYaw = currentAngle;
+      viewerConfig.defaultPitch = -0.20;
+    }
+
+    directionViewer = new Viewer(viewerConfig);
+
+    directionViewer.addEventListener('ready', () => {
+      updateMarkersInViewer();
+    }, { once: true });
+
     directionViewer.addEventListener('click', ({ data }) => {
       if (!data) return;
       const yaw = data.yaw; // radianes
       if (directionMode.value === 'arrow') {
         arrowAngles[currentArrowIndex.value] = yaw.toString();
+        updateMarkersInViewer();
         if (currentArrowIndex.value < arrowOrder.length - 1) {
           currentArrowIndex.value++;
         } else {
           closeDirectionDialog();
         }
+      } else if (directionMode.value === 'singleArrow') {
+        arrowAngles[currentArrowIndex.value] = yaw.toString();
+        updateMarkersInViewer();
       } else if (directionMode.value === 'front') {
         form.forward_heading = yaw.toString();
         closeDirectionDialog();
@@ -524,4 +612,57 @@ watch(() => tags.map(t => t.name), (names) => {
 .direction-footer { display:flex; justify-content:flex-end; gap:12px; }
 .direction-instructions { font-size:14px; }
 .angle-assign-wrapper { display:flex; gap:8px; align-items:center; }
+
+.angle-row-content {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.angle-row-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--full-white);
+}
+
+.arrow-marker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+  opacity: 0.6;
+  transition: all 0.2s ease;
+
+  &.current-active {
+    opacity: 1;
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 8px var(--main-yellow)) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+
+    .arrow-marker-label {
+      background: var(--main-yellow);
+      color: var(--strong-gray-dark);
+      font-weight: 700;
+    }
+  }
+}
+
+.arrow-marker-img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.arrow-marker-label {
+  margin-top: 4px;
+  background: rgba(48, 55, 69, 0.85);
+  color: var(--full-white);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
 </style>
