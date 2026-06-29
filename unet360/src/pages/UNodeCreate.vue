@@ -409,14 +409,10 @@ async function fetchLocations() {
 }
 
 // ═══════════════  Minimapa  ═══════════════
-const MINIMAP_OPTIONS = [
-  'map-A1.jpg',
-  'map-A2.jpg',
-  'map-A3.jpg',
-  'map-A4.jpg',
-  'map-C1.jpg',
-  'map_c_floors_2_3.jpg',
-];
+const minimapModules = import.meta.glob('../assets/images/map*.{jpg,jpeg,png}');
+const MINIMAP_OPTIONS = Object.keys(minimapModules)
+  .map(path => path.substring(path.lastIndexOf('/') + 1))
+  .sort();
 
 const selectedMinimap = ref('');
 const minimapX = ref('');
