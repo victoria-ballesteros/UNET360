@@ -400,6 +400,7 @@ const toggleEditMode = async () => {
         selectedTool.value = null;
         originalNodeDataBackup.value = null;
         toastRefMap.value.showToast("¡Cambios guardados exitosamente!");
+        nodeStore.fetchNodes();
       } else {
         toastRefMap.value.showToast("Ocurrió un error al guardar en la base de datos.");
         return; // Detenemos la ejecución si falla

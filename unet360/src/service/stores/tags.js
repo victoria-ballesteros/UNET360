@@ -30,9 +30,8 @@ export const useTagStore = defineStore(
       }
     }
 
-    if (tags.value === null || tags.value.length === 0) {
-      fetchTags();
-    }
+    // Siempre iniciar una recarga en segundo plano al arrancar para refrescar la caché persistida
+    fetchTags();
 
     return {
       tags,

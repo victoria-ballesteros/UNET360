@@ -378,6 +378,7 @@ async function handleFormSubmit() {
       resultSuccess.value = true;
       resultTitle.value = '¡Nodo creado con éxito!';
       resultMessage.value = `Se creó el nodo "${nodeData.name}" correctamente.`;
+      nodeStore.fetchNodes();
     } else {
       resultSuccess.value = false;
       resultTitle.value = 'Error al crear nodo';

@@ -156,6 +156,7 @@ import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick, d
 // Accept optional name prop (avoids extraneous attribute warning if parent passes it)
 defineProps({ name: { type: String, required: false } });
 import { useRoute, useRouter } from 'vue-router';
+import { useNodeStore } from '@/service/stores/nodes.js';
 import UInput from '@/components/UInput.vue';
 import UButton from '@/components/UButton.vue';
 import UBaseModal from '@/components/UBaseModal.vue';
@@ -551,6 +552,8 @@ async function submit() {
     const payload = buildPayload();
     const { data } = await api.patch(`nodes/${encodeURIComponent(form.name)}`, payload);
     if (data?.status) {
+      const nodeStore = useNodeStore();
+      nodeStore.fetchNodes();
       router.push({ name: 'NodeAdmin' });
     }
   } catch (e) {

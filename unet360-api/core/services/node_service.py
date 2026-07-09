@@ -1,3 +1,4 @@
+import asyncio
 from typing import Dict, Optional
 from fastapi import HTTPException
 from bson import ObjectId
@@ -77,7 +78,7 @@ class NodeService:
 
         if self.graph_adapter is not None:
             try:
-                await self.graph_adapter.refresh_graph()
+                asyncio.create_task(self.graph_adapter.refresh_graph())
             except Exception:
                 pass
         
@@ -193,7 +194,7 @@ class NodeService:
         # Refrescar grafo si está disponible
         if self.graph_adapter is not None:
             try:
-                await self.graph_adapter.refresh_graph()
+                asyncio.create_task(self.graph_adapter.refresh_graph())
             except Exception:
                 pass
 
@@ -208,7 +209,7 @@ class NodeService:
         # Refrescar grafo si está disponible
         if self.graph_adapter is not None:
             try:
-                await self.graph_adapter.refresh_graph()
+                asyncio.create_task(self.graph_adapter.refresh_graph())
             except Exception:
                 pass
         return {"message": "Node deleted"}
@@ -329,7 +330,7 @@ class NodeService:
             
         if modified_nodes and self.graph_adapter is not None:
             try:
-                await self.graph_adapter.refresh_graph()
+                asyncio.create_task(self.graph_adapter.refresh_graph())
             except Exception:
                 pass
                 

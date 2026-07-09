@@ -55,10 +55,8 @@ export const useNodeStore = defineStore("node", () => {
     }
   }
 
-  // Al inicializar el store, si el array está vacío, hacer fetch
-  if (nodes.value.length === 0) {
-    fetchNodes();
-  }
+  // Siempre iniciar una recarga en segundo plano al arrancar para refrescar la caché persistida
+  fetchNodes();
   return {
     nodes,
     isLoading,
