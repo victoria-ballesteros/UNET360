@@ -51,19 +51,159 @@
   width: 32px;
 }
  
-.map-2d-box {
+.map-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 998;
+  animation: fadeInBackdrop 0.25s ease-out forwards;
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.map-2d-wrapper {
   position: absolute;
   bottom: 3rem;
   left: 0.5rem;
-  width: 11rem;
+  width: 12rem;
   height: 12rem;
-  background-color: rgba(40, 40, 40, 0.8);
-  border-radius: var(--radius-sm);
   z-index: 10;
-  padding: 0.15rem;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.is-expanded {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(85vw, 480px); // Dimensiones de un cuadrado perfecto
+    height: min(85vw, 480px);
+    bottom: auto;
+    z-index: 999;
+  }
+}
+
+.map-2d-box {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(40, 40, 40, 0.8);
+  border-radius: 50% !important; // Hace la brújula completamente redonda por defecto
+  border: 2px solid rgba(255, 255, 255, 0.15);
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(5px);
+  overflow: hidden; // Recorta el mapa a un círculo perfecto
+  cursor: pointer;
+  box-sizing: border-box;
   animation: fadeIn 0.5s ease-out forwards;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); // Transición suave para border-radius!
+
+  &:hover {
+    transform: scale(1.02);
+    background-color: rgba(50, 50, 50, 0.9);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .is-expanded & {
+    cursor: default;
+    border-radius: var(--radius-lg, 12px) !important; // Transiciona a cuadrado con esquinas redondeadas al expandirse
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    animation: none;
+    transform: none; // Sin escalamiento al estar expandido
+  }
+
+  .minimize-map-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1002;
+    padding: 0;
+
+    .minimize-line {
+      display: block;
+      width: 14px;
+      height: 2.5px;
+      border-radius: 1.25px;
+      background-color: var(--strong-gray, #282828); // Gris fuerte para contraste sobre mapa claro
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    &:hover {
+      .minimize-line {
+        width: 24px;
+        background-color: var(--contrast-blue, #2176ff);
+      }
+    }
+
+    &:active {
+      .minimize-line {
+        transform: scale(0.9);
+      }
+    }
+  }
+}
+
+.compass-mark {
+  position: absolute;
+  z-index: 15;
+  font-family: var(--font-primary, sans-serif);
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #1a1c20; // Color oscuro/carbón para resaltar sobre fondos blancos y claros
+  // Outline blanco fino usando múltiples sombras para legibilidad universal
+  text-shadow: 
+    -1px -1px 0 #fff,  
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff,
+     0 1px 3px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+
+  &.compass-n {
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--contrast-blue, #2176ff); // Resalta el frente (E) en el azul de contraste
+  }
+  &.compass-s {
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &.compass-e {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &.compass-w {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .is-expanded & {
+    font-size: 1.05rem;
+    
+    &.compass-n { top: 16px; }
+    &.compass-s { bottom: 16px; }
+    &.compass-e { right: 18px; }
+    &.compass-w { left: 18px; }
+  }
 }
 
 @keyframes fadeIn {

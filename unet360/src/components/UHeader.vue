@@ -3,6 +3,7 @@
 
     <!-- Logo (siempre visible) -->
     <RouterLink :to="{ name: 'Home' }" class="logo-link">
+      <img :src="logoUnet" class="unet-logo" alt="Logo UNET" />
       <UIcon name="icons/logo" size="43" class="cursor-pointer" />
     </RouterLink>
 
@@ -47,6 +48,7 @@ import UButton from '@/components/UButton.vue';
 import UIcon from '@/components/UIcon.vue';
 import { RouterLink } from 'vue-router';
 import { computed } from 'vue';
+import logoUnet from '@/assets/images/logo_unet.png';
 
 const props = defineProps({
   /** Array de opciones de navegación de getSidebarOptions() */
@@ -85,9 +87,23 @@ const logoutOption = computed(() => props.navOptions.find(o => o.action === 'log
 // ── Logo ──────────────────────────────────────────
 .logo-link {
   display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
   line-height: 0;
   text-decoration: none;
   flex-shrink: 0;
+}
+
+.unet-logo {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+
+  @media (min-width: 768px) {
+    height: 61px; // Altura equilibrada (aprox. 1.6 cm), respetando el límite mínimo de 1.2 cm (45px)
+    width: auto;
+  }
 }
 
 // ══ DESKTOP NAV ═══════════════════════════════════

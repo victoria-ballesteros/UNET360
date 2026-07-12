@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 
 // Props
 const props = defineProps({
@@ -47,14 +47,42 @@ watch(() => props.node, (newCoords, oldCoords) => {
   }
 });
 
-// Centrar un punto (x, y) en el área visible
+let resizeObserver = null
+
+onMounted(() => {
+  const box = document.querySelector('.custom-map-box')
+  if (box && typeof ResizeObserver !== 'undefined') {
+    resizeObserver = new ResizeObserver(() => {
+      let x = props.node.x
+      let y = props.node.y
+      if (x <= 100 && y <= 100) {
+        x = x * mapWidth.value / 100
+        y = y * mapHeight.value / 100
+      }
+      centerOn(x, y)
+    })
+    resizeObserver.observe(box)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
+})
+
+// Centrar un punto (x, y) en el área visible sin dejar espacios en blanco en los bordes
 function centerOn(x, y) {
   const box = document.querySelector('.custom-map-box');
   if (!box) return;
   const visibleWidth = box.offsetWidth;
   const visibleHeight = box.offsetHeight;
-  offsetX.value = Math.max(0, Math.round(x - visibleWidth / 2));
-  offsetY.value = Math.max(0, Math.round(y - visibleHeight / 2));
+
+  const maxOffsetX = Math.max(0, mapWidth.value - visibleWidth);
+  offsetX.value = Math.max(0, Math.min(maxOffsetX, Math.round(x - visibleWidth / 2)));
+
+  const maxOffsetY = Math.max(0, mapHeight.value - visibleHeight);
+  offsetY.value = Math.max(0, Math.min(maxOffsetY, Math.round(y - visibleHeight / 2)));
 }
 
 // Centrar el nodo actual cuando la imagen se carga
@@ -91,18 +119,26 @@ const mapTransformStyle = computed(() => ({
   transition: `left ${transitionMs}ms, top ${transitionMs}ms, transform ${transitionMs}ms`,
 }))
 
-// Estilo para el overlay del icono, centrado en el área visible
-const iconOverlayStyle = computed(() => ({
-  position: 'absolute',
-  left: '50%',
-  top: '50%',
-  width: '40px',
-  height: '40px',
-  zIndex: 100,
-  pointerEvents: 'none',
-  transform: 'translate(-50%, -100%)', // La base del icono queda en el centro
-  transition: `left ${transitionMs}ms, top ${transitionMs}ms, transform ${transitionMs}ms`,
-}));
+// Estilo para el overlay del icono, posicionado dinámicamente con respecto al desfase del mapa
+const iconOverlayStyle = computed(() => {
+  let x = props.node.x;
+  let y = props.node.y;
+  if (x <= 100 && y <= 100) {
+    x = x * mapWidth.value / 100;
+    y = y * mapHeight.value / 100;
+  }
+  return {
+    position: 'absolute',
+    left: (x - offsetX.value) + 'px',
+    top: (y - offsetY.value) + 'px',
+    width: '40px',
+    height: '40px',
+    zIndex: 100,
+    pointerEvents: 'none',
+    transform: 'translate(-50%, -100%)', // La base del icono queda en el centro
+    transition: `left ${transitionMs}ms, top ${transitionMs}ms, transform ${transitionMs}ms`,
+  };
+});
 
 function move(dir) {
   const step = 100

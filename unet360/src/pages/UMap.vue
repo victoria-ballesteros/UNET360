@@ -51,9 +51,37 @@
 
     </div>
 
-    <div class="map-2d-box">
-      <UCustomMap v-if="currentNodeData && visualMapCoords" :key="customMapUrl" :mapUrl="customMapUrl"
-        :iconUrl="customIconUrl" :node="visualMapCoords" />
+    <!-- Backdrop oscuro para enfocar el mapa cuando está expandido -->
+    <div 
+      v-if="isMapExpanded" 
+      class="map-backdrop" 
+      @click="isMapExpanded = false"
+    ></div>
+
+    <div class="map-2d-wrapper" :class="{ 'is-expanded': isMapExpanded }">
+      <div 
+        class="map-2d-box" 
+        @click="expandMap"
+      >
+        <!-- Marcas de la brújula (rotadas 90°: E en el frente, S en la derecha, O en el sur, N en la izquierda) -->
+        <span class="compass-mark compass-n" aria-hidden="true">E</span>
+        <span class="compass-mark compass-s" aria-hidden="true">O</span>
+        <span class="compass-mark compass-e" aria-hidden="true">S</span>
+        <span class="compass-mark compass-w" aria-hidden="true">N</span>
+
+        <!-- Botón de minimizar (solo visible cuando está expandido) -->
+        <button 
+          v-if="isMapExpanded" 
+          class="minimize-map-btn" 
+          @click.stop="isMapExpanded = false"
+          aria-label="Minimizar mapa"
+        >
+          <span class="minimize-line"></span>
+        </button>
+
+        <UCustomMap v-if="currentNodeData && visualMapCoords" :key="customMapUrl" :mapUrl="customMapUrl"
+          :iconUrl="customIconUrl" :node="visualMapCoords" />
+      </div>
     </div>
 
     <!-- Chip de Nodo actual para Administradores -->
@@ -329,6 +357,13 @@ const isAdmin = computed(() => {
   return authStore.user?.role === 'admin' || authStore.user?.role === 'ADMIN'; 
 }); // TODO: Lógica real de authStore
 const isEditMode = ref(false);
+const isMapExpanded = ref(false);
+
+const expandMap = () => {
+  if (!isMapExpanded.value) {
+    isMapExpanded.value = true;
+  }
+};
 const selectedTool = ref(null);
 const originalNodeDataBackup = ref(null); // Respaldo para "Cancelar"
 const previousNodeData = ref(null); // Respaldo de nodo anterior para corrección de rotación
