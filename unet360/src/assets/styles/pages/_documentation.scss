@@ -1,0 +1,315 @@
+// ═══════════════  Documentación — estilos de página  ═══════════════
+
+@mixin doc-code {
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: rgba(255, 239, 61, 0.12);
+  color: var(--main-yellow);
+  padding: 0.1em 0.4em;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 239, 61, 0.18);
+  white-space: nowrap;
+}
+
+.doc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  box-sizing: border-box;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  // Ocupa exactamente el alto disponible del monitor (sin scroll de página)
+  height: calc(100dvh - var(--header-height, 56px) - var(--footer-height, 56px));
+  max-height: calc(100dvh - var(--header-height, 56px) - var(--footer-height, 56px));
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 1.5rem 2rem;
+    gap: 1.25rem;
+  }
+}
+
+// ══════════════════════════════════════════════════
+// ═══  Header  ═══
+// ══════════════════════════════════════════════════
+
+.doc-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+
+  @media (min-width: 768px) {
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .header-overline {
+    @include paragraph-small;
+    color: var(--main-yellow);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--full-white);
+    @include paragraph-h1;
+    letter-spacing: -0.02em;
+  }
+
+  .doc-subtitle {
+    @include paragraph-medium;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 620px;
+    margin: 0.25rem 0 0;
+  }
+}
+
+// ══════════════════════════════════════════════════
+// ═══  Pasos — carrusel horizontal con snap  ═══
+// ══════════════════════════════════════════════════
+
+// Ancho de cada tarjeta (landscape; las vecinas asoman a ambos lados)
+$card-width: min(92vw, 780px);
+
+.doc-carousel {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;   // Ocupa el alto restante del contenedor
+  min-height: 0;    // Permite que el flex hijo encoja sin desbordar
+  display: flex;
+  align-items: center;
+}
+
+.doc-steps {
+  position: relative;
+  display: flex;
+  align-items: stretch;   // Las tarjetas llenan todo el alto del carril
+  gap: 1.25rem;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  // Relleno lateral que permite centrar la primera y la última tarjeta
+  padding: 0 max(0.5rem, calc((100% - #{$card-width}) / 2));
+  -webkit-overflow-scrolling: touch;
+
+  // Ocultar la barra de scroll (el snap y la rueda del mouse guían la navegación)
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.doc-step {
+  flex: 0 0 $card-width;
+  scroll-snap-align: center;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  // Layout: en móvil apilado (texto arriba, video abajo); en desktop landscape
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-lg);
+  transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+  transform-origin: center;
+
+  // Las tarjetas fuera de foco se atenúan (todas siguen visibles)
+  opacity: 0.4;
+  transform: scale(0.94);
+
+  &.is-active {
+    opacity: 1;
+    transform: scale(1);
+    border-color: rgba(255, 239, 61, 0.25);
+  }
+
+  @media (min-width: 900px) {
+    flex-direction: row;   // texto | video, ocupando toda la altura
+    align-items: stretch;
+    gap: 1.75rem;
+    padding: 2rem;
+  }
+}
+
+// ── Puntos indicadores ────────────────────────────
+.doc-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.doc-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: background 0.2s ease, width 0.2s ease;
+
+  &:hover { background: rgba(255, 255, 255, 0.5); }
+
+  &.active {
+    width: 22px;
+    border-radius: 6px;
+    background: var(--main-yellow);
+  }
+}
+
+// ── Columna izquierda: texto ──────────────────────
+.doc-step-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  // Salvaguarda si el contenido superara el alto de la card (pantallas muy bajas)
+  overflow-y: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.doc-step-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.doc-step-number {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--main-yellow);
+  color: var(--strong-gray-dark);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.doc-step-title {
+  margin: 0;
+  color: var(--full-white);
+  @include section-title;
+}
+
+.doc-step-intro {
+  @include paragraph-medium;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+
+  :deep(strong) { color: var(--full-white); }
+  :deep(code) { @include doc-code; }
+}
+
+.doc-step-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+
+  li {
+    @include paragraph-medium;
+    position: relative;
+    padding-left: 1.35rem;
+    color: rgba(255, 255, 255, 0.68);
+    line-height: 1.5;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--main-yellow);
+      opacity: 0.8;
+    }
+
+    :deep(strong) { color: var(--full-white); }
+    :deep(code) { @include doc-code; }
+  }
+}
+
+// ── Columna derecha: video ────────────────────────
+.doc-step-media {
+  width: 100%;
+
+  @media (min-width: 900px) {
+    flex: 0 0 clamp(240px, 34%, 360px);
+    align-self: center;   // Centra el video verticalmente dentro de la card alta
+  }
+}
+
+.doc-video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--strong-gray-dark);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.doc-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: cover;
+  background: #000;
+}
+
+.doc-video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  text-align: center;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.02),
+      rgba(255, 255, 255, 0.02) 12px,
+      rgba(255, 255, 255, 0.04) 12px,
+      rgba(255, 255, 255, 0.04) 24px
+    );
+
+  span {
+    @include paragraph-medium;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 600;
+  }
+
+  small {
+    @include paragraph-extra-small;
+    color: rgba(255, 255, 255, 0.4);
+    max-width: 260px;
+    line-height: 1.4;
+  }
+}

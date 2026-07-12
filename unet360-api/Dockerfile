@@ -16,5 +16,9 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
+# Entrypoint runs the initial DB seed (only for empty collections) before starting the app.
+# Invoked via `bash` so it works even when the repo is bind-mounted over /app.
+ENTRYPOINT ["bash", "/app/entrypoint.sh"]
+
 # Command to run the application
 CMD ["uvicorn", "adapter.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

@@ -1,0 +1,6789 @@
+[{
+  "_id": {
+    "$oid": "6898ebf2276ddb503066fd27"
+  },
+  "name": "021",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6898e70d1d71c40158c39f75"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/21.PHOTOSPHERE.jpg?",
+  "adjacent_nodes": [
+    {
+      "020": 1.22
+    },
+    {
+      "022": 1.95
+    },
+    null,
+    null
+  ],
+  "arrow_angles": [
+    5.6278538554815185,
+    0.871408353958077,
+    null,
+    4.0120467460966225
+  ],
+  "forward_heading": 5.6278538554815185,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 119,
+    "y": 896
+  }
+},
+{
+  "_id": {
+    "$oid": "689e9b2d0e71cc0c9812198c"
+  },
+  "name": "031",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6899274f1d71c40158c39f77"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/31.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "026": 1.68
+    },
+    {
+      "030": 1
+    },
+    null,
+    {
+      "025": 1.53
+    }
+  ],
+  "arrow_angles": [
+    1.5190751563575096,
+    3.802404573749631,
+    5.3440944523108,
+    0.4369730518617737
+  ],
+  "forward_heading": 2.28326571512419,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 584,
+    "y": 905
+  }
+},
+{
+  "_id": {
+    "$oid": "689eadaa0e71cc0c98121998"
+  },
+  "name": "053",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eac6a0e71cc0c98121995"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/53.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "052": 0.4
+    },
+    null,
+    null,
+    {
+      "054": 0.98
+    }
+  ],
+  "arrow_angles": [
+    4.9701606148952235,
+    0.2919773053582008,
+    1.905645546881095,
+    3.42138595220305
+  ],
+  "forward_heading": 4.9701606148952235,
+  "tags": {
+    "Punto de encuentro": {
+      "Asociación de Estudiantes de la Frontera": 0.31296754313312486
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 500,
+    "y": 530
+  }
+},
+{
+  "_id": {
+    "$oid": "689eb3770e71cc0c9812199c"
+  },
+  "name": "056",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6898d4f11d71c40158c39f74"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/56.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "055": 1.83
+    },
+    null,
+    {
+      "057": 0.73
+    }
+  ],
+  "arrow_angles": [
+    3.4126710344595677,
+    4.955332120773685,
+    0.20859846762391193,
+    1.7969455374856174
+  ],
+  "forward_heading": 3.4126710344595677,
+  "tags": {
+    "Punto de encuentro": {
+      "Coordinación de Extensión Industrial y Pasantías": 0.196050109456799
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 350,
+    "y": 570
+  }
+},
+{
+  "_id": {
+    "$oid": "689ed38073fe22b87c0d37c1"
+  },
+  "name": "015",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/15.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "014": 0.46
+    },
+    {
+      "033": 1.5
+    },
+    {
+      "016": 1.05
+    },
+    null
+  ],
+  "arrow_angles": [
+    5.557073957879685,
+    0.7703280548172731,
+    2.375680653771978,
+    3.9566794833449688
+  ],
+  "forward_heading": 5.557073957879685,
+  "tags": {},
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 687,
+    "y": 563
+  }
+},
+{
+  "_id": {
+    "$oid": "689eae5d0e71cc0c9812199a"
+  },
+  "name": "051",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eac6a0e71cc0c98121995"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/51.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "048": 2.2
+    },
+    {
+      "052": 0.4
+    },
+    {
+      "050": 0.53
+    }
+  ],
+  "arrow_angles": [
+    4.711761013621061,
+    6.257908646657725,
+    1.5403814191187462,
+    3.1292745701619
+  ],
+  "forward_heading": 4.711761013621061,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 500,
+    "y": 481
+  },
+  "rotation_correction": {
+    "048": 180
+  }
+},
+{
+  "_id": {
+    "$oid": "689ecb2573fe22b87c0d37ba"
+  },
+  "name": "009",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/09.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "010": 0.71
+    },
+    null,
+    {
+      "008": 0.71
+    }
+  ],
+  "arrow_angles": [
+    3.7302652875995284,
+    5.302591419682438,
+    0.5490609654084648,
+    2.160141370287975
+  ],
+  "forward_heading": 3.7302652875995284,
+  "tags": {
+    "Aula": {
+      "06A": 0.9752558141534562,
+      "07A": 0.11900508746659234
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 438,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2639b31fe0cca41b59ec3"
+  },
+  "name": "090",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2568b10a756c05c85a21d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/90.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "063": 2.1
+    },
+    null,
+    {
+      "048": 0.36
+    },
+    {
+      "064": 1.46
+    }
+  ],
+  "arrow_angles": [
+    6.211781181706887,
+    1.5423313363052993,
+    2.9498582971304956,
+    4.518551757216074
+  ],
+  "forward_heading": 6.137398346872616,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 692,
+    "y": 581
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2766adf6c45ba1977e9f6"
+  },
+  "name": "080",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/80.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "079": 1.5
+    },
+    null,
+    {
+      "081": 1.33
+    },
+    null
+  ],
+  "arrow_angles": [
+    1.117679990444183,
+    2.643499598370387,
+    4.239510708103902,
+    5.768792231423504
+  ],
+  "forward_heading": 1.0966381715277005,
+  "tags": {
+    "Punto de encuentro": {
+      "Laboratorio 075": 5.405346506262744,
+      "Laboratorio de Física I": 2.1811189521351473
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 150,
+    "y": 322
+  }
+},
+{
+  "_id": {
+    "$oid": "689f317ca2b4cc7a79c9a629"
+  },
+  "name": "042",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/42.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "043": 0.96
+    },
+    null,
+    {
+      "013": 0.34
+    },
+    null
+  ],
+  "arrow_angles": [
+    6.164830323878197,
+    1.5177538812389764,
+    3.06242566527358,
+    4.373502214680062
+  ],
+  "forward_heading": 6.164830323878197,
+  "tags": {
+    "Laboratorio de computación": {
+      "Laboratorio de computación": 1.5272119455810662
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 629,
+    "y": 507
+  }
+},
+{
+  "_id": {
+    "$oid": "68a27b33c2079e8e5d95ee16"
+  },
+  "name": "083",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/83.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "081": 1.41
+    },
+    null,
+    null,
+    null
+  ],
+  "arrow_angles": [
+    4.4608854850999755,
+    6.069370916247561,
+    1.381989511769278,
+    2.77911401135157
+  ],
+  "forward_heading": 4.456115874958112,
+  "tags": {
+    "Punto de encuentro": {
+      "LFAC": 2.6162977207589133,
+      "LAB-3 CETI": 6.271314046116515
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 152,
+    "y": 544
+  }
+},
+{
+  "_id": {
+    "$oid": "68a297327e93648b679addac"
+  },
+  "name": "096",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a297737e93648b679addad"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/96.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "095": 1.75
+    },
+    null,
+    {
+      "069": 1.2
+    }
+  ],
+  "arrow_angles": [
+    3.1669610720631916,
+    4.777343568612393,
+    0.09051027606642148,
+    1.5821502798675526
+  ],
+  "forward_heading": 3.1945415333877336,
+  "tags": {
+    "Punto de encuentro": {
+      "Lavandería y Peluquería": 1.1359633246751826,
+      "Grupo de Carrera de Ingeniería Ambiental": 0.6554870525909174,
+      "Centro de Estudiantes de Ingeniería Industrial": 5.333565055225199
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 681,
+    "y": 43
+  }
+},
+{
+  "_id": {
+    "$oid": "689ed27373fe22b87c0d37bd"
+  },
+  "name": "011",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/11.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "012": 0.46
+    },
+    null,
+    null,
+    {
+      "027": 1.5
+    }
+  ],
+  "arrow_angles": [
+    3.1333063025858694,
+    4.750568894718657,
+    0.09124718586661934,
+    1.6215672056184167
+  ],
+  "forward_heading": 3.1333063025858694,
+  "tags": {},
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 565,
+    "y": 560
+  },
+  "rotation_correction": {
+    "027": 180
+  }
+},
+{
+  "_id": {
+    "$oid": "68a295517e93648b679adda9"
+  },
+  "name": "097",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2910d10a756c05c85a22e"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/97.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    null,
+    {
+      "076": 1.38
+    },
+    {
+      "098": 1.32
+    }
+  ],
+  "arrow_angles": [
+    5.28576272177928,
+    6.0281456561726525,
+    0.8055474350611801,
+    3.025297438660498
+  ],
+  "forward_heading": 4.716669445026253,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 1344,
+    "y": 700
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "68a2668b31fe0cca41b59ec5"
+  },
+  "name": "089",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a265a610a756c05c85a221"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/89.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "062": 3
+    },
+    {
+      "063": 2.3
+    },
+    {
+      "064": 1.59
+    },
+    null
+  ],
+  "arrow_angles": [
+    3.1014007688302585,
+    4.727395631144807,
+    6.264092377656481,
+    1.5584688230267836
+  ],
+  "forward_heading": 3.1058045858809322,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 570,
+    "y": 451
+  }
+},
+{
+  "_id": {
+    "$oid": "68a264b531fe0cca41b59ec4"
+  },
+  "name": "063",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a264e210a756c05c85a220"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/63.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "065": 1.32
+    },
+    {
+      "061": 2.2
+    },
+    {
+      "090": 2.1
+    },
+    {
+      "089": 2.3
+    }
+  ],
+  "arrow_angles": [
+    6.194192276225555,
+    1.517185585076102,
+    3.088590931219716,
+    4.663860750698901
+  ],
+  "forward_heading": 6.222102282643,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 692,
+    "y": 451
+  }
+},
+{
+  "_id": {
+    "$oid": "689f2ed3a2b4cc7a79c9a626"
+  },
+  "name": "035",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/35.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "036": 0.6
+    },
+    null,
+    {
+      "019": 0.68
+    }
+  ],
+  "arrow_angles": [
+    4.746078537110297,
+    0.06244886058302602,
+    1.6941243899221468,
+    3.2114366735010265
+  ],
+  "forward_heading": 4.746078537110297,
+  "tags": {
+    "Aula": {
+      "19A": 2.1136079344897043,
+      "20A": 1.2710116079133649
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 933,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "68a31e3c2c4374f24a1f30e2"
+  },
+  "name": "110",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a31d122c4374f24a1f30e1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/110.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "106": 1.7
+    },
+    {
+      "116": 1.3
+    },
+    {},
+    {
+      "111": 1.28
+    }
+  ],
+  "arrow_angles": [
+    2.979581223264063,
+    6.198830090745186,
+    null,
+    1.51819799698538
+  ],
+  "forward_heading": 2.9634742375480263,
+  "tags": {},
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 575,
+    "y": 524
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "689e9c910e71cc0c9812198f"
+  },
+  "name": "033",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689e9bb00e71cc0c9812198d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/33.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "034": 0.94
+    },
+    {
+      "015": 1.5
+    },
+    null,
+    {
+      "032": 0.9
+    }
+  ],
+  "arrow_angles": [
+    3.0027446786787246,
+    4.531969404627747,
+    6.136388454022584,
+    1.40334292796371
+  ],
+  "forward_heading": 3.0027446786787246,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 550,
+    "y": 815
+  },
+  "rotation_correction": {
+    "015": 180
+  }
+},
+{
+  "_id": {
+    "$oid": "6898e6fb276ddb503066fd25"
+  },
+  "name": "004",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6898e70d1d71c40158c39f75"
+    }
+  },
+  "url_image": "https://uvchinukwkjjfjaiuqic.supabase.co/storage/v1/object/public/virtual-environment-images/04.PHOTOSPHERE.jpg",
+  "adjacent_nodes": [
+    null,
+    {
+      "003": 2.505
+    },
+    {
+      "020": 1.61
+    },
+    null
+  ],
+  "arrow_angles": [
+    1.6070300491755172,
+    3.1435009095131283,
+    4.700596026655865,
+    6.268776497200937
+  ],
+  "forward_heading": 1.48536905015104,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 119,
+    "y": 717
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "6898dc96276ddb503066fd22"
+  },
+  "name": "001",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6898d4f11d71c40158c39f74"
+    }
+  },
+  "url_image": "https://uvchinukwkjjfjaiuqic.supabase.co/storage/v1/object/public/virtual-environment-images/001.PHOTOSPHERE.jpg",
+  "adjacent_nodes": [
+    null,
+    {
+      "057": 1.12
+    },
+    {
+      "002": 1.45
+    },
+    null
+  ],
+  "arrow_angles": [
+    0,
+    0.33084800393940245,
+    1.8829748252535563,
+    0
+  ],
+  "forward_heading": 5.102847988502027,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 185,
+    "y": 568
+  }
+},
+{
+  "_id": {
+    "$oid": "689eae930e71cc0c9812199b"
+  },
+  "name": "050",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eac6a0e71cc0c98121995"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/50.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "051": 0.53
+    },
+    {
+      "054": 0.83
+    },
+    {
+      "049": 2.2
+    }
+  ],
+  "arrow_angles": [
+    1.7011334424268931,
+    3.24859126864408,
+    5.185899819718653,
+    0.08250702718408295
+  ],
+  "forward_heading": 1.7011334424268931,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 465,
+    "y": 480
+  },
+  "rotation_correction": {
+    "049": 180
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2a3289e1ccf3d336a28df"
+  },
+  "name": "077",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2a06c60887612b7c313b7"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/77.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "108": 1.18
+    },
+    {
+      "106": 1.36
+    },
+    {
+      "078": 1.19
+    }
+  ],
+  "arrow_angles": [
+    4.961490624816066,
+    0.2037682663261999,
+    1.6997804877492104,
+    3.4446279538571773
+  ],
+  "forward_heading": 5.043828663338105,
+  "tags": {
+    "Punto de encuentro": {
+      "Laboratoria de Investigación Arquitectónica": 4.56370884899675
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 544,
+    "y": 305
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "68a29ae77e93648b679addb2"
+  },
+  "name": "094",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a297737e93648b679addad"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/94.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    null,
+    null,
+    {
+      "095": 2.31
+    }
+  ],
+  "arrow_angles": [
+    3.071072763396136,
+    4.694741925310882,
+    6.260938555905539,
+    1.5205464569498368
+  ],
+  "forward_heading": 3.0903562176660087,
+  "tags": {
+    "Punto de encuentro": {
+      "Unidad de Reproducción": 0.8248199700530151,
+      "Centro de Estudiantes de Ingeniería Agroindustrial": 4.9665727897406295
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 1032,
+    "y": 43
+  }
+},
+{
+  "_id": {
+    "$oid": "689eb5bf0e71cc0c9812199e"
+  },
+  "name": "030",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6899274f1d71c40158c39f77"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/30.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "029": 3.36
+    },
+    null,
+    {
+      "031": 1
+    }
+  ],
+  "arrow_angles": [
+    0.27394639620149774,
+    1.84970375077458,
+    3.19158462979969,
+    4.8477688063401665
+  ],
+  "forward_heading": 0.27394639620149774,
+  "tags": {
+    "Punto de encuentro": {
+      "Papelería Reproducción Edificio A": 6.003690421201527
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 660,
+    "y": 900
+  }
+},
+{
+  "_id": {
+    "$oid": "68a26f3fdf6c45ba1977e9f0"
+  },
+  "name": "072",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26ccf10a756c05c85a22d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/72.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "071": 3.31
+    },
+    null,
+    {
+      "073": 1.58
+    }
+  ],
+  "arrow_angles": [
+    3.162137429132209,
+    4.733931000645342,
+    0.0028311487102702223,
+    1.6102562876771773
+  ],
+  "forward_heading": 3.162137429132209,
+  "tags": {
+    "Punto de encuentro": {
+      "Decanato de Desarrollo Estudiantil": 0
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 145,
+    "y": 14
+  }
+},
+{
+  "_id": {
+    "$oid": "68a298517e93648b679addae"
+  },
+  "name": "099",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a296d5f48ede02ace12fd5"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/99.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "098": 0.4
+    },
+    null,
+    null,
+    {
+      "100": 3.18
+    }
+  ],
+  "arrow_angles": [
+    0.02318897206584296,
+    1.6775648918307753,
+    3.227374848304982,
+    4.7380296806561475
+  ],
+  "forward_heading": 0.02318897206584296,
+  "tags": {
+    "Punto de encuentro": {
+      "Fotocopias": 3.7239860871393304
+    },
+    "Baño de damas": {
+      "Baño de damas del Mini Hall del Edifcio B": 2.2310550361963997
+    }
+  },
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 1218,
+    "y": 740
+  }
+},
+{
+  "_id": {
+    "$oid": "68a29ce87e93648b679addb6"
+  },
+  "name": "102",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a29b26f48ede02ace12fd6"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/102.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "103": 2.1
+    },
+    {
+      "101": 1.95
+    },
+    null,
+    {
+      "104": 2.1
+    }
+  ],
+  "arrow_angles": [
+    0.6279843070127338,
+    3.161051010778896,
+    4.733368253395417,
+    0.024442248482515968
+  ],
+  "forward_heading": 1.7099797392639347,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 549,
+    "y": 740
+  }
+},
+{
+  "_id": {
+    "$oid": "68a320292c4374f24a1f30e3"
+  },
+  "name": "112",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a31d122c4374f24a1f30e1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/112.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "111": 1.04
+    },
+    {
+      "116": 1.9
+    },
+    {},
+    {
+      "113": 0.3
+    }
+  ],
+  "arrow_angles": [
+    2.9843743543920978,
+    4.663853873600124,
+    null,
+    1.5475515488500788
+  ],
+  "forward_heading": 2.9843743543920978,
+  "tags": {},
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 443,
+    "y": 627
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "689eca3c73fe22b87c0d37b6"
+  },
+  "name": "005",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/05.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "006": 0.7
+    },
+    {
+      "003": 1.3
+    },
+    null
+  ],
+  "arrow_angles": [
+    1.4677192796165626,
+    2.909590347121689,
+    4.57682289274478,
+    6.132191245304814
+  ],
+  "forward_heading": 1.4677192796165626,
+  "tags": {},
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 232,
+    "y": 534
+  },
+  "rotation_correction": {
+    "003": 90
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2695cdf6c45ba1977e9eb"
+  },
+  "name": "069",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a265a610a756c05c85a221"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/69.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "070": 1.5499999999999998
+    },
+    {
+      "096": 1.2
+    },
+    {
+      "091": 2.3
+    },
+    null
+  ],
+  "arrow_angles": [
+    3.117396227013179,
+    4.675720851237698,
+    6.270353258147472,
+    1.5238810846906587
+  ],
+  "forward_heading": 3.1089080547856964,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 570,
+    "y": 43
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "68a26b36df6c45ba1977e9ed"
+  },
+  "name": "070",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26ccf10a756c05c85a22d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/70.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    null,
+    {
+      "069": 1.5499999999999998
+    },
+    {
+      "071": 1.78
+    }
+  ],
+  "arrow_angles": [
+    0.01138028437419125,
+    1.47308347229223,
+    3.120082570754216,
+    4.709549126196709
+  ],
+  "forward_heading": 0,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 570,
+    "y": 6
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "68a2a05660887612b7c313b6"
+  },
+  "name": "105",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2a06c60887612b7c313b7"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/105.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "104": 1.63
+    },
+    null,
+    {
+      "106": 1.3
+    }
+  ],
+  "arrow_angles": [
+    1.7235041976269334,
+    3.148233861239059,
+    4.635214228538211,
+    0.008122234123990636
+  ],
+  "forward_heading": 1.5754029563149583,
+  "tags": {},
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 621,
+    "y": 432
+  }
+},
+{
+  "_id": {
+    "$oid": "68a272dbdf6c45ba1977e9f3"
+  },
+  "name": "084",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/84.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "085": 1.6
+    },
+    null,
+    {
+      "079": 1.6
+    }
+  ],
+  "arrow_angles": [
+    3.2476538533324737,
+    4.719134978416352,
+    6.222089058296426,
+    1.5699386606668495
+  ],
+  "forward_heading": 3.1602048872688266,
+  "tags": {
+    "Baño de caballeros": {
+      "Baño de Caballeros CETI": 5.9402920558952195
+    },
+    "Baño de damas": {
+      "Baño de Damas CETI": 0.37847577395184395
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 282,
+    "y": 203
+  }
+},
+{
+  "_id": {
+    "$oid": "68a27844c2079e8e5d95ee15"
+  },
+  "name": "081",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/81.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "080": 1.33
+    },
+    null,
+    {
+      "083": 1.41
+    },
+    null
+  ],
+  "arrow_angles": [
+    3.3956254818135836,
+    4.8830725664402745,
+    0.24086029862158956,
+    1.807800668056726
+  ],
+  "forward_heading": 3.4012388153727677,
+  "tags": {
+    "Punto de encuentro": {
+      "LAB-1 CETI": 4.446053776167323,
+      "LAB-2 CETI": 1.3910274041116573
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 147,
+    "y": 424
+  }
+},
+{
+  "_id": {
+    "$oid": "689ed2ba73fe22b87c0d37be"
+  },
+  "name": "012",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/12.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "013": 0.7
+    },
+    {
+      "011": 0.46
+    },
+    {
+      "010": 0.98
+    }
+  ],
+  "arrow_angles": [
+    6.246103965324151,
+    1.5323521528739865,
+    3.1235219151157714,
+    4.675092520020777
+  ],
+  "forward_heading": 6.246103965324151,
+  "tags": {
+    "Aula": {
+      "Sala de Ensayo": 0.3231207564978774
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 564,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2669c31fe0cca41b59ec6"
+  },
+  "name": "062",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a265a610a756c05c85a221"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/62.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "091": 1.4
+    },
+    null,
+    {
+      "089": 3
+    },
+    {
+      "085": 1.8
+    }
+  ],
+  "arrow_angles": [
+    1.5533697300759777,
+    3.171647042491664,
+    4.6890745742698385,
+    0.06744329151127909
+  ],
+  "forward_heading": 1.5545899338299634,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 570,
+    "y": 203
+  }
+},
+{
+  "_id": {
+    "$oid": "689e92110e71cc0c98121988"
+  },
+  "name": "024",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6899274f1d71c40158c39f77"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/24.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "026": 1.68
+    },
+    {
+      "025": 1.53
+    },
+    null,
+    {
+      "023": 1
+    }
+  ],
+  "arrow_angles": [
+    0.49596455589851474,
+    1.2433153444489082,
+    2.8227039379481456,
+    4.373604170312571
+  ],
+  "forward_heading": 6.064752330568856,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 414,
+    "y": 903
+  }
+},
+{
+  "_id": {
+    "$oid": "689e9c2f0e71cc0c9812198e"
+  },
+  "name": "032",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689e9bb00e71cc0c9812198d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/32.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "028": 1.3
+    },
+    {
+      "033": 0.9
+    },
+    {
+      "026": 0.63
+    },
+    {
+      "027": 0.9
+    }
+  ],
+  "arrow_angles": [
+    4.009394497866762,
+    6.28176990425441,
+    1.5603027968754932,
+    3.1580437442389484
+  ],
+  "forward_heading": 4.753523939683868,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 497,
+    "y": 816
+  }
+},
+{
+  "_id": {
+    "$oid": "689e8cb70e71cc0c98121987"
+  },
+  "name": "023",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6899274f1d71c40158c39f77"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/23.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "024": 1
+    },
+    null,
+    {
+      "022": 1.29
+    }
+  ],
+  "arrow_angles": [
+    6.030904278639481,
+    1.323919759150586,
+    2.9141955544047184,
+    4.470964336439822
+  ],
+  "forward_heading": 6.030904278639481,
+  "tags": {
+    "Punto de encuentro": {
+      "Coordinación de Extensión Agraria": 6.030904278639481
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 331,
+    "y": 903
+  }
+},
+{
+  "_id": {
+    "$oid": "689ebaa60e71cc0c981219a3"
+  },
+  "name": "040",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eb8b60e71cc0c981219a1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/40.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    null,
+    {
+      "039": 1.21
+    },
+    {
+      "041": 0.95
+    }
+  ],
+  "arrow_angles": [
+    4.61265240824721,
+    6.120556341197205,
+    1.0261881716973718,
+    3.0625157422622715
+  ],
+  "forward_heading": 4.61265240824721,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 854,
+    "y": 658
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2677531fe0cca41b59ec7"
+  },
+  "name": "091",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a265a610a756c05c85a221"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/91.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "069": 2.3
+    },
+    {
+      "067": 2.1
+    },
+    {
+      "062": 1.4
+    },
+    null
+  ],
+  "arrow_angles": [
+    4.703988349968547,
+    0.04092024405855113,
+    1.630183887343234,
+    3.1161365824160705
+  ],
+  "forward_heading": 4.667438182517148,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 570,
+    "y": 142
+  }
+},
+{
+  "_id": {
+    "$oid": "689ebd170e71cc0c981219a6"
+  },
+  "name": "059",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eb8b60e71cc0c981219a1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/59.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    null,
+    {
+      "058": 1.65
+    },
+    {
+      "060": 1.65
+    }
+  ],
+  "arrow_angles": [
+    0.20863314086493623,
+    1.7368437343063126,
+    3.3448994855745657,
+    4.922376605325362
+  ],
+  "forward_heading": 0.20863314086493623,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 796,
+    "y": 353
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "689ed2f573fe22b87c0d37bf"
+  },
+  "name": "013",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/13.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "042": 0.34
+    },
+    {
+      "014": 0.78
+    },
+    null,
+    {
+      "012": 0.7
+    }
+  ],
+  "arrow_angles": [
+    2.498282434666314,
+    4.058292792937539,
+    5.636987776794014,
+    0.9279319076255423
+  ],
+  "forward_heading": 2.498282434666314,
+  "tags": {
+    "Aula": {
+      "11A": 6.167500344743795,
+      "12A": 4.680821102953923
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 626,
+    "y": 533
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2967f7e93648b679addaa"
+  },
+  "name": "065",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2970f10a756c05c85a22f"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/65.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "066": 1.77
+    },
+    null,
+    {
+      "063": 1.32
+    },
+    null
+  ],
+  "arrow_angles": [
+    6.276510215193744,
+    1.646697133888471,
+    3.0787037829495576,
+    4.701624205854683
+  ],
+  "forward_heading": 6.281460229465575,
+  "tags": {
+    "Aula": {
+      "26A": 4.709441338022101
+    },
+    "Punto de encuentro": {
+      "AEUNET": 0.34677163744556655
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 692,
+    "y": 345
+  }
+},
+{
+  "_id": {
+    "$oid": "68a29adb7e93648b679addb1"
+  },
+  "name": "100",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a29b26f48ede02ace12fd6"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/100.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "099": 3.18
+    },
+    null,
+    {
+      "101": 2.55
+    }
+  ],
+  "arrow_angles": [
+    4.70896281811925,
+    0.003868008083899987,
+    1.5864823671062924,
+    3.1547774479756545
+  ],
+  "forward_heading": 4.70896281811925,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 944,
+    "y": 740
+  }
+},
+{
+  "_id": {
+    "$oid": "68a31cf22c4374f24a1f30e0"
+  },
+  "name": "111",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a31d122c4374f24a1f30e1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/111.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "107": 1.7
+    },
+    {
+      "110": 1.28
+    },
+    {
+      "112": 1.04
+    },
+    null
+  ],
+  "arrow_angles": [
+    5.886834115233762,
+    1.6884382960889794,
+    3.1610391546478027,
+    4.566503721868765
+  ],
+  "forward_heading": 0.12736624102904656,
+  "tags": {
+    "Punto de encuentro": {
+      "Reproducción Edif \"C\"": 0.18121837035307028
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 454,
+    "y": 524
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "689ecaa073fe22b87c0d37b8"
+  },
+  "name": "007",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/07.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "008": 0.66
+    },
+    null,
+    {
+      "006": 0.52
+    }
+  ],
+  "arrow_angles": [
+    4.696166704863875,
+    6.244899232114459,
+    1.5553949822918804,
+    3.127395425631341
+  ],
+  "forward_heading": 4.696166704863875,
+  "tags": {
+    "Aula": {
+      "02A": 1.971107380660686,
+      "03A": 1.1126812612161125
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 328,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "689ecaf973fe22b87c0d37b9"
+  },
+  "name": "008",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/08.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "009": 0.71
+    },
+    null,
+    {
+      "007": 0.66
+    }
+  ],
+  "arrow_angles": [
+    5.181129178392782,
+    0.4728451562856143,
+    1.9848722072489675,
+    3.609959835704916
+  ],
+  "forward_heading": 5.181129178392782,
+  "tags": {
+    "Aula": {
+      "04A": 4.782276498806396,
+      "05A": 5.59065810909138
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 385,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "68a31a2d2c4374f24a1f30de"
+  },
+  "name": "108",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2a06c60887612b7c313b7"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/108.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "109": 1.0150000000000001
+    },
+    null,
+    {
+      "077": 1.18
+    }
+  ],
+  "arrow_angles": [
+    3.086454721516118,
+    4.648955225798381,
+    5.930764963981783,
+    1.5051668394973805
+  ],
+  "forward_heading": 3.0401678688535085,
+  "tags": {
+    "Punto de encuentro": {
+      "Departamento de Ingeniería Informática": 5.921713392372888,
+      "Sala de Exposiciones": 1.746475920375586
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 622,
+    "y": 304
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "68a29db37e93648b679addb8"
+  },
+  "name": "103",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a29b26f48ede02ace12fd6"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/103.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "102": 2.1
+    },
+    {
+      "104": 1.715
+    },
+    {
+      "109": 1
+    }
+  ],
+  "arrow_angles": [
+    1.559982556316492,
+    3.704179563311158,
+    4.683380261224771,
+    6.254829453121775
+  ],
+  "forward_heading": 1.4926790060712634,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 410,
+    "y": 612
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "68a293807e93648b679adda7"
+  },
+  "name": "075",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2910d10a756c05c85a22e"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/75.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "076": 1.6
+    },
+    null,
+    {
+      "074": 2.5
+    },
+    null
+  ],
+  "arrow_angles": [
+    3.0667192395522176,
+    5.091115284966435,
+    6.224926830852787,
+    1.5702978870699966
+  ],
+  "forward_heading": 3.055407523387991,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 1414,
+    "y": 915
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2946f7e93648b679adda8"
+  },
+  "name": "076",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2910d10a756c05c85a22e"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/76.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "097": 1.38
+    },
+    null,
+    {
+      "075": 1.6
+    },
+    null
+  ],
+  "arrow_angles": [
+    5.343650447927623,
+    1.5374501673911092,
+    3.0707036509850414,
+    5.078103870384833
+  ],
+  "forward_heading": 0,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 1414,
+    "y": 786
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "689e9ee70e71cc0c98121992"
+  },
+  "name": "028",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689e9bb00e71cc0c9812198d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/28.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "082": 1.61
+    },
+    {
+      "034": 1.71
+    },
+    {
+      "032": 1.3
+    },
+    {
+      "027": 0.7
+    }
+  ],
+  "arrow_angles": [
+    3.9234878004986604,
+    5.429446116787225,
+    6.1984290197116865,
+    0.7723511819260209
+  ],
+  "forward_heading": 3.9234878004986604,
+  "tags": {
+    "Punto de encuentro": {
+      "Coordinación de Formación Permanente": 3.0005145183735475,
+      "Decanato de Extensión": 1.5872498534330926
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 440,
+    "y": 745
+  }
+},
+{
+  "_id": {
+    "$oid": "689eca6973fe22b87c0d37b7"
+  },
+  "name": "006",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/06.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "007": 0.52
+    },
+    null,
+    {
+      "005": 0.7
+    }
+  ],
+  "arrow_angles": [
+    3.729158652372432,
+    5.3091177458051275,
+    0.5659076704199546,
+    2.1826641550073957
+  ],
+  "forward_heading": 3.729158652372432,
+  "tags": {
+    "Aula": {
+      "01A": 3.729158652372432
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 283,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2570f0d360ea6f1270945"
+  },
+  "name": "048",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2568b10a756c05c85a21d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/48.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "090": 0.36
+    },
+    {
+      "051": 2.2
+    },
+    null,
+    {
+      "047": 0.4
+    }
+  ],
+  "arrow_angles": [
+    5.923639647623286,
+    1.2682639894614,
+    2.7753321497315757,
+    4.371162367079247
+  ],
+  "forward_heading": 5.921778878040207,
+  "tags": {
+    "Punto de encuentro": {
+      "AERUNET": 0.3965025329409342
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 695,
+    "y": 615
+  },
+  "rotation_correction": {
+    "051": 180
+  }
+},
+{
+  "_id": {
+    "$oid": "68a26ce8df6c45ba1977e9ee"
+  },
+  "name": "086",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/86.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "085": 1.38
+    },
+    null,
+    {
+      "087": 1.38
+    },
+    null
+  ],
+  "arrow_angles": [
+    5.7489268319991735,
+    1.0282488249999484,
+    2.640027187645497,
+    4.199089098240902
+  ],
+  "forward_heading": 5.751265456908899,
+  "tags": {
+    "Punto de encuentro": {
+      "Laboratorio 072": 0.40940882759795727,
+      "Lab": 3.7915577760101122
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 420,
+    "y": 309
+  }
+},
+{
+  "_id": {
+    "$oid": "689eb87e0e71cc0c981219a0"
+  },
+  "name": "039",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eb8b60e71cc0c981219a1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/39.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "040": 1.21
+    },
+    null,
+    {
+      "029": 2.37
+    },
+    {
+      "038": 1
+    }
+  ],
+  "arrow_angles": [
+    3.620961359958387,
+    5.698293033360608,
+    0.7892845004545814,
+    2.3378503318111634
+  ],
+  "forward_heading": 4.136753722467588,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 890,
+    "y": 750
+  }
+},
+{
+  "_id": {
+    "$oid": "689ebcb30e71cc0c981219a5"
+  },
+  "name": "058",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eb8b60e71cc0c981219a1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/58.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "059": 1.65
+    },
+    null,
+    {
+      "041": 1.65
+    },
+    null
+  ],
+  "arrow_angles": [
+    2.6864680034601465,
+    4.268274642557897,
+    5.81699000043447,
+    1.1261465940806474
+  ],
+  "forward_heading": 2.6864680034601465,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 785,
+    "y": 500
+  }
+},
+{
+  "_id": {
+    "$oid": "689f2af9a2b4cc7a79c9a625"
+  },
+  "name": "016",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/16.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "015": 1.05
+    },
+    null,
+    null,
+    null
+  ],
+  "arrow_angles": [
+    3.3490502988210364,
+    4.921288219427193,
+    0.22423925093936747,
+    1.7417801197252545
+  ],
+  "forward_heading": 3.3490502988210364,
+  "tags": {
+    "Baño de caballeros": {
+      "Baño de Caballeros Primer Piso Edificio A": 4.935409976153147
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 687,
+    "y": 656
+  }
+},
+{
+  "_id": {
+    "$oid": "68a29d977e93648b679addb7"
+  },
+  "name": "093",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2970f10a756c05c85a22f"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/93.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "092": 0.92
+    },
+    null,
+    {
+      "068": 1.08
+    }
+  ],
+  "arrow_angles": [
+    0.027135820502405435,
+    1.531200756706664,
+    3.185332057925269,
+    4.726315271127591
+  ],
+  "forward_heading": 6.269812737753762,
+  "tags": {
+    "Baño de damas": {
+      "Baño Damas del Pasillo del GYM": 0.05410017421894309
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 896,
+    "y": 137
+  }
+},
+{
+  "_id": {
+    "$oid": "68a290607a27c5cdbbdafa52"
+  },
+  "name": "074",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2910d10a756c05c85a22e"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/74.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "075": 2.5
+    },
+    {
+      "073": 5.6
+    },
+    null,
+    null
+  ],
+  "arrow_angles": [
+    0.004169743684206314,
+    1.612513831846419,
+    3.1300381631869665,
+    3.987983848101981
+  ],
+  "forward_heading": 0,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 1414,
+    "y": 1144
+  }
+},
+{
+  "_id": {
+    "$oid": "689ea5dc0e71cc0c98121993"
+  },
+  "name": "082",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ea80e0e71cc0c98121994"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/82.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "055": 1.32
+    },
+    null,
+    {
+      "028": 1.61
+    },
+    null
+  ],
+  "arrow_angles": [
+    1.0472713712353028,
+    2.5844542608938994,
+    4.186456314149556,
+    5.731093665982755
+  ],
+  "forward_heading": 1.0472713712353028,
+  "tags": {
+    "Baño de damas": {
+      "Baño de damas Planta Baja Edificio A": 5.969869628010654
+    },
+    "Punto de encuentro": {
+      "Coordinación de Estudios a Distancia": 3.2097194542241176
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 440,
+    "y": 666
+  }
+},
+{
+  "_id": {
+    "$oid": "689ed43b73fe22b87c0d37c5"
+  },
+  "name": "019",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/19.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "035": 0.68
+    },
+    null,
+    {
+      "018": 0.68
+    }
+  ],
+  "arrow_angles": [
+    3.526253171517622,
+    5.137668913484263,
+    0.42054320485969426,
+    1.9983383551105511
+  ],
+  "forward_heading": 3.526253171517622,
+  "tags": {
+    "Aula": {
+      "17A": 3.1078980723821963,
+      "18A": 3.9613768568797845
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 877,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "689ed35e73fe22b87c0d37c0"
+  },
+  "name": "014",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/14.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "017": 0.96
+    },
+    {
+      "015": 0.46
+    },
+    {
+      "013": 0.78
+    }
+  ],
+  "arrow_angles": [
+    2.4891094148555157,
+    4.01410563710667,
+    5.589570887824041,
+    0.883120674689617
+  ],
+  "forward_heading": 2.4891094148555157,
+  "tags": {},
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 687,
+    "y": 533
+  }
+},
+{
+  "_id": {
+    "$oid": "689ed3d673fe22b87c0d37c3"
+  },
+  "name": "017",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/17.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "018": 0.76
+    },
+    null,
+    {
+      "014": 0.96
+    }
+  ],
+  "arrow_angles": [
+    5.950264921288819,
+    1.2453883104339696,
+    2.818282126822199,
+    4.384792268510045
+  ],
+  "forward_heading": 5.950264921288819,
+  "tags": {
+    "Aula": {
+      "13A": 5.529796669190159,
+      "14A": 0.0900058925455414
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 768,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "689ebbec0e71cc0c981219a4"
+  },
+  "name": "041",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eb8b60e71cc0c981219a1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/41.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "058": 1.65
+    },
+    {
+      "040": 0.95
+    },
+    {
+      "038": 1.23
+    },
+    null
+  ],
+  "arrow_angles": [
+    1.4149368140132845,
+    3.106530583106924,
+    4.153002091459396,
+    6.158794212791426
+  ],
+  "forward_heading": 1.4149368140132845,
+  "tags": {
+    "Punto de encuentro": {
+      "Unidad de Admisión": 6.134550796746234
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 785,
+    "y": 633
+  }
+},
+{
+  "_id": {
+    "$oid": "689f30b8a2b4cc7a79c9a628"
+  },
+  "name": "037",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/37.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    null,
+    {
+      "038": 1.3
+    },
+    {
+      "036": 0.58
+    }
+  ],
+  "arrow_angles": [
+    1.685127411658222,
+    3.186784441420732,
+    4.817770002187118,
+    0.09528161258905762
+  ],
+  "forward_heading": 1.685127411658222,
+  "tags": {},
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 1033,
+    "y": 534
+  },
+  "rotation_correction": {
+    "038": 270
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2968f7e93648b679addab"
+  },
+  "name": "098",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a296d5f48ede02ace12fd5"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/98.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "097": 1.32
+    },
+    {
+      "099": 0.4
+    },
+    null
+  ],
+  "arrow_angles": [
+    4.730845996845337,
+    0.019682278209744372,
+    1.5984902319958068,
+    2.498016147115867
+  ],
+  "forward_heading": 4.7107058831656206,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 1218,
+    "y": 700
+  },
+  "rotation_correction": {
+    "097": 9
+  }
+},
+{
+  "_id": {
+    "$oid": "68a317b72c4374f24a1f30dd"
+  },
+  "name": "078",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2a06c60887612b7c313b7"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/78.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "130": 1
+    },
+    {
+      "077": 1.19
+    },
+    {
+      "107": 1.35
+    },
+    null
+  ],
+  "arrow_angles": [
+    1.9533536519229273,
+    1.3893296692883546,
+    2.9617950422809507,
+    4.702243521286517
+  ],
+  "forward_heading": 6.105755012621595,
+  "tags": {
+    "Laboratorio de computación": {
+      "Laboratorio de Computación Prof. Valerio Wong": 4.731952438006127
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 445,
+    "y": 313
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "68a31b6f2c4374f24a1f30df"
+  },
+  "name": "109",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2a06c60887612b7c313b7"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/109.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "103": 1
+    },
+    null,
+    {
+      "108": 1.0150000000000001
+    }
+  ],
+  "arrow_angles": [
+    2.9900315678297527,
+    4.5640766475661305,
+    0.09808972426187905,
+    1.3958534305310308
+  ],
+  "forward_heading": 3.161273677514504,
+  "tags": {
+    "Punto de encuentro": {
+      "Decanato de Investigación": 3.3477169124983304
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 754,
+    "y": 306
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "689e98fc0e71cc0c98121989"
+  },
+  "name": "025",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6899274f1d71c40158c39f77"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/25.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "026": 1.12
+    },
+    {
+      "031": 1.53
+    },
+    null,
+    {
+      "024": 1.53
+    }
+  ],
+  "arrow_angles": [
+    3.922799379183881,
+    5.350438125110612,
+    0.8369341856404287,
+    2.581544931229597
+  ],
+  "forward_heading": 3.922799379183881,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 500,
+    "y": 910
+  }
+},
+{
+  "_id": {
+    "$oid": "689eae1f0e71cc0c98121999"
+  },
+  "name": "052",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eac6a0e71cc0c98121995"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/52.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "051": 0.4
+    },
+    null,
+    {
+      "053": 0.4
+    },
+    null
+  ],
+  "arrow_angles": [
+    5.623853898571168,
+    0.9379063575681801,
+    2.450467192153437,
+    4.068018111119502
+  ],
+  "forward_heading": 5.623853898571168,
+  "tags": {
+    "Punto de encuentro": {
+      "Centro Astronomico Caronte": 1.1252538586580008,
+      "Centro de Ciencias \"Jacinto Convit\"": 0.4445661817210862
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 500,
+    "y": 510
+  }
+},
+{
+  "_id": {
+    "$oid": "689f3918a2b4cc7a79c9a62d"
+  },
+  "name": "046",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/46.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "047": 0.385
+    },
+    null,
+    {
+      "045": 0.39
+    },
+    null
+  ],
+  "arrow_angles": [
+    1.2204703624247237,
+    2.802946447516744,
+    4.3724994197237095,
+    5.9516757634122675
+  ],
+  "forward_heading": 1.2062369641528106,
+  "tags": {
+    "Aula": {
+      "24A": 2.9180940872125354,
+      "25A": 6.0247190429967485
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 639,
+    "y": 236
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "68a29eaf7e93648b679addb9"
+  },
+  "name": "092",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2970f10a756c05c85a22f"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/92.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    null,
+    null,
+    {
+      "093": 0.92
+    }
+  ],
+  "arrow_angles": [
+    0.0064490077859500105,
+    1.6208724975408353,
+    3.157056337590472,
+    4.76958891568749
+  ],
+  "forward_heading": 0.053655697869306365,
+  "tags": {
+    "Punto de encuentro": {
+      "Gimnasio": 2.367156569597956,
+      "Sala de Danzas": 0.6148366170631243,
+      "Limpieza": 1.6474528621148594
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 965,
+    "y": 140
+  }
+},
+{
+  "_id": {
+    "$oid": "68a26f68df6c45ba1977e9f1"
+  },
+  "name": "087",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/87.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "086": 1.38
+    },
+    null,
+    {
+      "088": 1.43
+    },
+    null
+  ],
+  "arrow_angles": [
+    0.9463164886470214,
+    2.495935948702899,
+    4.116217153114384,
+    5.600175123230716
+  ],
+  "forward_heading": 0.9573901505194882,
+  "tags": {
+    "Punto de encuentro": {
+      "Laboratorio de Química Orgánica": 5.3474085957518565,
+      "Laboratorio de Química General II": 1.9692971918172106
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 471,
+    "y": 426
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2a2469e1ccf3d336a28de"
+  },
+  "name": "060",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a264e210a756c05c85a220"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/60.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "059": 1.65
+    },
+    null,
+    {
+      "061": 0.6
+    }
+  ],
+  "arrow_angles": [
+    3.0674013125652415,
+    4.553199209611891,
+    6.254307526359101,
+    1.5959631280227593
+  ],
+  "forward_heading": 3.0297260341726857,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 924,
+    "y": 460
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "689eb6d30e71cc0c9812199f"
+  },
+  "name": "029",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6899274f1d71c40158c39f77"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/29.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "039": 2.37
+    },
+    null,
+    null,
+    {
+      "030": 3.36
+    }
+  ],
+  "arrow_angles": [
+    3.3951368484785984,
+    4.698333489398033,
+    0.009079940659820186,
+    1.5913237643479416
+  ],
+  "forward_heading": 3.1291196266978107,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 884,
+    "y": 903
+  }
+},
+{
+  "_id": {
+    "$oid": "6898dcd8276ddb503066fd23"
+  },
+  "name": "002",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6898d4f11d71c40158c39f74"
+    }
+  },
+  "url_image": "https://uvchinukwkjjfjaiuqic.supabase.co/storage/v1/object/public/virtual-environment-images/02.PHOTOSPHERE.jpg",
+  "adjacent_nodes": [
+    {
+      "001": 1.45
+    },
+    null,
+    {
+      "003": 0.8
+    },
+    null
+  ],
+  "arrow_angles": [
+    5.441128915656201,
+    null,
+    2.270876286625885,
+    null
+  ],
+  "forward_heading": 5.441128915656201,
+  "tags": {
+    "Punto de encuentro": {
+      "Decanato de Extensión": 0.6930752086224496
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 185,
+    "y": 679
+  }
+},
+{
+  "_id": {
+    "$oid": "689ecb4773fe22b87c0d37bb"
+  },
+  "name": "010",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/10.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "012": 0.98
+    },
+    null,
+    {
+      "009": 0.71
+    }
+  ],
+  "arrow_angles": [
+    4.738540870909107,
+    0.01701151363055136,
+    1.5748749140845089,
+    3.150507524886673
+  ],
+  "forward_heading": 4.738540870909107,
+  "tags": {
+    "Aula": {
+      "08A": 3.98918383968669,
+      "09A": 4.7167742858865545
+    },
+    "Baño de damas": {
+      "Baño de Damas Primer Piso Edificio A": 1.5263403053336715
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 495,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2991e7e93648b679addaf"
+  },
+  "name": "066",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2970f10a756c05c85a22f"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/66.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "067": 0.67
+    },
+    null,
+    {
+      "065": 1.77
+    },
+    null
+  ],
+  "arrow_angles": [
+    6.21253241517244,
+    1.4937222694837489,
+    3.1010123706881854,
+    4.6201591628089655
+  ],
+  "forward_heading": 6.249566784676169,
+  "tags": {
+    "Aula": {
+      "27A": 4.633323343117752
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 691,
+    "y": 192
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2a12c60887612b7c313b8"
+  },
+  "name": "106",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2a06c60887612b7c313b7"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/106.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "077": 1.36
+    },
+    {
+      "105": 1.3
+    },
+    {
+      "110": 1.7
+    },
+    {
+      "107": 1.28
+    }
+  ],
+  "arrow_angles": [
+    2.870524226542323,
+    4.6440044619808045,
+    0.05949081546493758,
+    1.5795881648925552
+  ],
+  "forward_heading": 3.1999602248389207,
+  "tags": {},
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 571,
+    "y": 432
+  }
+},
+{
+  "_id": {
+    "$oid": "68a27503df6c45ba1977e9f5"
+  },
+  "name": "073",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26ccf10a756c05c85a22d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/73.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "072": 1.58
+    },
+    null,
+    {
+      "074": 5.6
+    }
+  ],
+  "arrow_angles": [
+    1.454695519313348,
+    2.989883696114427,
+    4.555811661732436,
+    6.2468940108924755
+  ],
+  "forward_heading": 1.4251833640001383,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 20,
+    "y": 8
+  }
+},
+{
+  "_id": {
+    "$oid": "689e9d3b0e71cc0c98121991"
+  },
+  "name": "027",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689e9bb00e71cc0c9812198d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/27.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "028": 0.7
+    },
+    {
+      "032": 0.9
+    },
+    null,
+    {
+      "011": 1.5
+    }
+  ],
+  "arrow_angles": [
+    1.4803770838905725,
+    3.022923897369186,
+    4.6672905817905646,
+    6.198058261588543
+  ],
+  "forward_heading": 1.4803770838905725,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 440,
+    "y": 815
+  },
+  "rotation_correction": {
+    "011": 180
+  }
+},
+{
+  "_id": {
+    "$oid": "689eacff0e71cc0c98121996"
+  },
+  "name": "055",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eac6a0e71cc0c98121995"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/55.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "054": 0.61
+    },
+    null,
+    {
+      "082": 1.32
+    },
+    {
+      "056": 1.83
+    }
+  ],
+  "arrow_angles": [
+    4.8815018164515935,
+    0.1730580393646394,
+    1.7616262138670522,
+    3.3062453297024987
+  ],
+  "forward_heading": 4.8815018164515935,
+  "tags": {
+    "Punto de encuentro": {
+      "Cafetín La Villa Edificio A": 0.4293277021858202
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 440,
+    "y": 570
+  }
+},
+{
+  "_id": {
+    "$oid": "68a26a0edf6c45ba1977e9ec"
+  },
+  "name": "085",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/85.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "062": 1.8
+    },
+    {
+      "086": 1.38
+    },
+    {
+      "084": 1.6
+    }
+  ],
+  "arrow_angles": [
+    4.055673081210263,
+    5.639473342538314,
+    0.9385345021332905,
+    2.49369085334998
+  ],
+  "forward_heading": 4.092846196380724,
+  "tags": {
+    "Punto de encuentro": {
+      "Laboratorio de Catálisis": 4.828835352330589,
+      "Departamento de Ingeniería Ambiental": 3.3261034132874627,
+      "Laboratorio": 1.3014906806406725
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 420,
+    "y": 201
+  }
+},
+{
+  "_id": {
+    "$oid": "68a29a377e93648b679addb0"
+  },
+  "name": "095",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a297737e93648b679addad"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/95.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "094": 2.31
+    },
+    null,
+    {
+      "096": 1.75
+    }
+  ],
+  "arrow_angles": [
+    3.167990726137474,
+    4.717748325650386,
+    6.282361873899321,
+    1.5430087399103691
+  ],
+  "forward_heading": 3.180246662660547,
+  "tags": {
+    "Punto de encuentro": {
+      "Unidad Médico Odontológica Estudiantil": 6.230823778451203
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 814,
+    "y": 43
+  }
+},
+{
+  "_id": {
+    "$oid": "689f3826a2b4cc7a79c9a62c"
+  },
+  "name": "045",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/45.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "046": 0.39
+    },
+    null,
+    {
+      "044": 1.09
+    },
+    null
+  ],
+  "arrow_angles": [
+    6.214010470206813,
+    1.4968354708864116,
+    3.102249106299022,
+    4.699989432895973
+  ],
+  "forward_heading": 6.214010470206813,
+  "tags": {
+    "Aula": {
+      "23A": 2.5515022658614557
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 639,
+    "y": 264
+  }
+},
+{
+  "_id": {
+    "$oid": "68a29b1e7e93648b679addb3"
+  },
+  "name": "067",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2970f10a756c05c85a22f"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/67.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "068": 1.31
+    },
+    {
+      "066": 0.67
+    },
+    {
+      "091": 2.1
+    }
+  ],
+  "arrow_angles": [
+    6.2825191265131695,
+    1.5250441867891829,
+    3.1262032029314124,
+    4.812292787373513
+  ],
+  "forward_heading": 6.225982310118736,
+  "tags": {
+    "Aula": {
+      "28A": 5.5418945393855035
+    },
+    "Punto de encuentro": {
+      "Programa Calidad y Productividad Organizacional": 0.6454507853946877
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 692,
+    "y": 142
+  }
+},
+{
+  "_id": {
+    "$oid": "689ead550e71cc0c98121997"
+  },
+  "name": "054",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eac6a0e71cc0c98121995"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/54.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "050": 0.83
+    },
+    {
+      "053": 0.98
+    },
+    {
+      "055": 0.61
+    },
+    null
+  ],
+  "arrow_angles": [
+    3.465451306331466,
+    4.744706071130087,
+    0.04142366896084528,
+    1.6073908564215003
+  ],
+  "forward_heading": 3.1392218754935826,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 441,
+    "y": 528
+  }
+},
+{
+  "_id": {
+    "$oid": "68a25d7f0d360ea6f1270947"
+  },
+  "name": "049",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2568b10a756c05c85a21d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/49.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "064": 0.8
+    },
+    {
+      "047": 0.4
+    },
+    null,
+    {
+      "050": 2.2
+    }
+  ],
+  "arrow_angles": [
+    0.42085267500384244,
+    3.1630374179112573,
+    4.816629814573526,
+    6.254361600494426
+  ],
+  "forward_heading": 1.6046972758511269,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 635,
+    "y": 614
+  },
+  "rotation_correction": {
+    "050": 180
+  }
+},
+{
+  "_id": {
+    "$oid": "68a26ddbdf6c45ba1977e9ef"
+  },
+  "name": "071",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26ccf10a756c05c85a22d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/71.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "070": 1.78
+    },
+    null,
+    {
+      "072": 3.31
+    }
+  ],
+  "arrow_angles": [
+    3.0150477998653873,
+    4.628730520710514,
+    6.283036589348614,
+    1.505694395748726
+  ],
+  "forward_heading": 3.087026847379567,
+  "tags": {
+    "Punto de encuentro": {
+      "Coordinación de Orientación": 0
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 420,
+    "y": 6
+  }
+},
+{
+  "_id": {
+    "$oid": "68a29f1d7e93648b679addba"
+  },
+  "name": "104",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a29b26f48ede02ace12fd6"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/104.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "103": 1.715
+    },
+    {
+      "102": 2.1
+    },
+    null,
+    {
+      "105": 1.63
+    }
+  ],
+  "arrow_angles": [
+    1.5243052385602756,
+    3.185448607719621,
+    4.801344408803157,
+    0.02755480415392602
+  ],
+  "forward_heading": 1.680555859901696,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 410,
+    "y": 736
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "6898eb6a276ddb503066fd26"
+  },
+  "name": "020",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6898e70d1d71c40158c39f75"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/20.PHOTOSPHERE.jpg?",
+  "adjacent_nodes": [
+    {
+      "004": 1.61
+    },
+    null,
+    {
+      "021": 1.22
+    },
+    null
+  ],
+  "arrow_angles": [
+    4.5088264046204864,
+    null,
+    1.4491899929125476,
+    null
+  ],
+  "forward_heading": 4.5088264046204864,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 119,
+    "y": 797
+  }
+},
+{
+  "_id": {
+    "$oid": "689f2fada2b4cc7a79c9a627"
+  },
+  "name": "036",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/36.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "037": 0.58
+    },
+    null,
+    {
+      "035": 0.6
+    }
+  ],
+  "arrow_angles": [
+    0.055598757310373004,
+    1.6237855046192282,
+    3.144946506759084,
+    4.717523103115213
+  ],
+  "forward_heading": 0.055598757310373004,
+  "tags": {
+    "Aula": {
+      "21A": 0.059065576837100876
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 980,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "689eb3a70e71cc0c9812199d"
+  },
+  "name": "057",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6898d4f11d71c40158c39f74"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/57.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "056": 0.73
+    },
+    null,
+    {
+      "001": 1.12
+    }
+  ],
+  "arrow_angles": [
+    1.4812876715855754,
+    3.0057713940495243,
+    4.6066872390492835,
+    6.129150330088792
+  ],
+  "forward_heading": 1.4812876715855754,
+  "tags": {
+    "Punto de encuentro": {
+      "Asociación de Profesores de la UNET": 4.212444597256118
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 260,
+    "y": 568
+  }
+},
+{
+  "_id": {
+    "$oid": "689f3743a2b4cc7a79c9a62b"
+  },
+  "name": "044",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/44.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "045": 1.09
+    },
+    null,
+    {
+      "043": 0.96
+    },
+    null
+  ],
+  "arrow_angles": [
+    6.280873249106287,
+    1.5977370499405572,
+    3.171726667562051,
+    4.711522548695607
+  ],
+  "forward_heading": 6.280873249106287,
+  "tags": {
+    "Aula": {
+      "10A": 4.710123049632402
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 629,
+    "y": 350
+  }
+},
+{
+  "_id": {
+    "$oid": "68a25bee0d360ea6f1270946"
+  },
+  "name": "047",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2568b10a756c05c85a21d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/47.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "048": 0.4
+    },
+    {
+      "046": 0.385
+    },
+    {
+      "049": 0.4
+    }
+  ],
+  "arrow_angles": [
+    3.5315638706752437,
+    5.201382900027406,
+    0.5470130082946054,
+    2.0177399035068664
+  ],
+  "forward_heading": 3.597817255260204,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 657,
+    "y": 614
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "689eb9970e71cc0c981219a2"
+  },
+  "name": "038",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689eb8b60e71cc0c981219a1"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/38.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "041": 1.23
+    },
+    {
+      "039": 1
+    },
+    {
+      "037": 1.3
+    },
+    null
+  ],
+  "arrow_angles": [
+    2.5906770177517267,
+    4.474064911483969,
+    6.080118757789673,
+    1.3122629971244386
+  ],
+  "forward_heading": 2.8882179828289414,
+  "tags": {
+    "Punto de encuentro": {
+      "Centro de Información Regional": 1.3019390986321704
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 818,
+    "y": 747
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2620a31fe0cca41b59ec2"
+  },
+  "name": "064",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2568b10a756c05c85a21d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/64.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "089": 1.59
+    },
+    {
+      "090": 1.46
+    },
+    {
+      "049": 0.8
+    },
+    null
+  ],
+  "arrow_angles": [
+    4.655809916014801,
+    6.168091528802368,
+    0.3401847849605142,
+    3.155261497769833
+  ],
+  "forward_heading": 4.663305058977638,
+  "tags": {},
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 570,
+    "y": 586
+  }
+},
+{
+  "_id": {
+    "$oid": "68a274c5df6c45ba1977e9f4"
+  },
+  "name": "079",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/79.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "084": 1.6
+    },
+    {
+      "080": 1.5
+    },
+    null
+  ],
+  "arrow_angles": [
+    4.009238281611611,
+    5.5285857266120875,
+    0.8180228207280804,
+    2.346167673901957
+  ],
+  "forward_heading": 3.9683546326819825,
+  "tags": {
+    "Punto de encuentro": {
+      "CETI": 4.712310470256083
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 150,
+    "y": 201
+  }
+},
+{
+  "_id": {
+    "$oid": "68a29ca97e93648b679addb5"
+  },
+  "name": "068",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2970f10a756c05c85a22f"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/68.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "093": 1.08
+    },
+    null,
+    {
+      "067": 1.31
+    }
+  ],
+  "arrow_angles": [
+    0.00378983038443493,
+    1.6038858783647172,
+    3.18780511529377,
+    4.711261008966304
+  ],
+  "forward_heading": 0.01701187928991197,
+  "tags": {
+    "Baño de caballeros": {
+      "Baño Caballeros del Pasillo del GYM": 0.04736495582194859
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 807,
+    "y": 139
+  }
+},
+{
+  "_id": {
+    "$oid": "68a2a04d60887612b7c313b5"
+  },
+  "name": "061",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a264e210a756c05c85a220"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/61.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "060": 0.6
+    },
+    null,
+    {
+      "063": 2.2
+    }
+  ],
+  "arrow_angles": [
+    3.1798902958615836,
+    4.662160740505226,
+    0.02052093047387592,
+    1.5697020863531792
+  ],
+  "forward_heading": 3.1620581280591935,
+  "tags": {
+    "Punto de encuentro": {
+      "Cochineras": 5.8875434737812675
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 900,
+    "y": 463
+  }
+},
+{
+  "_id": {
+    "$oid": "68991fb7276ddb503066fd28"
+  },
+  "name": "022",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6899274f1d71c40158c39f77"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/22.PHOTOSPHERE.jpg?",
+  "adjacent_nodes": [
+    null,
+    {
+      "023": 1.29
+    },
+    null,
+    {
+      "021": 1.95
+    }
+  ],
+  "arrow_angles": [
+    0.23625111433024512,
+    1.8156559247865456,
+    null,
+    4.968141730810839
+  ],
+  "forward_heading": 0.23625111433024512,
+  "tags": {
+    "Punto de encuentro": {
+      "Coordinación de Servicio Comunitario": 0.23625111433024512
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 251,
+    "y": 903
+  }
+},
+{
+  "_id": {
+    "$oid": "689ed41673fe22b87c0d37c4"
+  },
+  "name": "018",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/18.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "019": 0.68
+    },
+    null,
+    {
+      "017": 0.76
+    }
+  ],
+  "arrow_angles": [
+    2.996893398533553,
+    4.610588992930933,
+    6.226027030823091,
+    1.4664549222237457
+  ],
+  "forward_heading": 2.996893398533553,
+  "tags": {
+    "Aula": {
+      "15A": 0.3365594974398657,
+      "16A": 5.813455949553886
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 825,
+    "y": 534
+  }
+},
+{
+  "_id": {
+    "$oid": "68a270cddf6c45ba1977e9f2"
+  },
+  "name": "088",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a26a2010a756c05c85a222"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/88.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "087": 1.43
+    },
+    null,
+    null,
+    null
+  ],
+  "arrow_angles": [
+    0.05285761294368408,
+    1.7150134219744289,
+    3.187481015729392,
+    4.695097335763352
+  ],
+  "forward_heading": 0.03202715724896744,
+  "tags": {
+    "Punto de encuentro": {
+      "Lab CETI": 4.682050627634827,
+      "Laboratorio de investigación en Biotecnología y Química de Polímeros": 1.6244751660256338
+    }
+  },
+  "minimap": {
+    "image": "map-A3.jpg",
+    "x": 415,
+    "y": 548
+  }
+},
+{
+  "_id": {
+    "$oid": "689e9cfe0e71cc0c98121990"
+  },
+  "name": "034",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689e9bb00e71cc0c9812198d"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/34.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    null,
+    {
+      "033": 0.94
+    },
+    {
+      "028": 1.71
+    }
+  ],
+  "arrow_angles": [
+    1.5032484766502294,
+    3.105809666549378,
+    4.6830338617005935,
+    6.256738098360566
+  ],
+  "forward_heading": 1.5032484766502294,
+  "tags": {
+    "Punto de encuentro": {
+      "Coordinación de Control y Evaluación Estudiantil": 2.3129875440608183,
+      "Coordinación de Desarrollo Educativo": 3.6824462015551047
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 550,
+    "y": 755
+  }
+},
+{
+  "_id": {
+    "$oid": "689f3653a2b4cc7a79c9a62a"
+  },
+  "name": "043",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689ecbe173fe22b87c0d37bc"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/43.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "044": 0.96
+    },
+    null,
+    {
+      "042": 0.96
+    },
+    null
+  ],
+  "arrow_angles": [
+    0.3964478838289171,
+    1.9846163011485345,
+    3.5201673377240725,
+    5.125715224942639
+  ],
+  "forward_heading": 0.3964478838289171,
+  "tags": {
+    "Aula": {
+      "22A": 1.9873871622257975
+    }
+  },
+  "minimap": {
+    "image": "map-A2.jpg",
+    "x": 629,
+    "y": 430
+  }
+},
+{
+  "_id": {
+    "$oid": "68a29c417e93648b679addb4"
+  },
+  "name": "101",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a29b26f48ede02ace12fd6"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/101.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    null,
+    {
+      "100": 2.55
+    },
+    null,
+    {
+      "102": 1.95
+    }
+  ],
+  "arrow_angles": [
+    1.644253148898173,
+    3.1840545773880855,
+    4.797956118363352,
+    0.019427395350001552
+  ],
+  "forward_heading": 1.644253148898173,
+  "tags": {},
+  "minimap": {
+    "image": "map-A4.jpg",
+    "x": 699,
+    "y": 740
+  }
+},
+{
+  "_id": {
+    "$oid": "689e99560e71cc0c9812198a"
+  },
+  "name": "026",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "689e9a170e71cc0c9812198b"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/26.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "032": 0.63
+    },
+    {
+      "031": 1.68
+    },
+    {
+      "025": 1.12
+    },
+    {
+      "024": 1.68
+    }
+  ],
+  "arrow_angles": [
+    6.225782769569229,
+    2.185133018604974,
+    3.0501959159846646,
+    3.980585180110567
+  ],
+  "forward_heading": 6.225782769569229,
+  "tags": {},
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 500,
+    "y": 860
+  }
+},
+{
+  "_id": {
+    "$oid": "6a064722fa0bbff62d2789a1"
+  },
+  "name": "113",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a31d122c4374f24a1f30e1"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "112": 0.3
+    },
+    null,
+    {
+      "114": 1.09
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.935339950748839,
+    3.141592653589793,
+    1.8035738482065975
+  ],
+  "forward_heading": 3.428802423045916,
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de transferencia de calor": 3.309888198809436
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 0,
+    "y": 0
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "6a133bd88efceda11cf721e0"
+  },
+  "name": "114",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a31d122c4374f24a1f30e1"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "113": 1.09
+    },
+    null,
+    {
+      "115": 1.2
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.332175539589846,
+    3.141592653589793,
+    1.2181322789251996
+  ],
+  "forward_heading": 2.811607925390905,
+  "rotation_correction": null,
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Materiales": 5.4443501643462575,
+      "Laboratorio de prototipos (sección diseño)": 0.5167559815287471
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 298,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a405da381a8514ec512d8a4"
+  },
+  "name": "115",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a31d122c4374f24a1f30e1"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "114": 1.2
+    },
+    null,
+    null
+  ],
+  "arrow_angles": [
+    0,
+    1.4941692549287398,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de prototipos (sección taller)": 6.267146907308639
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 178,
+    "y": 627
+  }
+},
+{
+  "_id": {
+    "$oid": "6a405fa581a8514ec512d8a5"
+  },
+  "name": "116",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a31d122c4374f24a1f30e1"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "110": 1.3
+    },
+    {
+      "117": 0.92
+    },
+    null,
+    {
+      "112": 1.9
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.4365945939431186,
+    3.141592653589793,
+    4.574695591084003
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 634,
+    "y": 627
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4062ba81a8514ec512d8a6"
+  },
+  "name": "117",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a31d122c4374f24a1f30e1"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    null,
+    null,
+    {
+      "116": 0.92
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    3.141592653589793,
+    3.2045926962839033
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 721,
+    "y": 627
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4085abcbcb10343e7b1321"
+  },
+  "name": "119",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    null,
+    {
+      "120": 1.23
+    },
+    {
+      "118": 1.24
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    1.8723878091058987,
+    3.4542036901669304
+  ],
+  "forward_heading": 5.027102036371399,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 569,
+    "y": 500
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408620cbcb10343e7b1322"
+  },
+  "name": "120",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "119": 1.23
+    },
+    {
+      "121": 0.57
+    },
+    null,
+    {
+      "123": 1.23
+    }
+  ],
+  "arrow_angles": [
+    4.994813288564834,
+    0.02434504127827242,
+    3.141592653589793,
+    3.332826040994317
+  ],
+  "forward_heading": 4.987847590763582,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 569,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408677cbcb10343e7b1323"
+  },
+  "name": "121",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "122": 0.51
+    },
+    null,
+    {
+      "120": 0.57
+    }
+  ],
+  "arrow_angles": [
+    0,
+    3.2040051882379053,
+    3.141592653589793,
+    0.06386341647871692
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Baño de damas": {
+      "Baño de Damas Nivel 2 Edificio C": 2.5998017168956626
+    },
+    "Baño de caballeros": {
+      "Baño de Caballeros Nivel 2 Edificio C": 0.8966866407173293
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 625,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408c5ecbcb10343e7b1324"
+  },
+  "name": "122",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "124": 0.53
+    },
+    null,
+    {
+      "121": 0.51
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Punto de encuentro": {
+      "Sala de Técnicos Nelson Sánchez": 0.004270559858655847
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 677,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408cadcbcb10343e7b1325"
+  },
+  "name": "123",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "118": 1.27
+    },
+    {
+      "120": 1.23
+    },
+    null,
+    {
+      "125": 0.42
+    }
+  ],
+  "arrow_angles": [
+    0.9473961120914703,
+    2.513900853983273,
+    3.141592653589793,
+    5.6837505773115495
+  ],
+  "forward_heading": 0.9610922784959233,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Electrotécnia II Y Fundamentos de Ing. Electrónica": 4.3753904593010455
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 447,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408d12cbcb10343e7b1326"
+  },
+  "name": "124",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    null,
+    null,
+    {
+      "122": 0.53
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    3.141592653589793,
+    3.0876133215936794
+  ],
+  "forward_heading": 4.639538581145351,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 063": 1.5378805118528973
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 732,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408d64cbcb10343e7b1327"
+  },
+  "name": "125",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "123": 0.42
+    },
+    null,
+    {
+      "126": 0.63
+    }
+  ],
+  "arrow_angles": [
+    0,
+    5.753920148572158,
+    3.141592653589793,
+    2.645156897985505
+  ],
+  "forward_heading": 4.1956965095109755,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Ingeniería Electrónica (11-B17)": 3.6011122248288325,
+      "Laboratorio 12C": 1.7646453577197339,
+      "Laboratorio de Electrotécnia II Y Fundamentos de Ing. Electrónica": 0.2884420958844664
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 403,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408dafcbcb10343e7b1328"
+  },
+  "name": "126",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "125": 0.63
+    },
+    null,
+    {
+      "127": 0.74
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.718705378677012,
+    3.141592653589793,
+    1.5511854462813592
+  ],
+  "forward_heading": 3.135092988310433,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 133": 0.035388925394106686
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 341,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408df8cbcb10343e7b1329"
+  },
+  "name": "127",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "126": 0.74
+    },
+    null,
+    {
+      "128": 0.87
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.6676519879186809,
+    3.141592653589793,
+    4.826509310721396
+  ],
+  "forward_heading": 0.08577449109611407,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 127: Laboratorio de Tecnología Electrónica": 0.1043864002265201
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 267,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408e2ecbcb10343e7b132a"
+  },
+  "name": "128",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "127": 0.87
+    },
+    null,
+    null
+  ],
+  "arrow_angles": [
+    0,
+    5.167029533432957,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 3.636714636871726,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 127: Laboratorio de Tecnología Electrónica": 4.230341722951932,
+      "Laboratorio 126": 1.213891678378878
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 178,
+    "y": 629
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408e88cbcb10343e7b132b"
+  },
+  "name": "129",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "130": 1.385
+    },
+    null,
+    {
+      "118": 1
+    },
+    null
+  ],
+  "arrow_angles": [
+    3.121295409623732,
+    1.5707963267948966,
+    0.3038556338068247,
+    -1.5707963267948966
+  ],
+  "forward_heading": 3.1485067220324296,
+  "rotation_correction": {
+    "118": 270
+  },
+  "tags": {
+    "Punto de encuentro": {
+      "Conserje (Vigilancia Interna)": 1.8168314947649238
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 441,
+    "y": 435
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408f0acbcb10343e7b132d"
+  },
+  "name": "130",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408edccbcb10343e7b132c"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "078": 1
+    },
+    {
+      "131": 0.76
+    },
+    {
+      "135": 0.55,
+      "": 1
+    },
+    {
+      "129": 1.385,
+      "": 1
+    }
+  ],
+  "arrow_angles": [
+    3.522653870759142,
+    1.9902263554224149,
+    2.782934222599859,
+    5.309672269701883
+  ],
+  "forward_heading": 0.6490885979749825,
+  "rotation_correction": {
+    "135": 180
+  },
+  "tags": {
+    "Baño de damas": {
+      "Baño de Damas Nivel 3 Edificio C": 0.897448308333181
+    },
+    "Baño de caballeros": {
+      "Baño de Caballeros Nivel 3 Edificio C": 6.129930079625044
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 441,
+    "y": 308
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408f5ccbcb10343e7b132e"
+  },
+  "name": "131",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408edccbcb10343e7b132c"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "133": 1.14
+    },
+    null,
+    {
+      "130": 0.76
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.520667321429477,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Diseño Mecánico": 6.276566860434156
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 535,
+    "y": 308
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408f96cbcb10343e7b132f"
+  },
+  "name": "132",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408edccbcb10343e7b132c"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "134": 1.3
+    },
+    null,
+    {
+      "133": 0.51
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.64352699779628,
+    3.141592653589793,
+    1.523479939652864
+  ],
+  "forward_heading": 3.047964356571671,
+  "rotation_correction": {},
+  "tags": {
+    "Punto de encuentro": {
+      "Sala de Exposiciones 12-B17": 6.241416408403666
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 609,
+    "y": 308
+  }
+},
+{
+  "_id": {
+    "$oid": "6a408fcccbcb10343e7b1330"
+  },
+  "name": "133",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408edccbcb10343e7b132c"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "132": 0.51
+    },
+    null,
+    {
+      "131": 1.14
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.6092679746349288,
+    3.141592653589793,
+    4.785666369971487
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {},
+    "Aula": {
+      "Laboratorio 12-B10": 6.2548828111396215
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 646,
+    "y": 308
+  }
+},
+{
+  "_id": {
+    "$oid": "6a409015cbcb10343e7b1331"
+  },
+  "name": "134",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408edccbcb10343e7b132c"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "190": 1.3
+    },
+    null,
+    {
+      "132": 1.3
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.692635697035859,
+    3.141592653589793,
+    1.5401295258258265
+  ],
+  "forward_heading": 3.1188495962509966,
+  "rotation_correction": {},
+  "tags": {
+    "Aula": {
+      "Aula 12-B16": 6.265080290048661
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 710,
+    "y": 308
+  }
+},
+{
+  "_id": {
+    "$oid": "68a315ec2c4374f24a1f30dc"
+  },
+  "name": "107",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "68a2a06c60887612b7c313b7"
+    }
+  },
+  "url_image": "https://uurpcauxzloqxdltglns.supabase.co/storage/v1/object/public/virtual-environment-images/107.PHOTOSPHERE.webp?",
+  "adjacent_nodes": [
+    {
+      "078": 1.35
+    },
+    {
+      "106": 1.28
+    },
+    {
+      "111": 1.7
+    },
+    {
+      "118": 0.5
+    }
+  ],
+  "arrow_angles": [
+    3.3102456559212023,
+    4.714498709885117,
+    0.2433660060140724,
+    6.010258320344417
+  ],
+  "forward_heading": 3.3042635402061378,
+  "tags": {
+    "Punto de encuentro": {
+      "Limpieza": 1.318469085668459
+    }
+  },
+  "minimap": {
+    "image": "map-C1.jpg",
+    "x": 440,
+    "y": 431
+  },
+  "rotation_correction": null
+},
+{
+  "_id": {
+    "$oid": "6a4084a1cbcb10343e7b1320"
+  },
+  "name": "118",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408217cbcb10343e7b131f"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "107": 0.5
+    },
+    {
+      "119": 1.24
+    },
+    {
+      "123": 1.27
+    },
+    {
+      "129": 1
+    }
+  ],
+  "arrow_angles": [
+    0.707918252087746,
+    2.0325347850848514,
+    3.6070624281588373,
+    6.2196652791508775
+  ],
+  "forward_heading": 0.5342543758167223,
+  "rotation_correction": {
+    "107": 90
+  },
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 445,
+    "y": 500
+  }
+},
+{
+  "_id": {
+    "$oid": "6a409057cbcb10343e7b1332"
+  },
+  "name": "190",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408edccbcb10343e7b132c"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "189": 1
+    },
+    {
+      "135": 1.64
+    },
+    null,
+    {
+      "134": 1.3
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.4668497659996056,
+    3.141592653589793,
+    4.843156375568165
+  ],
+  "forward_heading": 0.00148983067095495,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 762,
+    "y": 308
+  }
+},
+{
+  "_id": {
+    "$oid": "6a40a4c5cbcb10343e7b1334"
+  },
+  "name": "189",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a408edccbcb10343e7b132c"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    null,
+    {
+      "190": 1
+    },
+    null
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    5.191850460700537,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Punto de encuentro": {
+      "Salón Japonés": 0.4638824443911023
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_2_3.jpg",
+    "x": 761,
+    "y": 262
+  }
+},
+{
+  "_id": {
+    "$oid": "6a420035cd52ab0b3cb9fa78"
+  },
+  "name": "136",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "178": 8
+    },
+    {
+      "137": 2.15
+    },
+    {
+      "135": 0.1
+    },
+    {
+      "144": 1.1
+    }
+  ],
+  "arrow_angles": [
+    4.085440228693508,
+    1.9905336374258626,
+    3.5107665931617076,
+    5.136164868736182
+  ],
+  "forward_heading": 0.4364900859832079,
+  "rotation_correction": null,
+  "tags": {
+    "Baño de damas": {
+      "Baño de Damas": 0.45198789020210145
+    },
+    "Baño de caballeros": {
+      "Baño de Caballeros": 5.496227456789229
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 701,
+    "y": 299
+  }
+},
+{
+  "_id": {
+    "$oid": "6a420126cd52ab0b3cb9fa79"
+  },
+  "name": "137",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "138": 2
+    },
+    null,
+    {
+      "136": 2.15
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.4569456858195347,
+    3.141592653589793,
+    4.606223344093187
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Aula": {
+      "AULA 06C": 6.165967055859923
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 780,
+    "y": 303
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4201dbcd52ab0b3cb9fa7a"
+  },
+  "name": "138",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "139": 1.8
+    },
+    null,
+    {
+      "137": 2
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5885564225208195,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Ingeniería de Métodos": 0.009804388912619231
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 865,
+    "y": 303
+  }
+},
+{
+  "_id": {
+    "$oid": "6a42020bcd52ab0b3cb9fa7b"
+  },
+  "name": "139",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "140": 1.77
+    },
+    null,
+    {
+      "138": 1.8
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.65976608786323,
+    3.141592653589793,
+    1.5322172783352834
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {
+    "138": 180,
+    "140": 180
+  },
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Investigacions Genéticas": 6.215239687875376
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 933,
+    "y": 303
+  }
+},
+{
+  "_id": {
+    "$oid": "6a42037acd52ab0b3cb9fa7c"
+  },
+  "name": "140",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "141": 1.35
+    },
+    null,
+    {
+      "139": 1.77
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.4651389050666852,
+    3.141592653589793,
+    4.608825487086216
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Ingeniería de Métodos": 6.163612927587193
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 1008,
+    "y": 303
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4204d6cd52ab0b3cb9fa7d"
+  },
+  "name": "141",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "142": 1
+    },
+    null,
+    {
+      "140": 1.35
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.643643210302367,
+    3.141592653589793,
+    1.5254491171183477
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {
+    "140": 180,
+    "142": 180
+  },
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Bioquímica": 6.207709661074826
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 1079,
+    "y": 303
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4205b5cd52ab0b3cb9fa7e"
+  },
+  "name": "142",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "143": 0.7
+    },
+    null,
+    {
+      "141": 1
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    3.141592653589793,
+    4.650689435372742
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Aula": {
+      "AULA 07C": 6.274617722143947
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 1130,
+    "y": 303
+  }
+},
+{
+  "_id": {
+    "$oid": "6a42062acd52ab0b3cb9fa7f"
+  },
+  "name": "144",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "136": 1.1
+    },
+    null,
+    {
+      "145": 0.7
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.665450345629939,
+    3.141592653589793,
+    1.5155977362641955
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {
+    "136": 180,
+    "145": 180
+  },
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Investigaciones Microbiológicas": 6.237478232908448
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 653,
+    "y": 305
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4208b4cd52ab0b3cb9fa80"
+  },
+  "name": "145",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "144": 0.7
+    },
+    null,
+    {
+      "146": 0.75
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.4824351238400795,
+    3.141592653589793,
+    4.597477513477005
+  ],
+  "forward_heading": 6.190540429254044,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 606,
+    "y": 305
+  }
+},
+{
+  "_id": {
+    "$oid": "6a420a59cd52ab0b3cb9fa81"
+  },
+  "name": "146",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "145": 0.75
+    },
+    null,
+    {
+      "147": 0.33
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5091926782216898,
+    3.141592653589793,
+    4.648028927842093
+  ],
+  "forward_heading": 6.260466115745434,
+  "rotation_correction": {},
+  "tags": {
+    "Aula": {
+      "AULA 05C": 6.23483092077692
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 499,
+    "y": 305
+  }
+},
+{
+  "_id": {
+    "$oid": "6a420a8acd52ab0b3cb9fa82"
+  },
+  "name": "147",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "146": 0.33
+    },
+    null,
+    {
+      "148": 0.3
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.655570719133935,
+    3.141592653589793,
+    1.5247785862526542
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {
+    "146": 180,
+    "148": 180
+  },
+  "tags": {
+    "Aula": {
+      "Aula 12C": 6.223832102835731
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 462,
+    "y": 304
+  }
+},
+{
+  "_id": {
+    "$oid": "6a420abccd52ab0b3cb9fa83"
+  },
+  "name": "148",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "147": 0.3
+    },
+    null,
+    {
+      "149": 0.5
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5250633628637873,
+    3.141592653589793,
+    4.646234987650178
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Aula": {
+      "Aula 05C": 6.220173261681543
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 422,
+    "y": 304
+  }
+},
+{
+  "_id": {
+    "$oid": "6898dd62276ddb503066fd24"
+  },
+  "name": "003",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6898d4f11d71c40158c39f74"
+    }
+  },
+  "url_image": "https://uvchinukwkjjfjaiuqic.supabase.co/storage/v1/object/public/virtual-environment-images/03.PHOTOSPHERE.jpg",
+  "adjacent_nodes": [
+    {
+      "002": 0.8
+    },
+    {
+      "004": 2.505
+    },
+    {
+      "005": 1.3
+    },
+    {}
+  ],
+  "arrow_angles": [
+    4.251581374610939,
+    2.69894949644002,
+    1.1080671056780291,
+    0
+  ],
+  "forward_heading": 4.270921638435902,
+  "tags": {
+    "Punto de encuentro": {
+      "Rescate y Salvamento UNET": 5.803941648035155
+    }
+  },
+  "minimap": {
+    "image": "map-A1.jpg",
+    "x": 185,
+    "y": 717
+  },
+  "rotation_correction": {
+    "005": 180
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4eb8be9c3205cc8022189f"
+  },
+  "name": "149",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "148": 0.5
+    },
+    null,
+    {
+      "150": 0.65
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.744981512443646,
+    3.141592653589793,
+    1.5770430649366094
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {
+    "148": 180,
+    "150": 180
+  },
+  "tags": {
+    "Laboratorio": {
+      "Laboratorios Industrias de la Leche": 0.014510312732652426,
+      "Laboratorio Instrumentación Biológica": 1.7765570576155727
+    },
+    "Aula": {
+      "Aula 12-C11": 4.198189633725663
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 383,
+    "y": 304
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ebaf99c3205cc802218a0"
+  },
+  "name": "150",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "149": 0.65
+    },
+    null,
+    {
+      "151": 0.675
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5550741384610471,
+    3.141592653589793,
+    4.669075705984079
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 12-C10 Instrumentación Biológica": 0.0005337647862674446
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 360,
+    "y": 304
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ebc369c3205cc802218a1"
+  },
+  "name": "151",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "150": 0.675
+    },
+    null,
+    {
+      "152": 1.335
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 12-C4 Ectomología": 4.201803516557573,
+      "Laboratorio 12-C9 Nutrición Animal": 0.012077981339354922
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 293,
+    "y": 305
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ebca59c3205cc802218a2"
+  },
+  "name": "152",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "151": 1.335
+    },
+    null,
+    {
+      "153": 1.5
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.709065563674948,
+    3.141592653589793,
+    1.5616433033590342
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {
+    "151": 180
+  },
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 12-C4 Ectomología": 6.031275339042458,
+      "Laboratorio 12-C9 Instrucción Animal": 4.304119545232375,
+      "Laboratorio 12-C8 Genética": 1.7895846141280372
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 210,
+    "y": 304
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ebd259c3205cc802218a3"
+  },
+  "name": "153",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "152": 1.5
+    },
+    null,
+    null
+  ],
+  "arrow_angles": [
+    0,
+    3.1318015803048382,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 1.5907060973721843,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 149,
+    "y": 304
+  }
+},
+{
+  "_id": {
+    "$oid": "6a41ffc6cd52ab0b3cb9fa77"
+  },
+  "name": "135",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdeacd52ab0b3cb9fa75"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "136": 0.1
+    },
+    {
+      "184": 1
+    },
+    {
+      "130": 0.55
+    },
+    null
+  ],
+  "arrow_angles": [
+    3.0320449824198774,
+    4.735839227885966,
+    6.2487200203437565,
+    -1.5707963267948966
+  ],
+  "forward_heading": 3.136240846662995,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 700,
+    "y": 315
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ed4d99c3205cc802218a5"
+  },
+  "name": "186",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdf4cd52ab0b3cb9fa76"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "185": 1.345
+    },
+    null,
+    {
+      "187": 1.755
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.70098630153648,
+    3.141592653589793,
+    1.5681485000936137
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {
+    "185": 180,
+    "187": 180
+  },
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 11-C17 LRF": 3.707933191171358,
+      "Laboratorio 11-C6 (124)": 2.271638472301555,
+      "Laboratorio 11-C10 Electrónica Analógica": 0.7686195229544754
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 603,
+    "y": 649
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ec5099c3205cc802218a4"
+  },
+  "name": "185",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdf4cd52ab0b3cb9fa76"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "155": 1.2
+    },
+    {
+      "182": 1.3
+    },
+    null,
+    {
+      "186": 1.345
+    }
+  ],
+  "arrow_angles": [
+    0.045032328969930195,
+    1.5707963267948966,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 684,
+    "y": 649
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4edc725cb3ed0a19a111ed"
+  },
+  "name": "178",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "180": 0.42
+    },
+    null,
+    {
+      "136": 8
+    },
+    null
+  ],
+  "arrow_angles": [
+    2.382293772945446,
+    1.5707963267948966,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Punto de encuentro": {
+      "Decanato de Postgrado": 0.001894589055468835
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 918,
+    "y": 519
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4edd695cb3ed0a19a111ee"
+  },
+  "name": "180",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "184": 5.85
+    },
+    null,
+    {
+      "178": 0.42
+    },
+    null
+  ],
+  "arrow_angles": [
+    3.182049773364165,
+    1.5707963267948966,
+    6.27989583671106,
+    -1.5707963267948966
+  ],
+  "forward_heading": 3.1803978225937666,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 918,
+    "y": 464
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4edda49c3205cc802218a6"
+  },
+  "name": "187",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a41fdf4cd52ab0b3cb9fa76"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "186": 1.755
+    },
+    null,
+    null
+  ],
+  "arrow_angles": [
+    0,
+    6.255245181467788,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 4.716451924647377,
+  "rotation_correction": {
+    "186": 90
+  },
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 11-C15 (127)": 4.6895340304734585,
+      "Laboratorio 11-C11 Electronica Analógica": 1.4520900505599192,
+      "Laboratorio 11-C12 Circuitos y Mediciones": 2.954874090198663,
+      "Laboratorio 11-C14 (131)": 3.2265207201119406
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_4_5.jpg",
+    "x": 501,
+    "y": 649
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4eddd45cb3ed0a19a111ef"
+  },
+  "name": "184",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    {
+      "135": 1
+    },
+    {
+      "171": 1.07
+    },
+    {
+      "180": 5.85
+    },
+    {
+      "158": 1.505
+    }
+  ],
+  "arrow_angles": [
+    5.268760822114862,
+    4.7154786276490634,
+    6.274408942755031,
+    1.5645052191791742
+  ],
+  "forward_heading": 3.1601087125076783,
+  "rotation_correction": {},
+  "tags": {},
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 918,
+    "y": 274
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ede275cb3ed0a19a111f0"
+  },
+  "name": "158",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "184": 1.505
+    },
+    null,
+    {
+      "161": 1.5
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.715761708912744,
+    3.141592653589793,
+    1.5883136168889223
+  ],
+  "forward_heading": 3.1550605950297212,
+  "rotation_correction": {},
+  "tags": {
+    "Punto de encuentro": {
+      "Coordinación Laboratorio y Proyectos Área de Apoyo (12-D15)": 3.174400907451818
+    },
+    "Laboratorio": {
+      "Laboratorio 12-D4": 1.202340312120969
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 775,
+    "y": 274
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ede995cb3ed0a19a111f1"
+  },
+  "name": "161",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "158": 1.5
+    },
+    null,
+    {
+      "164": 1.6
+    }
+  ],
+  "arrow_angles": [
+    0,
+    3.1435046988457613,
+    3.141592653589793,
+    6.272342295455285
+  ],
+  "forward_heading": 1.5893933889103633,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Fitopatología": 0.5307616348675226
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 636,
+    "y": 274
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4edece5cb3ed0a19a111f2"
+  },
+  "name": "164",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "161": 1.6
+    },
+    null,
+    {
+      "167": 1.7
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5185520916277042,
+    3.141592653589793,
+    4.638300563042127
+  ],
+  "forward_heading": 6.221079180075307,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Biotecnología (Área Biofertilizantes)": 5.266262958690826,
+      "Laboratorio de Biotecnología (Área Cultivo de Tejidos)": 3.1197113637263745
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 487,
+    "y": 274
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4edf0b5cb3ed0a19a111f3"
+  },
+  "name": "167",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "164": 1.7
+    },
+    null,
+    {
+      "168": 1.7
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Microbiología": 6.277130298440709,
+      "Laboratorio de Investigaciones en Ciencias Biológicas": 4.1969067489755005
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 310,
+    "y": 274
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4edf3c5cb3ed0a19a111f4"
+  },
+  "name": "168",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "167": 1.7
+    },
+    null,
+    null
+  ],
+  "arrow_angles": [
+    0,
+    1.5413455742386948,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio de Microbiología General, Aplicada y Ambiental": 6.276117370765595
+    },
+    "Punto de encuentro": {
+      "12-D8": 3.1223013428071904
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 155,
+    "y": 274
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4edf995cb3ed0a19a111f5"
+  },
+  "name": "171",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "173": 4.72
+    },
+    null,
+    {
+      "184": 1.07
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    3.141592653589793,
+    -1.5707963267948966
+  ],
+  "forward_heading": 0.024104476863715384,
+  "rotation_correction": {},
+  "tags": {
+    "Punto de encuentro": {
+      "Sede de Ingeniería en Informática (Aula 08C)": 0.03188750598432942
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 1101,
+    "y": 274
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4edfd25cb3ed0a19a111f6"
+  },
+  "name": "173",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    {
+      "176": 5.2
+    },
+    null,
+    {
+      "171": 4.72
+    }
+  ],
+  "arrow_angles": [
+    0,
+    4.702065214379345,
+    3.141592653589793,
+    1.5681410934860356
+  ],
+  "forward_heading": 3.1387266147276764,
+  "rotation_correction": {},
+  "tags": {
+    "Aula": {
+      "Aula 12-D22": 4.201546868878331,
+      "Aula 12-D28": 6.240668110956477
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 1368,
+    "y": 274
+  }
+},
+{
+  "_id": {
+    "$oid": "6a4ee0295cb3ed0a19a111f7"
+  },
+  "name": "176",
+  "location": {
+    "$ref": "location",
+    "$id": {
+      "$oid": "6a4edb6c5cb3ed0a19a111ec"
+    }
+  },
+  "url_image": "none",
+  "adjacent_nodes": [
+    null,
+    null,
+    null,
+    {
+      "173": 5.2
+    }
+  ],
+  "arrow_angles": [
+    0,
+    1.5707963267948966,
+    3.141592653589793,
+    4.805565586903655
+  ],
+  "forward_heading": 0.13475715637920108,
+  "rotation_correction": {},
+  "tags": {
+    "Laboratorio": {
+      "Laboratorio 12-D23 de Botánica Agrícola": 0.04414809637629253
+    },
+    "Aula": {
+      "Aula 12-D26": 1.905106947809306
+    }
+  },
+  "minimap": {
+    "image": "map_c_floors_6.jpg",
+    "x": 1567,
+    "y": 274
+  }
+}]

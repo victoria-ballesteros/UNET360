@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "685d5e5e34f1a2d4b6cd427e"
+  },
+  "name": "maria.ballesteros",
+  "supabase_user_id": "a73efbfe-24bd-4c26-8b48-48fa23f6a9e1",
+  "role": "admin"
+},
+{
+  "_id": {
+    "$oid": "689b6ff34094c9aa9b2deaed"
+  },
+  "name": "dayana.osorio",
+  "supabase_user_id": "b928cee5-ffb6-4ef3-beb2-ac1c889afe3b",
+  "role": "viewer"
+},
+{
+  "_id": {
+    "$oid": "689b771de354bf39f6654df3"
+  },
+  "name": "luissamuel.salazar",
+  "supabase_user_id": "243cb4c3-16ff-4789-9938-32a24eafd035",
+  "role": "viewer"
+},
+{
+  "_id": {
+    "$oid": "68a5fb08af13e471ff43e558"
+  },
+  "name": "gualsonmobail",
+  "supabase_user_id": "2374775a-a019-4d3f-932a-df9c7b0ffe1a",
+  "role": "viewer"
+},
+{
+  "_id": {
+    "$oid": "68a34193af13e471ff43e555"
+  },
+  "name": "douglas.aliendres",
+  "supabase_user_id": "cca85a7f-bf18-481a-b944-bf267d8666f2",
+  "role": "viewer"
+},
+{
+  "_id": {
+    "$oid": "68a3436aaf13e471ff43e556"
+  },
+  "name": "frankly.bautista",
+  "supabase_user_id": "8bbd705c-d451-4b87-b07d-895ea8d385fe",
+  "role": "viewer"
+},
+{
+  "_id": {
+    "$oid": "68a3df19af13e471ff43e557"
+  },
+  "name": "manuela.carrero",
+  "supabase_user_id": "137437cd-fb9c-42e6-b715-8658ba0b0de0",
+  "role": "viewer"
+},
+{
+  "_id": {
+    "$oid": "69fb4545fb3d40f86344a32d"
+  },
+  "name": "juan.paredes",
+  "supabase_user_id": "f193c99e-716f-491f-9aa3-7152b11ec13f",
+  "role": "viewer"
+},
+{
+  "_id": {
+    "$oid": "6a0512daf3544160898799df"
+  },
+  "name": "gabriel.ulacio",
+  "supabase_user_id": "8a91b3a5-acdd-48c5-ab12-a62f56fd7653",
+  "role": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a248a11e55410f177232bbc"
+  },
+  "name": "gustavo.morillo",
+  "supabase_user_id": "cfe089e7-148f-4e3e-9127-3fee4938ad8a",
+  "role": "admin"
+}]

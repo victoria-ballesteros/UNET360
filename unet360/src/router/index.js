@@ -15,6 +15,7 @@ import Map from "@/pages/UMap.vue";
 import About from "@/pages/UAbout.vue";
 import UEntityEdit from "@/pages/UEntityEdit.vue";
 import UAdminEntities from "@/pages/UAdminEntities.vue";
+import Documentation from "@/pages/UDocumentation.vue";
 
 const routes = [
   {
@@ -64,6 +65,12 @@ const routes = [
         props: true,
       },
     ],
+  },
+  {
+    path: "/documentation",
+    name: "Documentation",
+    component: Documentation,
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: "/admin/tenants",
