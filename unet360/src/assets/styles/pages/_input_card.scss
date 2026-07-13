@@ -41,6 +41,18 @@
     gap: 0.6rem;
     animation: fadeIn 0.3s ease-out forwards;
     padding: 14px 62px 14px 62px;
+    max-height: 15rem; // Altura máxima para limitar la expansión vertical
+    overflow-y: auto; // Habilita el scroll para listas largas de resultados
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 2px;
+    }
 }
 
 .menu-item {

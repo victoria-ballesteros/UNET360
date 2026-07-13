@@ -134,37 +134,84 @@ export function searchNodeByKeyword(keyword) {
         return {};
     }
 
-    const searchableText = {};
+    const matchesMap = new Map();
 
     for (const node of nodeStore.nodes) {
         const nameText = node.name.toLowerCase();
         const locationText = node.location ? String(node.location).toLowerCase() : '';
 
-        const matchesKeyword = lowerKeywords.some(kw => nameText.includes(kw) || locationText.includes(kw));
+        const matchedKeywords = lowerKeywords.filter(kw => nameText.includes(kw) || locationText.includes(kw));
 
-        if (matchesKeyword) {
-            searchableText[node.location] = node.name ?? '';
+        if (matchedKeywords.length > 0) {
+            const label = node.location || node.name;
+            const lowerLabel = label.toLowerCase();
+            
+            // Calcular puntuación de relevancia basada en la cantidad de palabras coincidentes
+            let score = 0;
+            for (const kw of lowerKeywords) {
+                if (lowerLabel.includes(kw)) {
+                    score += 10;
+                    if (lowerLabel === kw) score += 5;
+                }
+            }
+            if (lowerLabel.startsWith(lowerKeywords[0])) {
+                score += 5;
+            }
+
+            const existing = matchesMap.get(label);
+            if (!existing || score > existing.score) {
+                matchesMap.set(label, { nodeName: node.name, score });
+            }
         }
 
         if (Object.keys(node.tags).length > 0) {
             for (const [_, value] of Object.entries(node.tags)) {
                 for (const [tagKey, _] of Object.entries(value)) {
-                    const tagMatches = lowerKeywords.some(kw => tagKey.toLowerCase().includes(kw));
+                    const tagText = tagKey.toLowerCase();
+                    const tagMatchedKeywords = lowerKeywords.filter(kw => tagText.includes(kw));
 
-                    if (tagMatches) {
-                        searchableText[tagKey] = node.name ?? '';
+                    if (tagMatchedKeywords.length > 0) {
+                        let score = 0;
+                        for (const kw of lowerKeywords) {
+                            if (tagText.includes(kw)) {
+                                score += 10;
+                                if (tagText === kw) score += 5;
+                            }
+                        }
+                        if (tagText.startsWith(lowerKeywords[0])) {
+                            score += 5;
+                        }
+
+                        const existing = matchesMap.get(tagKey);
+                        if (!existing || score > existing.score) {
+                            matchesMap.set(tagKey, { nodeName: node.name, score });
+                        }
                     }
                 }
             }
         }
     }
 
-    return searchableText;
+    // Ordenar resultados por puntuación descendente, luego alfabéticamente
+    const sortedEntries = Array.from(matchesMap.entries()).sort((a, b) => {
+        if (b[1].score !== a[1].score) {
+            return b[1].score - a[1].score;
+        }
+        return a[0].localeCompare(b[0]);
+    });
+
+    const result = {};
+    for (const [label, data] of sortedEntries) {
+        result[label] = data.nodeName;
+    }
+
+    return result;
 }
 
 export function generateRandomStartNode() {
-    const numero = Math.floor(Math.random() * 112) + 1;
-    return numero.toString().padStart(3, '0');
+    const nodes = ['074', '075', '076', '105', '106', '119', '059', '079', '054'];
+    const randomIndex = Math.floor(Math.random() * nodes.length);
+    return nodes[randomIndex];
 }
 
 export function formatFileSize(bytes) {

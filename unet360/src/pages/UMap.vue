@@ -358,6 +358,10 @@ const isAdmin = computed(() => {
 }); // TODO: Lógica real de authStore
 const isEditMode = ref(false);
 const isMapExpanded = ref(false);
+const isAutoRotating = ref(true); // Control de reproducción/pausa de rotación lenta
+let rotationFrameId = null;
+let idleTimeout = null;
+let isUserInteracting = false;
 
 const expandMap = () => {
   if (!isMapExpanded.value) {
@@ -841,6 +845,16 @@ watch(actualRoute, async (newVal) => {
   notifyTravel(newVal.weight);
 }, { deep: true });
 
+const playSvg = `<svg class="psv-button-svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+const pauseSvg = `<svg class="psv-button-svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+
+watch(isAutoRotating, (newVal) => {
+  const btn = document.querySelector('.custom-rotate-btn');
+  if (btn) {
+    btn.innerHTML = newVal ? pauseSvg : playSvg;
+  }
+});
+
 function notifyTravel(distancia) {
   const timeSeconds = distancia / 1.39;
   toastRefMap.value.showToast(`Distancia promedio: ${distancia.toFixed(2)}m. Tiempo aprox: ${Math.round(timeSeconds / 60)} min.`);
@@ -863,6 +877,8 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", setVh);
   window.removeEventListener('trigger-cancel-edit', handleCancelEdit);
   window.removeEventListener('trigger-toggle-edit', toggleEditMode);
+  if (idleTimeout) clearTimeout(idleTimeout);
+  if (rotationFrameId) cancelAnimationFrame(rotationFrameId);
 });
 
 onMounted(async () => {
@@ -874,6 +890,32 @@ onMounted(async () => {
   window.addEventListener('trigger-cancel-edit', handleCancelEdit);
   window.addEventListener('trigger-toggle-edit', toggleEditMode);
 
+  // Escuchar interacciones para pausar rotación y reactivar tras inactividad
+  const startIdleTimer = () => {
+    if (idleTimeout) clearTimeout(idleTimeout);
+    idleTimeout = setTimeout(() => {
+      isUserInteracting = false;
+    }, 2500);
+  };
+
+  const container = viewerContainer.value;
+  if (container) {
+    container.addEventListener('mousedown', () => {
+      isUserInteracting = true;
+      if (idleTimeout) clearTimeout(idleTimeout);
+    });
+    window.addEventListener('mouseup', () => {
+      startIdleTimer();
+    });
+    container.addEventListener('touchstart', () => {
+      isUserInteracting = true;
+      if (idleTimeout) clearTimeout(idleTimeout);
+    });
+    window.addEventListener('touchend', () => {
+      startIdleTimer();
+    });
+  }
+
   setNode(route.query.node || generateRandomStartNode());
 
   viewer = new Viewer({
@@ -883,7 +925,44 @@ onMounted(async () => {
     plugins: [[MarkersPlugin, {}]],
     defaultZoomLvl: 0, moveSpeed: 1.75,
     defaultYaw: currentNodeData.value.forward_heading,
+    navbar: [
+      'zoom',
+      'move',
+      {
+        id: 'autorotate-custom',
+        title: 'Rotación automática',
+        className: 'custom-rotate-btn',
+        content: pauseSvg, // Inicia pausando (porque gira por defecto)
+        onClick: () => {
+          isAutoRotating.value = !isAutoRotating.value;
+          if (isAutoRotating.value) {
+            isUserInteracting = false;
+            if (idleTimeout) clearTimeout(idleTimeout);
+          }
+        }
+      },
+      'fullscreen'
+    ]
   });
+
+  // Bucle de animación de rotación lenta
+  const animateRotation = () => {
+    if (viewer && isAutoRotating.value && !isUserInteracting && !isEditMode.value) {
+      try {
+        const pos = viewer.getPosition();
+        viewer.rotate({
+          yaw: pos.yaw + 0.0006, // Rotación suave (~0.034° por frame)
+          pitch: pos.pitch
+        });
+      } catch (e) {
+        // Ignorar si el visor no está listo
+      }
+    }
+    if (viewer) {
+      rotationFrameId = requestAnimationFrame(animateRotation);
+    }
+  };
+  animateRotation();
 
   const markers = viewer.getPlugin(MarkersPlugin);
   markersPlugin.value = markers;
