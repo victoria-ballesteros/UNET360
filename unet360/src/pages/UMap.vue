@@ -92,9 +92,18 @@
       </div>
 
       <!-- Chip de Ubicación del nodo actual (visible para cualquier usuario) -->
-      <div v-if="currentNodeData.location" class="admin-node-chip location-node-chip">
+      <div v-if="currentNodeData.location" class="admin-node-chip location-node-chip" :style="locationChipStyle">
         <span class="node-name-text location-name-text">{{ currentNodeData.location }}</span>
       </div>
+
+      <!-- Medidor invisible: mide el ancho real de una sola línea para que el chip
+           se abrace al texto (JS, porque CSS no puede "encoger" un ancho ya envuelto) -->
+      <span
+        v-if="currentNodeData.location"
+        ref="locationMeasureRef"
+        class="node-name-text location-name-text location-measure"
+        aria-hidden="true"
+      >{{ currentNodeData.location }}</span>
     </div>
   </div>
   
@@ -228,7 +237,7 @@
 
 <script setup>
 import api from '@/axios';
-import { onBeforeUnmount, onMounted, ref, watch, computed, reactive } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch, computed, reactive, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import UCustomMap from "@/components/UCustomMap.vue";
 import UInputCard from "@/components/UInputCard.vue";
@@ -881,8 +890,37 @@ const getTilesConfig = (nodeName) => {
   };
 };
 
+// ── Ancho del chip de ubicación: se abraza al texto (medido en JS) ──────────
+// CSS no puede "encoger" un ancho ya envuelto en varias líneas: una vez que el
+// texto no cabe en una sola línea, cualquier técnica estática (fit-content,
+// table, inline-block) termina usando el ancho máximo disponible como ancho
+// final, aunque la línea más larga ya envuelta ocupe menos. Por eso se mide
+// el texto real (sin wrap) y se aplica el menor entre ese ancho y el tope.
+const locationMeasureRef = ref(null);
+const locationChipStyle = ref({});
+
+const updateLocationChipWidth = () => {
+  const el = locationMeasureRef.value;
+  if (!el) {
+    locationChipStyle.value = {};
+    return;
+  }
+  const CHIP_HORIZONTAL_PADDING = 16; // 8px + 8px (ver .admin-node-chip padding)
+  const CHIP_BORDER = 2; // 1px + 1px
+  const naturalWidth = el.getBoundingClientRect().width + CHIP_HORIZONTAL_PADDING + CHIP_BORDER;
+  const maxAllowed = window.innerWidth > 768 ? Infinity : window.innerWidth * 0.35;
+  locationChipStyle.value = { width: `${Math.min(naturalWidth, maxAllowed)}px` };
+};
+
+watch(
+  () => currentNodeData.value?.location,
+  () => nextTick(updateLocationChipWidth),
+  { immediate: true }
+);
+
 onBeforeUnmount(() => {
   window.removeEventListener("resize", setVh);
+  window.removeEventListener("resize", updateLocationChipWidth);
   window.removeEventListener('trigger-cancel-edit', handleCancelEdit);
   window.removeEventListener('trigger-toggle-edit', toggleEditMode);
   if (idleTimeout) clearTimeout(idleTimeout);
@@ -893,6 +931,8 @@ onMounted(async () => {
   await tagStore.fetchTags();
   setVh();
   window.addEventListener("resize", setVh);
+  window.addEventListener("resize", updateLocationChipWidth);
+  nextTick(updateLocationChipWidth);
   
   // Escuchar eventos globales del Sidebar (Guardar/Editar y Cancelar)
   window.addEventListener('trigger-cancel-edit', handleCancelEdit);
@@ -1137,21 +1177,37 @@ const getIconNameForTag = (tagName) => {
 }
 
 // La ubicación puede ser un texto largo: en vez de desbordarse sobre el mapa,
-// el chip se acota en ancho y el texto se recoge en varias líneas.
+// el chip se acota en ancho (calculado en JS, ver updateLocationChipWidth) y
+// el texto se recoge en varias líneas.
 .location-node-chip {
+  // Sin box-sizing:border-box, el ancho fijado por JS (que ya incluye padding+
+  // borde) se sumaba OTRA VEZ al padding/borde reales del navegador, dejando
+  // espacio vacío sin usar dentro del chip — por eso el texto no quedaba centrado.
+  box-sizing: border-box;
   border-radius: 16px;
   align-items: flex-start;
+  justify-content: center;
 
   @media (max-width: 768px) {
-    max-width: 35vw;
+    max-width: 35vw; // Respaldo por si el JS aún no calculó el ancho
   }
 }
 
 .location-name-text {
+  font-family: $font-primary; // Es un nombre de lugar, no un código: Inter en vez de monospace
   white-space: normal;
   overflow-wrap: break-word;
-  text-align: right;
+  text-align: center;
   line-height: 1.3;
+}
+
+.location-measure {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  white-space: nowrap;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .viewer-wrapper.moving-mode-active {
