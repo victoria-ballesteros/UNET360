@@ -6,6 +6,16 @@
       <div class="text-section">
         <p class="header-overline">Panel de control</p>
         <h2>Administrar Nodos</h2>
+        <div class="node-stats-chips">
+          <span class="node-stat-chip" title="Número de nodo más alto registrado">
+            <span class="chip-label">Nodo más alto:</span>
+            <span class="chip-value">{{ highestNodeNumber }}</span>
+          </span>
+          <span class="node-stat-chip" title="Último nodo creado">
+            <span class="chip-label">Último creado:</span>
+            <span class="chip-value">{{ lastCreatedNode }}</span>
+          </span>
+        </div>
       </div>
 
       <div class="button-section">
@@ -252,6 +262,33 @@ const handleListChange = async (params) => {
 const triggerRefetch = async () => {
   await handleListChange(currentListParams.value);
 };
+
+// ── Estadísticas de nodos (más alto / último creado) ───────────────────────
+// Se asume que node.name es numérico (ej. "001"), pero no todos los nodos
+// tienen por qué serlo, de ahí el try/catch para descartar los que no lo son.
+const highestNodeNumber = computed(() => {
+  let highest = null;
+  for (const node of nodes.value) {
+    try {
+      const num = parseInt(node.name, 10);
+      if (isNaN(num)) continue;
+      if (highest === null || num > highest) highest = num;
+    } catch (_) {
+      continue;
+    }
+  }
+  return highest !== null ? highest : 'N/A';
+});
+
+const lastCreatedNode = computed(() => {
+  if (!nodes.value.length) return 'N/A';
+  const last = nodes.value[nodes.value.length - 1];
+  try {
+    return last?.name ?? 'N/A';
+  } catch (_) {
+    return 'N/A';
+  }
+});
 
 // ── Estado expandible ──────────────────────────────────────────────────────
 const expandedNode = ref(null);

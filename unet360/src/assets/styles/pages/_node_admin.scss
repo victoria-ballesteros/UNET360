@@ -60,6 +60,52 @@
   letter-spacing: -0.02em;
 }
 
+.node-stats-chips {
+  display: flex;
+  flex-wrap: nowrap; // Siempre uno junto al otro, nunca en varias líneas
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem; // Misma distancia que el gap del header a la lista/buscador debajo
+  max-width: 100%;
+  overflow-x: auto; // Si no caben, se desplazan en vez de romper el texto
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+
+  @media (min-width: 768px) {
+    justify-content: flex-start;
+    overflow-x: visible;
+  }
+}
+
+.node-stat-chip {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0; // No se encoge ni parte el texto en varias líneas
+  gap: 0.4rem;
+  background: rgba(48, 55, 69, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 40px;
+  padding: 0.9rem 0.85rem;
+  @include paragraph-extra-small;
+  font-size: 0.8rem;
+  white-space: nowrap;
+
+  .chip-label {
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+  }
+
+  .chip-value {
+    color: #7BFF72;
+    font-weight: 600;
+    font-family: $font-mono;
+    white-space: nowrap;
+  }
+}
+
 // ══════════════════════════════════════════════════
 // ═══  Sección de botones  ═══
 // ══════════════════════════════════════════════════

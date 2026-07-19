@@ -44,7 +44,7 @@
           </div>
 
           <div class="visual-center">
-            <UIcon name="images/home-image" :size="isMobile ? 160 : 280" />
+            <UIcon name="images/home-image" :size="isMobile ? 190 : 280" />
           </div>
         </div>
       </div>
@@ -53,6 +53,14 @@
         <span>360°</span>
       </div>
     </section>
+
+    <!-- Insignia de administrador (solo PC, esquina inferior derecha) -->
+    <div v-if="isAdminUser" class="admin-corner-badge">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--main-yellow)" viewBox="0 0 16 16">
+        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+      </svg>
+      <span>Administrador</span>
+    </div>
 
   </div>
 </template>
@@ -67,6 +75,7 @@ import { useAuthStore } from "@/service/stores/auth"
 let authStore = null
 const generalInfo = getGeneralInfo()
 const isAuthenticated = ref(false)
+const isAdminUser = ref(false)
 const button = ref(null)
 const heroRef = ref(null)
 const isMobile = ref(false)
@@ -79,6 +88,7 @@ onBeforeMount(() => {
   checkMobile()
   authStore = useAuthStore()
   isAuthenticated.value = authStore.isAuthenticated
+  isAdminUser.value = !!authStore.user && (authStore.user.is_admin || authStore.user.role === 'admin')
   button.value = getButtonData(isAuthenticated.value)
 })
 
@@ -147,7 +157,9 @@ onUnmounted(() => {
   gap: 0;
 
   @media (max-width: 768px) {
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
+    gap: 0.85rem; // Antes lo daban los margin-bottom de cada elemento
     padding: 0 0.5rem;
     order: 2;
   }
@@ -163,12 +175,21 @@ onUnmounted(() => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.65rem;
+  padding: 0.4rem 1rem; // Diseño de chip: también en desktop
+  background: rgba(33, 118, 255, 0.1);
+  border: 1px solid rgba(33, 118, 255, 0.25);
+  border-radius: 999px;
 
   .eyebrow-dot {
     width: 4px;
     height: 4px;
     background: var(--contrast-blue);
     border-radius: 50%;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 0;
   }
 }
 
@@ -187,6 +208,8 @@ onUnmounted(() => {
   @media (max-width: 768px) {
     font-size: 2.2rem;
     line-height: 1.15;
+    margin-bottom: 0;
+    text-align: center;
     br { display: none; }
   }
 }
@@ -200,9 +223,11 @@ onUnmounted(() => {
 
   @media (max-width: 768px) {
     font-size: 1.05rem; /* <-- Aumentado para equilibrar el título grande */
+    font-weight: 400;
     line-height: 1.4; /* <-- Interlineado ajustado para mejor lectura */
-    margin-bottom: 1.75rem; /* <-- Un poco más de espacio antes del botón */
+    margin: 0; /* <-- Sin margen: el espacio antes del botón lo da el gap del contenedor */
     max-width: 95%; /* <-- Permite que el texto respire mejor en los bordes */
+    text-align: center;
   }
 }
 
@@ -345,5 +370,30 @@ onUnmounted(() => {
 
 .hero-badge-float {
   display: none;
+}
+
+/* ── Insignia de administrador (solo desktop) ── */
+.admin-corner-badge {
+  display: none;
+
+  @media (min-width: 769px) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 239, 61, 0.08);
+    border: 1px solid rgba(255, 239, 61, 0.25);
+    border-radius: 999px;
+    color: var(--main-yellow);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 50;
+  }
 }
 </style>

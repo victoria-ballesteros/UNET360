@@ -6,9 +6,49 @@
       <p class="header-overline">Guía para administradores</p>
       <h2>Documentación</h2>
       <p class="doc-subtitle">
-        Proceso completo para capturar, procesar y publicar un nuevo nodo dentro del recorrido 360°.
+        Guía paso a paso para tomar la foto de un nuevo punto y agregarlo al recorrido 360°, sin necesidad de conocimientos técnicos.
       </p>
     </header>
+
+    <!-- ── Requerimientos mínimos ── -->
+    <section class="doc-requirements">
+      <h3 class="doc-section-title">Requerimientos mínimos</h3>
+      <p class="doc-section-subtitle">Lo que necesitas antes de empezar a tomar fotos para el recorrido.</p>
+
+      <div class="requirements-grid">
+        <div v-for="(req, i) in requirements" :key="i" class="requirement-item">
+          <h4 class="requirement-title">{{ req.title }}</h4>
+          <p class="requirement-desc">{{ req.desc }}</p>
+          <a
+            v-if="req.link"
+            :href="req.link.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="doc-download-tag"
+          >
+            <svg class="download-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span>{{ req.link.text }}</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Glosario ── -->
+    <section class="doc-glossary">
+      <h3 class="doc-section-title">Glosario</h3>
+      <p class="doc-section-subtitle">Palabras que vas a encontrar en esta guía, explicadas de forma sencilla.</p>
+
+      <div class="glossary-grid">
+        <div v-for="(entry, i) in glossary" :key="i" class="glossary-item">
+          <h4 class="glossary-term">{{ entry.term }}</h4>
+          <p class="glossary-def">{{ entry.def }}</p>
+        </div>
+      </div>
+    </section>
 
     <!-- ── Pasos (carrusel horizontal con snap) ── -->
     <div class="doc-carousel">
@@ -158,11 +198,11 @@ const steps = [
   {
     number: 1,
     title: 'Captura de la fotografía',
-    intro: 'Para iniciar, captura el entorno utilizando la aplicación GCam (disponible para correos institucionales <strong class="highlight-blue">@unet.edu.ve</strong>).',
+    intro: 'Para empezar, toma una foto de 360° del lugar usando la aplicación GCam (puedes descargarla con tu correo institucional <strong class="highlight-blue">@unet.edu.ve</strong>).',
     items: [
-      'El archivo debe estar en formato 360.',
-      'Renombra el archivo siguiendo la estructura <code class="highlight-blue">xxx.PHOTOSPHERE.jpg</code>.',
-      'Sustituye <code class="highlight-blue">xxx</code> por el número único del nodo que identificará su posición en el mapa.',
+      'Asegúrate de que la foto haya quedado en formato "360" (una foto esférica, que se ve completa en todas direcciones).',
+      'Cambia el nombre del archivo para que quede así: <code class="highlight-blue">xxx.PHOTOSPHERE.jpg</code>.',
+      'Donde dice <code class="highlight-blue">xxx</code>, escribe el número que identificará a este punto (nodo) dentro del mapa.',
     ],
     downloadLink: {
       text: 'Descargar GCam APK',
@@ -173,7 +213,7 @@ const steps = [
       format: 'xxx.PHOTOSPHERE.jpg',
       hint: 'Número de nodo único',
     },
-    note: 'GCam es una recomendación para sistemas operativos Android. Cualquier aplicación que genere el formato PHOTOSPHERE es aceptada.',
+    note: 'GCam es solo una recomendación para celulares Android. Puedes usar cualquier otra aplicación, siempre que genere fotos en formato "foto esférica" (PHOTOSPHERE).',
     youtubeId: '',
     video: step1Video,
     mediaHint: 'Clip de GCam en modo "Foto Esférica" y renombrado a 001.PHOTOSPHERE.jpg.',
@@ -181,13 +221,13 @@ const steps = [
   {
     number: 2,
     title: 'Ubicación en el mapa',
-    intro: 'Antes de subir la imagen, debes registrar su posición espacial en nuestro archivo de Figma.',
+    intro: 'Antes de subir la foto, hay que marcar en un mapa el lugar exacto donde la tomaste. Esto se hace en Figma, una herramienta de diseño donde tenemos guardados los mapas del recorrido.',
     items: [
-      'Abre el enlace de Figma del proyecto y dirígete a la página <strong>Map</strong>.',
-      'Encontrarás dos versiones de cada mapa: una limpia y otra con marcas.',
-      'Diseña la nueva ubicación en la versión correspondiente y añade un nodo visual en el punto exacto donde tomaste la foto.',
-      'Identifica este nuevo nodo con su número único (<code>xxx</code>).',
-      'Indica también el peso entre dos nodos (distancia aproximada) con el número posicionado entre ambos.',
+      'Abre el enlace de Figma del proyecto y entra a la página llamada <strong>Map</strong>.',
+      'Vas a ver dos versiones del mismo mapa: una limpia y otra con los puntos ya marcados.',
+      'En la versión marcada, agrega un punto nuevo justo donde tomaste la foto.',
+      'Escríbele a ese punto el mismo número único (<code>xxx</code>) que usaste para nombrar la foto.',
+      'Si ese punto se conecta con otro cercano, escribe entre ambos la distancia aproximada en metros (esto se llama "peso" de la conexión).',
     ],
     downloadLink: {
       text: 'Ver Figma del proyecto',
@@ -199,63 +239,108 @@ const steps = [
   },
   {
     number: 3,
-    title: 'Pre-procesamiento de la foto',
-    intro: 'Prepara la imagen fragmentándola en cuadrículas para optimizar su carga. Necesitarás una terminal compatible con Bash, la herramienta <code>zip</code> y tener instalado ImageMagick (versión 7+ que reconozca el comando <code>magick</code>).',
+    title: 'Preparar la foto',
+    intro: 'Antes de subirla, la foto se corta en varios pedazos pequeños (como un rompecabezas) para que cargue más rápido en la aplicación. Esto se hace con un script (un pequeño programa) que ya está preparado, así que no necesitas saber programar, solo seguir estos pasos en la terminal de tu computadora.',
     items: [
-      'Coloca la imagen original y el script <code>generate_tiles.sh</code> en el mismo directorio.',
-      'Abre la terminal en esa ubicación y otorga permisos de ejecución con el comando: <code>chmod +x generate_tiles.sh</code>',
-      'Ejecuta el script pasando el identificador del nodo como argumento. Por ejemplo: <code>./generate_tiles.sh 001</code>',
-      'El sistema automatizará el recorte y generará un archivo <code>.zip</code> finalizado.',
+      'Guarda la foto original y el archivo <code>generate_tiles.sh</code> juntos, en la misma carpeta.',
+      'Necesitarás tener instaladas dos herramientas gratuitas de antemano: <code>zip</code> e ImageMagick (versión 7 o más reciente, que traiga el comando <code>magick</code>).',
+      'Abre la terminal (línea de comandos) en esa carpeta y escribe: <code>chmod +x generate_tiles.sh</code> (esto solo se hace una vez, y le da permiso al script para ejecutarse).',
+      'Ahora ejecútalo escribiendo el número del nodo al final. Por ejemplo: <code>./generate_tiles.sh 001</code>',
+      'El script hace el trabajo solo y te entrega un archivo <code>.zip</code> ya listo para subir.',
     ],
     youtubeId: '',
     video: null,
     image: step3Image,
-    note: 'Antes de proceder con la carga de la fotografía, se recomienda registrar la ubicación (en caso de ser nueva) desde el módulo "Administrar nodos". Asimismo, es indispensable que el desarrollador del equipo haya incorporado al repositorio la imagen correspondiente al nuevo minimapa.',
+    note: 'Si el punto todavía no existe en el sistema, créalo primero desde "Administrar nodos". Además, antes de subir la foto, confirma con el equipo de desarrollo que ya se agregó la imagen del minimapa correspondiente al repositorio.',
     mediaHint: 'Captura de terminal ejecutando el script y generando el .zip resultante.',
   },
   {
     number: 4,
-    title: 'Carga de la foto y conexiones',
-    intro: 'Sube el archivo <code>.zip</code> al formulario e ingresa el identificador único del nodo. A continuación, establece sus rutas:',
+    title: 'Subir la foto y conectarla con el resto',
+    intro: 'Ahora sube el archivo <code>.zip</code> en el formulario del sistema y escribe el número del nodo. Luego completa estos datos, para que quede bien conectado con los demás puntos del mapa:',
     items: [
-      '<strong>Conexiones:</strong> Configura los nodos adyacentes (Frente, Derecha, Atrás, Izquierda) guiándote por el Figma. El "Frente" siempre corresponde al nodo ubicado al <strong>Este</strong>.',
-      '<strong>Peso de conexión:</strong> Ingresa la distancia hacia cada nodo. Una unidad equivale a un metro (crucial para el cálculo de rutas óptimas).',
-      '<strong>Ubicación general:</strong> Selecciona el área a la que pertenece (o crea una nueva desde el apartado correspondiente).',
-      '<strong>Coordenadas del minimapa:</strong> Ve a Figma y dibuja un rectángulo que vaya desde la esquina superior izquierda de la imagen hasta el centro exacto de la marca de tu nodo. El ancho del rectángulo es tu valor X, y el alto es tu valor Y.',
+      '<strong>Conexiones:</strong> indica con qué nodos se conecta este (Frente, Derecha, Atrás, Izquierda), guiándote por el mapa de Figma. Importante: "Frente" siempre significa el nodo que está hacia el <strong>Este</strong>, sin importar hacia dónde mirabas al tomar la foto.',
+      '<strong>Peso de la conexión:</strong> escribe la distancia hacia cada nodo vecino, en metros. Esto ayuda al sistema a calcular el camino más corto entre dos puntos.',
+      '<strong>Ubicación general:</strong> elige a qué zona o edificio pertenece el nodo (o crea una zona nueva si no existe todavía).',
+      '<strong>Coordenadas del minimapa:</strong> en Figma, dibuja un rectángulo que empiece en la esquina superior izquierda de la imagen del mapa y termine justo en el centro de tu nodo. El ancho de ese rectángulo es el valor X, y el alto es el valor Y.',
     ],
     youtubeId: '',
     video: step4Video,
-    note: 'La demostración de este procedimiento se realizó utilizando como referencia el nodo preexistente 168, motivo por el cual se empleó el identificador 0168.',
+    note: 'En el video de ejemplo se usó el nodo 168 (ya existente) para mostrar el procedimiento, por eso ahí aparece como "0168".',
     mediaHint: 'Pantalla dividida: formulario de pesos y el trazado del rectángulo en Figma.',
   },
   {
     number: 5,
-    title: 'Post-procesamiento',
-    intro: 'Verifica y ajusta el entorno inmersivo en vivo.',
+    title: 'Revisar y ajustar dentro de la aplicación',
+    intro: 'Con la foto ya cargada, entra a la aplicación para revisar cómo se ve y hacerle los últimos ajustes en vivo.',
     items: [
-      'Ingresa a la aplicación utilizando la ruta del nodo: <code>360-map?node=xxx</code> (reemplaza las \'x\' por tu identificador).',
-      'Accede al modo de edición de nodo.',
-      'Ajusta la cámara inicial para que el frente mire hacia el <strong>Este</strong>.',
-      'Fija las posiciones de las flechas de navegación direccional.',
-      'Agrega los "tags" (etiquetas) señalando los lugares de interés visibles desde este punto.',
+      'Abre la aplicación en esta dirección: <code>360-map?node=xxx</code> (cambia las \'x\' por el número de tu nodo).',
+      'Entra al modo de edición de nodo.',
+      'Gira la vista inicial hasta que el frente quede mirando hacia el <strong>Este</strong>.',
+      'Acomoda las flechas que sirven para caminar hacia los nodos vecinos, dejándolas en el lugar correcto.',
+      'Agrega "tags" (etiquetas) señalando los lugares de interés que se ven desde este punto (por ejemplo, un salón, una oficina o un baño).',
     ],
     youtubeId: '',
     video: step5Video,
-    note: 'Existe la opción de definir una rotación de cámara específica dependiendo del nodo del cual provenga el usuario. Esta configuración es de utilidad para corregir la perspectiva visual en trayectos curvos o no lineales (como al subir escaleras o doblar una esquina), garantizando una transición de visualización fluida y coherente con el sentido de la marcha.',
+    note: 'También puedes indicar una rotación de cámara distinta según de qué nodo venga la persona. Esto es útil en pasillos con curvas o esquinas (como al subir unas escaleras o doblar), para que la vista siempre gire de forma natural y en el sentido en que la persona va caminando.',
     mediaHint: 'Visor 360 web: edición de vista, guardado de posición y añadido de etiquetas.',
   },
   {
     number: 6,
-    title: 'Revisión',
-    intro: 'Dirígete a la página de administración de nodos para comprobar el estado final:',
+    title: 'Revisión final',
+    intro: 'Por último, entra a la página "Administrar nodos" para confirmar que todo haya quedado bien:',
     items: [
-      'El nodo cargado no debe presentar ninguna alerta roja.',
-      'Las alertas amarillas indican que faltan nodos adyacentes por cargar (no es un error crítico).',
-      'Si el recorrido no carga al hacer pruebas de navegación, presiona el botón <strong>Corregir pesos</strong>. Esto solucionará las inconsistencias de distancia si dos nodos conectados tienen valores discordantes en la base de datos.',
+      'El nodo que acabas de cargar no debería mostrar ninguna alerta roja.',
+      'Las alertas amarillas no son graves: solo avisan que todavía faltan nodos vecinos por cargar.',
+      'Si al probar el recorrido notas que no conecta bien entre dos puntos, presiona el botón <strong>Corregir pesos</strong>. Esto arregla automáticamente las distancias cuando dos nodos conectados no coinciden entre sí en la base de datos.',
     ],
     youtubeId: '',
     video: null,
     mediaHint: 'Recorrido por el panel de administración y clic en el botón "Corregir pesos".',
+  },
+];
+
+// ── Glosario ─────────────────────────────────────────────────────────────────
+const glossary = [
+  { term: 'Nodo', def: 'Un punto del recorrido. Cada foto 360° que subes se convierte en un nodo, como si fuera una "parada" dentro del mapa.' },
+  { term: 'Foto esférica (360°)', def: 'Una sola foto que muestra todo lo que hay alrededor tuyo, no solo lo que tienes al frente. Al verla, puedes girar la vista en cualquier dirección.' },
+  { term: 'Conexión / nodo adyacente', def: 'Un nodo vecino al que se puede caminar directamente desde el nodo actual (por ejemplo, el que está justo delante o a un lado).' },
+  { term: 'Peso', def: 'La distancia (en metros) entre dos nodos conectados. Se usa para que el sistema sepa calcular el camino más corto entre dos lugares.' },
+  { term: 'Minimapa', def: 'El mapa 2D (visto desde arriba) que se muestra como referencia mientras alguien recorre el espacio en 360°.' },
+  { term: 'Tag (etiqueta)', def: 'Una marca que le pones a un nodo para señalar qué hay cerca, por ejemplo "Biblioteca" o "Cafetería".' },
+  { term: 'Recorrido virtual', def: 'La experiencia completa que ve el usuario final: caminar de nodo en nodo dentro de la aplicación como si estuviera ahí en persona.' },
+  { term: 'Panel de administración', def: 'La sección de la aplicación donde se crean, editan o eliminan los nodos y su información.' },
+];
+
+// ── Requerimientos mínimos ───────────────────────────────────────────────────
+const requirements = [
+  {
+    title: 'Teléfono',
+    desc: 'Calidad mínima equivalente a un Samsung Galaxy S21+: cámara principal de 12 MP (f/1.8) con ultra gran angular de 12 MP (f/2.2).',
+  },
+  {
+    title: 'Sistema operativo',
+    desc: 'Se recomienda Android 11 o superior, ya que es compatible con GCam. Otros sistemas también sirven, siempre que la app usada genere fotos en formato "foto esférica" (PHOTOSPHERE).',
+  },
+  {
+    title: 'iOS (iPhone)',
+    desc: 'Si tu teléfono es un iPhone, sigues el mismo proceso que con Android, solo que la app se descarga directamente desde la App Store en lugar de instalar un APK.',
+    link: {
+      text: 'Descargar Teleport 360 Camera',
+      url: 'https://apps.apple.com/us/app/teleport-360-camera/id6476905405',
+    },
+  },
+  {
+    title: 'Giroscopio',
+    desc: 'El teléfono debe contar con sensor de giroscopio. Es lo que permite que la aplicación de captura reconozca el movimiento y arme correctamente la foto esférica.',
+  },
+  {
+    title: 'Orientación al tomar la foto',
+    desc: 'La foto debe tomarse siempre con el teléfono en posición vertical (modo retrato), nunca en horizontal.',
+  },
+  {
+    title: 'Inclinación al tomar la foto',
+    desc: 'Además de estar en vertical, el teléfono debe mantenerse derecho (sin inclinarlo hacia adelante, atrás o los lados). Esto evita que el recorrido se vea torcido.',
   },
 ];
 

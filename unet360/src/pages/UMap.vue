@@ -84,9 +84,17 @@
       </div>
     </div>
 
-    <!-- Chip de Nodo actual para Administradores -->
-    <div v-if="isAdmin && currentNodeData && currentNodeData.name" class="admin-node-chip">
-      <span class="node-name-text">{{ currentNodeData.name }}</span>
+    <!-- Chips informativos del nodo actual -->
+    <div v-if="currentNodeData" class="node-info-chips">
+      <!-- Chip de Nodo actual para Administradores -->
+      <div v-if="isAdmin && currentNodeData.name" class="admin-node-chip">
+        <span class="node-name-text">{{ currentNodeData.name }}</span>
+      </div>
+
+      <!-- Chip de Ubicación del nodo actual (visible para cualquier usuario) -->
+      <div v-if="currentNodeData.location" class="admin-node-chip">
+        <span class="node-name-text">{{ currentNodeData.location }}</span>
+      </div>
     </div>
   </div>
   
@@ -1091,10 +1099,19 @@ const getIconNameForTag = (tagName) => {
   color: var(--main-blue);
 }
 
-.admin-node-chip {
+.node-info-chips {
   position: absolute;
-  bottom: 2rem;
+  bottom: 3.5rem;
   right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.admin-node-chip {
   display: flex;
   align-items: center;
   background: rgba(48, 55, 69, 0.7);
@@ -1103,8 +1120,7 @@ const getIconNameForTag = (tagName) => {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 40px;
   padding: 6px 8px 6px 8px;
-  z-index: 20;
-  box-shadow: 
+  box-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.3),
     0 8px 10px -6px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);

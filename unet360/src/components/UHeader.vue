@@ -73,7 +73,7 @@ const logoutOption = computed(() => props.navOptions.find(o => o.action === 'log
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.625rem 1.125rem;
+  padding: 1.5rem;
   z-index: 100;
   position: relative;
 
@@ -95,13 +95,14 @@ const logoutOption = computed(() => props.navOptions.find(o => o.action === 'log
 }
 
 .unet-logo {
-  height: 38px;
+  height: 45px; // Mínimo de 1.2 cm de alto (aprox. 45px), respetado en todos los breakpoints
+  min-height: 45px;
   width: auto;
   object-fit: contain;
   flex-shrink: 0;
 
   @media (min-width: 768px) {
-    height: 61px; // Altura equilibrada (aprox. 1.6 cm), respetando el límite mínimo de 1.2 cm (45px)
+    height: 61px; // Altura equilibrada (aprox. 1.6 cm), siempre por encima del mínimo de 1.2 cm
     width: auto;
   }
 }
@@ -188,26 +189,23 @@ const logoutOption = computed(() => props.navOptions.find(o => o.action === 'log
 
 // ══ MOBILE: hamburguesa ════════════════════════════
 
+// El class="hamburger-btn" que le pasamos a <UButton> no crea un contenedor:
+// Vue lo aplica (junto con el atributo de scope de este componente) directo
+// sobre el <button> raíz de UButton. Por eso ".hamburger-btn" apunta al botón
+// en sí, no a un ancestro — no hace falta (ni funciona) un ":deep(button ...)".
 .hamburger-btn {
-  // En desktop se oculta (la navbar reemplaza al hamburgesa)
+  // En desktop se oculta (la navbar reemplaza al hamburguesa)
   @media (min-width: 768px) {
     display: none;
   }
 
-  :deep(button) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 6px;
-    width: auto;
-    height: auto;
-    transition: background 0.15s ease;
+  // `.ub.ub--icon-only.ub--lg` (definido en UButton.vue) fija width/height en 2.75rem;
+  // se usa !important para garantizar que este botón mida lo mismo que el ícono.
+  padding: 0 !important; // Sin relleno propio: el ícono queda a la misma distancia del borde que el logo
+  width: auto !important;
+  height: auto !important;
+  border-radius: 6px;
 
-    &:hover { background: rgba(255, 255, 255, 0.07); }
-  }
+  &:hover { background: rgba(255, 255, 255, 0.07); }
 }
 </style>

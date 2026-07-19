@@ -108,7 +108,9 @@ const iconSizeMap = { sm: '14', md: '16', lg: '18' };
 .ub--full { width: 100%; }
 
 // ── Icon-only circular ─────────────────────────
-.ub--icon-only {
+// Selector reforzado (.ub.ub--icon-only) para que gane siempre sobre el padding
+// horizontal de los tipos (ej. .ub--tertiary), sin depender del orden de las reglas.
+.ub.ub--icon-only {
   padding: 0;
   border-radius: 50%;
 

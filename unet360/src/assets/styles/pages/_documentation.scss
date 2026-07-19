@@ -27,9 +27,6 @@ $card-width: min(92vw, 1100px);
   overflow-x: hidden; // Previene scroll horizontal de página en móviles
 
   @media (min-width: 900px) {
-    height: calc(100dvh - var(--header-height, 56px) - var(--footer-height, 56px));
-    max-height: calc(100dvh - var(--header-height, 56px) - var(--footer-height, 56px));
-    overflow-y: hidden;
     overflow-x: visible; // Permite el "peeking" de tarjetas vecinas en desktop
     padding: 1.5rem 0;
     gap: 1.25rem;
@@ -100,8 +97,8 @@ $card-width: min(92vw, 1100px);
     max-width: none; // Libera la restricción de ancho en desktop
     left: 50%;
     transform: translateX(-50%);
-    flex: 1 1 auto;
-    min-height: 0;
+    min-height: 420px; // Piso estético, pero la altura real la da el contenido más largo
+    flex-shrink: 0;
     display: flex;
     align-items: stretch;
 
@@ -151,7 +148,7 @@ $card-width: min(92vw, 1100px);
     align-self: stretch;
     gap: 0;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     padding: 0 max(0.5rem, calc((100% - #{$card-width}) / 2));
@@ -168,7 +165,7 @@ $card-width: min(92vw, 1100px);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 0; // Quitamos el padding de la tarjeta contenedora
+  padding: 2rem; // Padding de la tarjeta contenedora
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--main-yellow, 0.07);
   border-radius: var(--radius-lg);
@@ -192,7 +189,7 @@ $card-width: min(92vw, 1100px);
     flex-direction: row;   // texto | video, ocupando toda la altura
     align-items: stretch;
     gap: 1.75rem;
-    padding: 0; // Sin padding en desktop
+    padding: 2rem; // Padding de la tarjeta contenedora
     opacity: 0.4;
     filter: blur(1.5px);
     transition: opacity 0.3s ease, filter 0.3s ease, border-color 0.3s ease;
@@ -218,17 +215,14 @@ $card-width: min(92vw, 1100px);
   flex-direction: column;
   justify-content: center;   // Centra el contenido verticalmente en la card
   gap: 0.85rem;
-  overflow-y: visible; // No hacer scroll interno en móvil
-  padding: 1.5rem 1.5rem 0 1.5rem; // Padding interno en móvil
+  overflow-y: visible; // Sin scroll interno: la card crece para que todo el contenido quepa
+  padding: 0; // El padding de 2rem ya lo da la tarjeta contenedora (.doc-step)
 
   @media (min-width: 900px) {
     flex: 0 0 auto; // Previene que la columna de texto se encoja o colapse
     width: max-content; // Toma el ancho real del contenido
     max-width: 580px; // Cifra la expansión máxima y luego aplica saltos de línea
-    overflow-y: auto; // Scroll interno si el texto supera la altura de la tarjeta
-    scrollbar-width: none;
-    &::-webkit-scrollbar { display: none; }
-    padding: 2rem 0 2rem 2rem; // Padding interno en desktop (sin padding derecho por el gap)
+    overflow-y: visible; // Sin scroll interno: la card crece para que todo el contenido quepa
   }
 }
 
@@ -600,8 +594,16 @@ iframe.doc-video {
   transition: all 0.2s ease;
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
+  line-height: 1;
+
+  span {
+    display: inline-block;
+    line-height: 1;
+  }
 
   .download-icon {
+    display: block;
+    flex-shrink: 0;
     stroke: var(--contrast-blue);
     transition: transform 0.2s ease;
   }
@@ -678,5 +680,101 @@ iframe.doc-video {
     border: none;
     box-shadow: none;
   }
+}
+
+// ══════════════════════════════════════════════════
+// ═══  Glosario y Requerimientos mínimos  ═══
+// ══════════════════════════════════════════════════
+
+.doc-glossary,
+.doc-requirements {
+  flex-shrink: 0;
+  padding: 0 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 0 2.5rem;
+  }
+}
+
+.doc-section-title {
+  margin: 0;
+  color: #7BFF72;
+  @include section-title;
+}
+
+.doc-section-subtitle {
+  @include paragraph-medium;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0.35rem 0 1.25rem;
+}
+
+.glossary-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.glossary-item {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md, 8px);
+}
+
+.glossary-term {
+  margin: 0 0 0.35rem;
+  color: var(--contrast-blue);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.glossary-def {
+  margin: 0;
+  @include paragraph-small;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+.requirements-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.requirement-item {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md, 8px);
+}
+
+.requirement-title {
+  margin: 0 0 0.35rem;
+  color: var(--contrast-blue);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.requirement-desc {
+  margin: 0;
+  @include paragraph-small;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
 }
 

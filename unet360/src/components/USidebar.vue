@@ -94,7 +94,9 @@ function closePanel() {
   z-index: 1001;
   background: var(--strong-gray);
   width: 100vw;
-  padding: 1.5rem 0 2rem;
+  // Sin padding-top propio: el <UHeader> embebido ya trae su margin-top,
+  // así queda a la misma altura que el header de las pantallas.
+  padding: 0 0 2rem;
   box-shadow: -4px 0 32px rgba(0, 0, 0, 0.35);
   overflow-x: hidden;
   overflow-y: auto;
@@ -144,6 +146,9 @@ function closePanel() {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      // La silueta de la estrella pesa más hacia abajo dentro de su viewBox,
+      // así que ópticamente queda baja frente al texto; se compensa subiéndola un poco.
+      transform: translateY(-1px);
     }
   }
 
