@@ -92,8 +92,8 @@
       </div>
 
       <!-- Chip de Ubicación del nodo actual (visible para cualquier usuario) -->
-      <div v-if="currentNodeData.location" class="admin-node-chip">
-        <span class="node-name-text">{{ currentNodeData.location }}</span>
+      <div v-if="currentNodeData.location" class="admin-node-chip location-node-chip">
+        <span class="node-name-text location-name-text">{{ currentNodeData.location }}</span>
       </div>
     </div>
   </div>
@@ -1134,6 +1134,24 @@ const getIconNameForTag = (tagName) => {
   font-weight: 600;
   font-family: 'SF Mono', Monaco, Consolas, monospace;
   letter-spacing: 0.05em;
+}
+
+// La ubicación puede ser un texto largo: en vez de desbordarse sobre el mapa,
+// el chip se acota en ancho y el texto se recoge en varias líneas.
+.location-node-chip {
+  border-radius: 16px;
+  align-items: flex-start;
+
+  @media (max-width: 768px) {
+    max-width: 35vw;
+  }
+}
+
+.location-name-text {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-align: right;
+  line-height: 1.3;
 }
 
 .viewer-wrapper.moving-mode-active {
