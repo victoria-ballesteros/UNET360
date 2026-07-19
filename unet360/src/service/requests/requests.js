@@ -140,3 +140,16 @@ export async function fixAsymmetricWeights() {
     return null;
   }
 }
+
+// FIND MISSING TILES
+export async function getMissingTiles() {
+  try {
+    const authStore = useAuthStore();
+    const token = authStore.token;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const response = await api.get("nodes/missing-tiles", { headers });
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}

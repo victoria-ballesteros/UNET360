@@ -335,3 +335,27 @@ class NodeService:
                 pass
                 
         return len(modified_nodes)
+
+    async def find_missing_tiles(self) -> list[str]:
+        """
+        Cross-references all nodes in the database with tile folders on disk.
+        Returns a list of node names whose tile folder is missing from
+        INTERNAL_BUCKET_PATH.
+        """
+        import os
+
+        bucket_path = os.getenv("INTERNAL_BUCKET_PATH", "")
+        nodes = await self.repository.get_all()
+
+        # Get existing tile folders on disk
+        try:
+            existing_folders = set(os.listdir(bucket_path)) if bucket_path and os.path.isdir(bucket_path) else set()
+        except OSError:
+            existing_folders = set()
+
+        missing = []
+        for node in nodes:
+            if node.name not in existing_folders:
+                missing.append(node.name)
+
+        return missing

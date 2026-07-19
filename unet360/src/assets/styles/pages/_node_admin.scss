@@ -13,6 +13,8 @@
   padding: 2rem 2.5rem;
   box-sizing: border-box;
   max-width: 800px;
+  min-width: 0;        // Evita que hijos anchos expandan el contenedor
+  width: 100%;
   margin: 0 auto;
   flex: 1;
   min-height: 0;
@@ -32,15 +34,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   text-align: center;
+  min-width: 0;        // Flex child: no se expande más allá del padre
+  max-width: 100%;
+
+  @media (min-width: 768px) {
+    align-items: stretch;
+    text-align: left;
+  }
+}
+
+.header-top-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 
   @media (min-width: 768px) {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    text-align: left;
-    gap: 1.5rem;
   }
 }
 
@@ -60,28 +74,40 @@
   letter-spacing: -0.02em;
 }
 
-.node-stats-chips {
+.admin-entities-buttons {
   display: flex;
-  flex-wrap: nowrap; // Siempre uno junto al otro, nunca en varias líneas
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 1.5rem; // Misma distancia que el gap del header a la lista/buscador debajo
-  max-width: 100%;
-  overflow-x: auto; // Si no caben, se desplazan en vez de romper el texto
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
 
   @media (min-width: 768px) {
     justify-content: flex-start;
-    overflow-x: visible;
+  }
+}
+
+.node-stats-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  min-width: 0;        // Evita que hijos anchos expandan la fila
+
+  @media (min-width: 768px) {
+    justify-content: flex-start;
   }
 }
 
 .node-stat-chip {
   display: inline-flex;
   align-items: center;
-  flex-shrink: 0; // No se encoge ni parte el texto en varias líneas
+  flex-shrink: 0;
   gap: 0.4rem;
   background: rgba(48, 55, 69, 0.7);
   backdrop-filter: blur(12px);
@@ -92,6 +118,16 @@
   @include paragraph-extra-small;
   font-size: 0.8rem;
   white-space: nowrap;
+
+  // Cuando muestra nombres de nodos entre paréntesis
+  &.chip-danger,
+  &.chip-ok {
+    white-space: normal;
+    flex-shrink: 1;
+    max-width: 100%;         // Nunca más ancho que el contenedor padre
+    overflow-x: auto;        // Scroll horizontal si aun así desborda
+    scrollbar-width: thin;
+  }
 
   .chip-label {
     color: rgba(255, 255, 255, 0.5);
@@ -104,29 +140,25 @@
     font-family: $font-mono;
     white-space: nowrap;
   }
-}
 
-// ══════════════════════════════════════════════════
-// ═══  Sección de botones  ═══
-// ══════════════════════════════════════════════════
+  // ── Variantes de estado para el chip de imágenes perdidas ──
+  &.chip-danger {
+    background: rgba(229, 57, 53, 0.12);
+    border-color: rgba(229, 57, 53, 0.3);
 
-.button-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  flex-shrink: 0;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
+    .chip-value {
+      color: #ff6b6b;
+    }
   }
-}
 
-.admin-entities-buttons {
-  display: flex;
-  gap: 0.5rem;
+  &.chip-ok {
+    background: rgba(76, 175, 80, 0.12);
+    border-color: rgba(76, 175, 80, 0.3);
+
+    .chip-value {
+      color: #7BFF72;
+    }
+  }
 }
 
 // ══════════════════════════════════════════════════

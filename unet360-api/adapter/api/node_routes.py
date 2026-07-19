@@ -39,6 +39,26 @@ async def get_nodes_statuses():
         )
 
 
+@router.get("/missing-tiles", response_model=GeneralResponse)
+async def get_missing_tiles(_: str = Depends(get_current_admin_user)):
+    try:
+        missing = await service.find_missing_tiles()
+        return GeneralResponse(
+            http_code=status.HTTP_200_OK,
+            status=True,
+            response_obj={"missing": missing, "count": len(missing)},
+        )
+    except HTTPException as e:
+        return GeneralResponse(
+            http_code=e.status_code, status=False, response_obj={"message": e.detail}
+        )
+    except Exception as e:
+        return GeneralResponse(
+            http_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=False,
+            response_obj={"message": f"An unexpected error occurred: {str(e)}"},
+        )
+
 @router.post("/", response_model=GeneralResponse)
 async def create_node(
     dto: NodeCreateDTO, _: str = Depends(get_current_admin_user)

@@ -3,28 +3,41 @@
 
     <!-- ── Header ── -->
     <div class="node-admin-header">
-      <div class="text-section">
-        <p class="header-overline">Panel de control</p>
-        <h2>Administrar Nodos</h2>
-        <div class="node-stats-chips">
-          <span class="node-stat-chip" title="Número de nodo más alto registrado">
-            <span class="chip-label">Nodo más alto:</span>
-            <span class="chip-value">{{ highestNodeNumber }}</span>
-          </span>
-          <span class="node-stat-chip" title="Último nodo creado">
-            <span class="chip-label">Último creado:</span>
-            <span class="chip-value">{{ lastCreatedNode }}</span>
-          </span>
+      <div class="header-top-row">
+        <div class="text-section">
+          <p class="header-overline">Panel de control</p>
+          <h2>Administrar Nodos</h2>
         </div>
-      </div>
-
-      <div class="button-section">
-        <UButton text="Crear nuevo nodo" type="contrast-2" @click="router.push({ name: 'NodeCreate' })" />
-        <UButton text="Corregir pesos" type="contrast-2" :loading="isFixing" @click="fixWeights" />
         <div class="admin-entities-buttons">
           <UButton text="Tags"      type="secondary" @click="router.push({ name: 'AdminEntities', params: { entity: 'tags' } })" />
           <UButton text="Locations" type="secondary" @click="router.push({ name: 'AdminEntities', params: { entity: 'locations' } })" />
         </div>
+      </div>
+
+      <div class="action-buttons">
+        <UButton text="Crear nuevo nodo" type="contrast-2" @click="router.push({ name: 'NodeCreate' })" />
+        <UButton text="Corregir pesos" type="contrast-2" :loading="isFixing" @click="fixWeights" />
+        <UButton text="Buscar perdidos" type="contrast-2" :loading="isSearchingMissing" @click="searchMissingTiles" />
+      </div>
+
+      <div class="node-stats-chips">
+        <span class="node-stat-chip" title="Número de nodo más alto registrado">
+          <span class="chip-label">Nodo más alto:</span>
+          <span class="chip-value">{{ highestNodeNumber }}</span>
+        </span>
+        <span class="node-stat-chip" title="Último nodo creado">
+          <span class="chip-label">Último creado:</span>
+          <span class="chip-value">{{ lastCreatedNode }}</span>
+        </span>
+        <span
+          v-if="missingTilesResult !== null"
+          class="node-stat-chip"
+          :class="{ 'chip-danger': missingTilesResult.length > 0, 'chip-ok': missingTilesResult.length === 0 }"
+          :title="missingTilesResult.length ? 'Nodos: ' + missingTilesResult.join(', ') : 'Todas las carpetas de tiles existen'"
+        >
+          <span class="chip-label">Imágenes perdidas:</span>
+          <span class="chip-value">{{ missingTilesResult.length }}<template v-if="missingTilesResult.length"> ({{ missingTilesResult.join(', ') }})</template></span>
+        </span>
       </div>
     </div>
 
@@ -196,7 +209,7 @@ import UBaseModal from '@/components/UBaseModal.vue';
 import UAdminList from '@/components/UAdminList.vue';
 import UToast from '@/components/UToast.vue';
 
-import { deleteNode as deleteNodeRequest, deleteImageFromServer, fixAsymmetricWeights } from '@/service/requests/requests.js';
+import { deleteNode as deleteNodeRequest, deleteImageFromServer, fixAsymmetricWeights, getMissingTiles } from '@/service/requests/requests.js';
 
 const router    = useRouter();
 const nodeStore = useNodeStore();
@@ -402,6 +415,40 @@ const fixWeights = async () => {
     } else {
       console.error("Error al intentar corregir los pesos:", error);
     }
+  }
+};
+
+// ── Buscar imágenes perdidas ───────────────────────────────────────────────
+const isSearchingMissing = ref(false);
+const missingTilesResult = ref(null);
+
+const searchMissingTiles = async () => {
+  isSearchingMissing.value = true;
+  missingTilesResult.value = null;
+  try {
+    const resp = await getMissingTiles();
+    if (resp?.status && resp.response_obj) {
+      missingTilesResult.value = resp.response_obj.missing || [];
+      const count = resp.response_obj.count ?? 0;
+      if (toastRef.value) {
+        if (count > 0) {
+          toastRef.value.showToast(`Se encontraron ${count} nodos sin carpeta de tiles.`);
+        } else {
+          toastRef.value.showToast('Todas las carpetas de tiles están presentes.');
+        }
+      }
+    } else {
+      const msg = resp?.response_obj?.message || 'No se pudo verificar las imágenes.';
+      if (toastRef.value) {
+        toastRef.value.showToast(`Error: ${msg}`);
+      }
+    }
+  } catch (error) {
+    if (toastRef.value) {
+      toastRef.value.showToast('Error al buscar imágenes perdidas.');
+    }
+  } finally {
+    isSearchingMissing.value = false;
   }
 };
 

@@ -209,7 +209,7 @@ export function searchNodeByKeyword(keyword) {
 }
 
 export function generateRandomStartNode() {
-    const nodes = ['074', '075', '076', '105', '106', '119', '059', '079', '054'];
+    const nodes = ['074', '075', '076', '102', '105', '106', '119', '059', '079', '054'];
     const randomIndex = Math.floor(Math.random() * nodes.length);
     return nodes[randomIndex];
 }
